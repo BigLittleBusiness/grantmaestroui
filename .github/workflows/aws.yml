@@ -31,7 +31,7 @@ jobs:
           REMOTE_HOST: ${{ secrets.EC2_HOST }}
           REMOTE_USER: ${{ secrets.EC2_USERNAME }}
           TARGET: ${{ secrets.EC2_TARGET_DIR }}
-          SOURCE: "dist/"   # Use "build/" if CRA
+          SOURCE: "build/"   # Use "build/" if CRA
           ARGS: "-rlgoDzvc -i --delete"
           SSH_CMD_ARGS: "-o StrictHostKeyChecking=no"
           SCRIPT_BEFORE: |
