@@ -1,0 +1,19 @@
+.sidebar-visible{
+ width: 247px !important;
+ transition: width 0.3s;
+}
+
+.sidebar-hidden {
+    /* display: none; */
+    width: 0px !important;
+    overflow: hidden;
+    transition: width 0.3s;
+}
+
+.smallSidebarSpan{
+    display: none !important;
+}
+
+.bigSidebarSpan {
+    display: block !important;
+}

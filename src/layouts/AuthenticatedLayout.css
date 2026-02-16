@@ -1,0 +1,8 @@
+  .main-content {
+    transition: margin-left 0.3s;
+  }
+  
+  .main-content-expand {
+    margin-left: 0 !important;
+  }
+  

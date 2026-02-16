@@ -1,0 +1,35 @@
+#footer-mini {
+    background: #0d0d0d url(assets/img/footer-mini.jpg) top center/cover no-repeat;
+    padding: 60px;
+    text-align: center; }
+    #footer-mini .logo-footer.logo-text h3 {
+      top: 2px; }
+    #footer-mini .menu-footer {
+      display: inline-block;
+      float: right;
+      overflow: hidden;
+      list-style: none; }
+      #footer-mini .menu-footer.text-white li a {
+        color: #fff; }
+        #footer-mini .menu-footer.text-white li a:hover {
+          color: #999; }
+      #footer-mini .menu-footer li {
+        display: inline-block;
+        float: left;
+        text-transform: uppercase; }
+        #footer-mini .menu-footer li + li {
+          margin-left: 35px; }
+        #footer-mini .menu-footer li a {
+          font-size: 11px;
+          font-weight: 600;
+          font-family: "Poppins", "Droid Arabic Kufi", sans-serif;
+          color: #000; }
+          #footer-mini .menu-footer li a:hover {
+            color: #000; }
+    #footer-mini .copyrights-message {
+      color: #000; }
+      #footer-mini .copyrights-message.text-white,
+      #footer-mini .copyrights-message.text-white strong {
+        color: #fff; }
+      #footer-mini .copyrights-message + .social-icons {
+        margin-top: 30px; }

@@ -1,0 +1,43 @@
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0; }
+
+  .full-container {
+    max-width: 100%;
+    overflow: hidden; 
+  }
+  .trusting_div {
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 1rem;
+    background: #2486ff;
+    color: #fff;
+}
+
+.features {
+  display: flex;
+  /* flex-wrap: wrap; */
+  justify-content: space-between;
+  padding: 60px 0;
+}
+.feature-card {
+  margin-bottom: 30px;
+  background: #FAF9F6;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin: 10px
+}
+
+.testimonial {
+  background: #f8f9fa;
+  padding: 40px 0;
+  text-align: center;
+}
+

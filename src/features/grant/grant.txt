@@ -1,0 +1,105 @@
+General Information (section 1)
+
+Grant Title - Grant Finding
+Grant Url - Grant Finding
+Fund Originator - Grant Finding
+Fund Sought - Grand Finding
+Max Funds - Grandi Finding
+Assigned To - Admin who created this grant
+
+Won/Lost: ( section 2)
+Closing Date: Suitability
+Outcome Date: Outcome - decision Date
+Result: Outcome - outcome
+Agreement Signed: Outcome - agreement signed
+Funds released: Financials - Funds released
+Learnings: Outcome - learnings
+
+Internal (section 3):
+Departmnet: Submission - Department (text field)
+Representative: Submission - Department Representative (text field)
+Project Name: Submission - Project Name (text field)
+Reasoning: Submission - Reasoning: (text field)
+Submission Date: Submission - Submission date: (text field)
+Co-Contribution: Submission - Co-Contribution: (text field)
+
+Tabs:
+Grant Finding (Tab 1)
+
+Grant Title - Grant Finding
+Grant Url - Grant Finding
+Fund Originator - Grant Finding
+Fund Sought - Grand Finding
+Max Funds - Grandi Finding
+
+
+Suitability ( Tab 2)
+
+Closing Date:
+Decision Date:
+Determination :
+Rationale:
+Assessment Outcome Date:
+
+Submission ( tab 3):
+
+Submission Date:
+Submitted By:
+Department:
+Department Representative:
+Project Name:
+Reasoning:
+Co-Contribution:
+
+Outcome (submission OutCome) (tab 4):
+Outcome:
+Outcome Date:
+Agreement Signed:
+Learnings: (text area)
+
+Grant Reporting: (tab 5) ( listing screen will only show the next due report)
+(multiple reports can be added against one grant)
+
+ Report Title
+ Submission Date
+ status
+ filename (need to upload the file)
+ template recived ( radio button type)
+ report template (need to upload the file)(optional field)
+
+Financials (tab 6):
+Funds Won: 
+Funds Received: ( date)
+Remaining Funds ( auto calculated)
+Amount spent: - this one can be multiple entry
+
+
+Expense Tab:
+
+Account Used: text field
+Expenses incurred (Multiple entries)
+ descriptionL: text field
+  Amount :text field
+    date :date field
+ 
+
+
+For Team members no grant screen will be shown they can only do the task
+
+
+Team member:
+ Dashboard
+ Task list
+ Task Details
+ Profile
+
+ Dashboard ( team member):
+
+ Task listing with progress
+ Team members listing with same grant
+ In Calendar
+  Task Due Date
+  Task Created date
+  Grant Closing date
+  Task Completed date
+ Grant listing without view ALL wherever they are involved ( status will be based on closing date)
