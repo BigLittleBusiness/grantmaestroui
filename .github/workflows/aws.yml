@@ -1,0 +1,40 @@
+name: Deploy React to EC2
+
+on:
+  push:
+    branches:
+      - main   # Trigger deployment on push to main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --force
+
+      - name: Build React App
+        run: npm run build
+
+      - name: Deploy to EC2 via SSH
+        uses: easingthemes/ssh-deploy@v5.1.0
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.EC2_HOST }}
+          REMOTE_USER: ${{ secrets.EC2_USERNAME }}
+          TARGET: ${{ secrets.EC2_TARGET_DIR }}
+          SOURCE: "dist/"   # Use "build/" if CRA
+          ARGS: "-rlgoDzvc -i --delete"
+          SSH_CMD_ARGS: "-o StrictHostKeyChecking=no"
+          SCRIPT_BEFORE: |
+            sudo mkdir -p ${{ secrets.EC2_TARGET_DIR }}
+            sudo chmod 755 ${{ secrets.EC2_TARGET_DIR }}
+            sudo chown -R ${{ secrets.EC2_USERNAME }}:${{ secrets.EC2_USERNAME }} ${{ secrets.EC2_TARGET_DIR }}
