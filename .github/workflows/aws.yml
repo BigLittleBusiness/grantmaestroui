@@ -19,7 +19,7 @@ jobs:
           node-version: '20'
 
       - name: Install Dependencies
-        run: npm install --force
+        run: npm install -g yarn & yearn install
 
       - name: Build React App
         run: npm run build
