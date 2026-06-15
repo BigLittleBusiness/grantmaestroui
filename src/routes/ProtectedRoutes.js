@@ -20,6 +20,7 @@ import GrantDetailPage from 'pages/Grant/GrantDetailPage'
 import ReportPage from 'pages/ReportPage'
 import SettingsPage from 'pages/Settings/SettingsPage'
 import ManagePaymentPage from 'pages/Settings/ManagePaymentPage'
+import PinPaymentsSettingsPage from 'pages/Settings/PinPaymentsSettingsPage'
 import SubmitTicketPage from 'pages/Settings/SubmitTicketPage'
 import UpdateTicketPage from 'pages/Settings/UpdateTicketPage'
 import TicketListPage from 'pages/Settings/TicketListPage'
@@ -28,6 +29,7 @@ import PrivacySettingPage from 'pages/Settings/PrivacySettingPage'
 import SeatUsagePage from 'pages/Settings/SeatUsagePage'
 import PaymentSuccess from 'pages/Settings/PaymentSuccess'
 import PaymentCancel from 'pages/Settings/PaymentCancel'
+import PaymentCheckoutPage from 'pages/Settings/PaymentCheckoutPage'
 import ChangePassword from 'features/auth/ChangePassword'
 
 const ProtectedRoutes = () => {
@@ -169,6 +171,22 @@ const ProtectedRoutes = () => {
         element={
           <AdminAuthenticatedLayout>
             <ManagePaymentPage />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/admin/pin-settings'
+        element={
+          <AdminAuthenticatedLayout>
+            <PinPaymentsSettingsPage />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/payment/checkout'
+        element={
+          <AdminAuthenticatedLayout>
+            <PaymentCheckoutPage />
           </AdminAuthenticatedLayout>
         }
       />

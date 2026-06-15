@@ -145,6 +145,17 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
                 <span className='menu-arrow'></span>
               </Link>
             </li>
+            {loggedInUser?.user_role_id === 2 && (
+              <li>
+                <Link
+                  to='/admin/pin-settings'
+                  className={`${activeTab === '/admin/pin-settings' ? 'active' : ''}`}
+                >
+                  <i className='fe fe-credit-card'></i> <span>Pin Payments Setup</span>{' '}
+                  <span className='menu-arrow'></span>
+                </Link>
+              </li>
+            )}
             {/* <li>
               <Link
                 to='/seat-usage'
