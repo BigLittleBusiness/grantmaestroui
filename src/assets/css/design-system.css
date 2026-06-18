@@ -1,0 +1,430 @@
+/* ============================================================
+   GRANT MAESTRO — DESIGN SYSTEM
+   Single source of truth for all colours, spacing, typography,
+   shadows, and border-radius values.
+   Import this file FIRST in index.css.
+   ============================================================ */
+
+:root {
+  /* --- Brand Colours --- */
+  --gm-primary:        #2e83ff;
+  --gm-primary-dark:   #1a6de0;
+  --gm-primary-light:  #e8f1ff;
+  --gm-secondary:      #6c757d;
+  --gm-success:        #28a745;
+  --gm-success-light:  #e6f4ea;
+  --gm-warning:        #ffc107;
+  --gm-warning-light:  #fff8e1;
+  --gm-danger:         #dc3545;
+  --gm-danger-light:   #fdecea;
+  --gm-info:           #17a2b8;
+  --gm-info-light:     #e0f7fa;
+
+  /* --- Grant Stage Colours (matching existing card-* classes) --- */
+  --gm-stage-found:      #2e83ff;   /* blue   — Grant Found    */
+  --gm-stage-suitability:#7c4dff;   /* purple — Suitability    */
+  --gm-stage-submission: #00b0ff;   /* cyan   — Submission     */
+  --gm-stage-outcome:    #00c853;   /* green  — Outcome        */
+  --gm-stage-reporting:  #e91e63;   /* pink   — Reporting      */
+  --gm-stage-financials: #ff6d00;   /* orange — Financials     */
+
+  /* --- Neutral Palette --- */
+  --gm-white:       #ffffff;
+  --gm-bg:          #f7f8f9;
+  --gm-bg-alt:      #f0f2f5;
+  --gm-border:      #dee2e6;
+  --gm-border-dark: #ced4da;
+  --gm-text:        #212529;
+  --gm-text-muted:  #6c757d;
+  --gm-text-light:  #adb5bd;
+
+  /* --- Typography --- */
+  --gm-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                    'Helvetica Neue', Arial, sans-serif;
+  --gm-font-size-xs:   11px;
+  --gm-font-size-sm:   12px;
+  --gm-font-size-base: 14px;
+  --gm-font-size-md:   16px;
+  --gm-font-size-lg:   18px;
+  --gm-font-size-xl:   22px;
+  --gm-font-weight-normal: 400;
+  --gm-font-weight-medium: 500;
+  --gm-font-weight-bold:   600;
+  --gm-line-height: 1.5;
+
+  /* --- Spacing Scale (4px base) --- */
+  --gm-space-1:  4px;
+  --gm-space-2:  8px;
+  --gm-space-3:  12px;
+  --gm-space-4:  16px;
+  --gm-space-5:  20px;
+  --gm-space-6:  24px;
+  --gm-space-8:  32px;
+  --gm-space-10: 40px;
+  --gm-space-12: 48px;
+
+  /* --- Border Radius --- */
+  --gm-radius-sm:   4px;
+  --gm-radius-md:   8px;
+  --gm-radius-lg:   12px;
+  --gm-radius-xl:   16px;
+  --gm-radius-pill: 50px;
+
+  /* --- Shadows --- */
+  --gm-shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --gm-shadow-md:  0 4px 12px rgba(0,0,0,0.10);
+  --gm-shadow-lg:  0 8px 24px rgba(0,0,0,0.12);
+  --gm-shadow-card: 0 2px 8px rgba(46,131,255,0.08);
+
+  /* --- Transitions --- */
+  --gm-transition-fast:   0.15s ease;
+  --gm-transition-normal: 0.25s ease;
+  --gm-transition-slow:   0.4s ease;
+
+  /* --- Sidebar --- */
+  --gm-sidebar-width:       247px;
+  --gm-sidebar-bg:          #1e2a3a;
+  --gm-sidebar-text:        #c8d6e5;
+  --gm-sidebar-active-bg:   var(--gm-primary);
+  --gm-sidebar-active-text: var(--gm-white);
+
+  /* --- Header --- */
+  --gm-header-height: 60px;
+  --gm-header-bg:     var(--gm-white);
+  --gm-header-border: var(--gm-border);
+
+  /* --- Table --- */
+  --gm-table-header-bg:   var(--gm-primary);
+  --gm-table-header-text: var(--gm-white);
+  --gm-table-row-hover:   var(--gm-primary-light);
+  --gm-table-border:      var(--gm-border);
+  --gm-table-cell-padding: 8px 12px;
+
+  /* --- Form --- */
+  --gm-input-bg:          var(--gm-white);
+  --gm-input-border:      var(--gm-border-dark);
+  --gm-input-focus-border:var(--gm-primary);
+  --gm-input-focus-shadow:0 0 0 3px rgba(46,131,255,0.15);
+  --gm-label-color:       var(--gm-text);
+  --gm-label-weight:      var(--gm-font-weight-medium);
+
+  /* --- Card --- */
+  --gm-card-bg:      var(--gm-white);
+  --gm-card-border:  var(--gm-border);
+  --gm-card-radius:  var(--gm-radius-md);
+  --gm-card-shadow:  var(--gm-shadow-card);
+  --gm-card-padding: var(--gm-space-4);
+}
+
+/* ============================================================
+   GLOBAL RESETS & BASE STYLES
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--gm-font-family);
+  font-size: var(--gm-font-size-base);
+  color: var(--gm-text);
+  background-color: var(--gm-bg);
+  line-height: var(--gm-line-height);
+}
+
+/* ============================================================
+   CARD OVERRIDES — consistent across all pages
+   ============================================================ */
+
+.card,
+.super-admin-dash-card {
+  background: var(--gm-card-bg);
+  border: 1px solid var(--gm-card-border);
+  border-radius: var(--gm-card-radius);
+  box-shadow: var(--gm-card-shadow);
+}
+
+.card-title {
+  font-size: var(--gm-font-size-lg);
+  font-weight: var(--gm-font-weight-bold);
+  color: var(--gm-text);
+  margin-bottom: var(--gm-space-3);
+}
+
+/* ============================================================
+   BUTTON OVERRIDES
+   ============================================================ */
+
+.btn-primary {
+  background-color: var(--gm-primary);
+  border-color: var(--gm-primary);
+  font-weight: var(--gm-font-weight-medium);
+  border-radius: var(--gm-radius-sm);
+  transition: background-color var(--gm-transition-fast),
+              box-shadow var(--gm-transition-fast);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--gm-primary-dark);
+  border-color: var(--gm-primary-dark);
+  box-shadow: 0 2px 8px rgba(46,131,255,0.35);
+}
+
+/* ============================================================
+   TABLE OVERRIDES
+   ============================================================ */
+
+.table thead th {
+  background-color: var(--gm-table-header-bg);
+  color: var(--gm-table-header-text);
+  font-size: var(--gm-font-size-sm);
+  font-weight: var(--gm-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--gm-table-cell-padding);
+  border-bottom: none;
+}
+
+.table tbody td {
+  padding: var(--gm-table-cell-padding);
+  vertical-align: middle;
+  font-size: var(--gm-font-size-base);
+  border-color: var(--gm-table-border);
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--gm-table-row-hover);
+}
+
+/* ============================================================
+   FORM OVERRIDES
+   ============================================================ */
+
+.form-control,
+.form-select {
+  border-color: var(--gm-input-border);
+  border-radius: var(--gm-radius-sm);
+  font-size: var(--gm-font-size-base);
+  transition: border-color var(--gm-transition-fast),
+              box-shadow var(--gm-transition-fast);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--gm-input-focus-border);
+  box-shadow: var(--gm-input-focus-shadow);
+  outline: none;
+}
+
+.form-label {
+  font-weight: var(--gm-label-weight);
+  color: var(--gm-label-color);
+  font-size: var(--gm-font-size-sm);
+  margin-bottom: var(--gm-space-1);
+}
+
+/* ============================================================
+   GRANT STAGE BADGE PILLS
+   ============================================================ */
+
+.gm-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--gm-radius-pill);
+  font-size: var(--gm-font-size-xs);
+  font-weight: var(--gm-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.gm-badge-found       { background: var(--gm-primary-light);  color: var(--gm-stage-found); }
+.gm-badge-suitability { background: #ede7ff;                  color: var(--gm-stage-suitability); }
+.gm-badge-submission  { background: #e0f7fa;                  color: var(--gm-stage-submission); }
+.gm-badge-outcome     { background: var(--gm-success-light);  color: var(--gm-success); }
+.gm-badge-reporting   { background: #fce4ec;                  color: var(--gm-stage-reporting); }
+.gm-badge-financials  { background: #fff3e0;                  color: var(--gm-stage-financials); }
+.gm-badge-won         { background: var(--gm-success-light);  color: var(--gm-success); }
+.gm-badge-lost        { background: var(--gm-danger-light);   color: var(--gm-danger); }
+.gm-badge-pending     { background: var(--gm-warning-light);  color: #856404; }
+
+/* ============================================================
+   EMPTY STATE COMPONENT
+   ============================================================ */
+
+.gm-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gm-space-12) var(--gm-space-6);
+  text-align: center;
+  color: var(--gm-text-muted);
+}
+
+.gm-empty-state__icon {
+  font-size: 48px;
+  margin-bottom: var(--gm-space-4);
+  opacity: 0.4;
+}
+
+.gm-empty-state__title {
+  font-size: var(--gm-font-size-md);
+  font-weight: var(--gm-font-weight-bold);
+  color: var(--gm-text);
+  margin-bottom: var(--gm-space-2);
+}
+
+.gm-empty-state__body {
+  font-size: var(--gm-font-size-base);
+  color: var(--gm-text-muted);
+  max-width: 360px;
+  margin-bottom: var(--gm-space-5);
+}
+
+/* ============================================================
+   INLINE EDIT CELL
+   ============================================================ */
+
+.gm-cell-editable {
+  position: relative;
+  cursor: pointer;
+}
+
+.gm-cell-editable:hover .gm-cell-edit-hint {
+  opacity: 1;
+}
+
+.gm-cell-edit-hint {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 10px;
+  opacity: 0;
+  color: var(--gm-primary);
+  transition: opacity var(--gm-transition-fast);
+}
+
+.gm-cell-input {
+  width: 100%;
+  border: 1px solid var(--gm-input-focus-border);
+  border-radius: var(--gm-radius-sm);
+  padding: 3px 6px;
+  font-size: var(--gm-font-size-sm);
+  box-shadow: var(--gm-input-focus-shadow);
+  background: var(--gm-white);
+}
+
+.gm-cell-input:focus {
+  outline: none;
+}
+
+/* ============================================================
+   DASHBOARD CHART CARD
+   ============================================================ */
+
+.gm-chart-card {
+  background: var(--gm-card-bg);
+  border: 1px solid var(--gm-card-border);
+  border-radius: var(--gm-card-radius);
+  box-shadow: var(--gm-card-shadow);
+  padding: var(--gm-space-4);
+}
+
+.gm-chart-card__title {
+  font-size: var(--gm-font-size-base);
+  font-weight: var(--gm-font-weight-bold);
+  color: var(--gm-text);
+  margin-bottom: var(--gm-space-4);
+  padding-bottom: var(--gm-space-2);
+  border-bottom: 1px solid var(--gm-border);
+}
+
+/* ============================================================
+   TASK LIST IMPROVEMENTS
+   ============================================================ */
+
+.gm-task-row {
+  display: flex;
+  align-items: center;
+  padding: var(--gm-space-3) var(--gm-space-4);
+  border-bottom: 1px solid var(--gm-border);
+  gap: var(--gm-space-3);
+  transition: background-color var(--gm-transition-fast);
+}
+
+.gm-task-row:hover {
+  background-color: var(--gm-bg);
+}
+
+.gm-task-row--overdue .gm-task-date {
+  color: var(--gm-danger);
+  font-weight: var(--gm-font-weight-bold);
+}
+
+.gm-task-priority {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gm-task-priority--high   { background-color: var(--gm-danger); }
+.gm-task-priority--medium { background-color: var(--gm-warning); }
+.gm-task-priority--low    { background-color: var(--gm-success); }
+
+/* ============================================================
+   FILE VAULT IMPROVEMENTS
+   ============================================================ */
+
+.gm-dropzone {
+  border: 2px dashed var(--gm-border-dark);
+  border-radius: var(--gm-radius-md);
+  padding: var(--gm-space-8) var(--gm-space-6);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--gm-transition-fast),
+              background-color var(--gm-transition-fast);
+  color: var(--gm-text-muted);
+}
+
+.gm-dropzone:hover,
+.gm-dropzone--active {
+  border-color: var(--gm-primary);
+  background-color: var(--gm-primary-light);
+  color: var(--gm-primary);
+}
+
+.gm-file-item {
+  display: flex;
+  align-items: center;
+  gap: var(--gm-space-3);
+  padding: var(--gm-space-2) var(--gm-space-3);
+  background: var(--gm-bg);
+  border-radius: var(--gm-radius-sm);
+  margin-bottom: var(--gm-space-2);
+  font-size: var(--gm-font-size-sm);
+  font-weight: var(--gm-font-weight-medium);
+}
+
+.gm-file-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.gm-file-icon--pdf   { color: #dc3545; }
+.gm-file-icon--excel { color: #28a745; }
+.gm-file-icon--word  { color: #2e83ff; }
+.gm-file-icon--image { color: #ff6d00; }
+.gm-file-icon--other { color: var(--gm-text-muted); }
+
+/* ============================================================
+   SCROLLBAR (refined)
+   ============================================================ */
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--gm-bg); }
+::-webkit-scrollbar-thumb { background: var(--gm-border-dark); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gm-secondary); }
+* { scrollbar-width: thin; scrollbar-color: var(--gm-border-dark) var(--gm-bg); }

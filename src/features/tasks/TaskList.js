@@ -21,14 +21,10 @@ const TaskList = ({ filterData }) => {
     }
   }, [dispatch, tasks.length])
 
-  const data = useMemo(() => {
-    if (!tasks.length) {
-      return [
-        {
-          id: '',
-        },
-      ]
-    }
+  // Filtered data — computed before the early-return empty state so hooks are
+  // always called in the same order regardless of whether tasks exist.
+  const filteredData = useMemo(() => {
+    if (!tasks.length) return []
 
     return tasks.filter((task) => {
       let matchesGrant = true
@@ -51,6 +47,11 @@ const TaskList = ({ filterData }) => {
     })
   }, [tasks, filterData])
 
+  const data = useMemo(
+    () => (filteredData.length > 0 ? filteredData : [{ id: '' }]),
+    [filteredData]
+  )
+
   const columns = useMemo(
     () => [
       {
@@ -72,19 +73,16 @@ const TaskList = ({ filterData }) => {
       {
         Header: 'Status',
         accessor: 'status',
-        Cell: ({ value }) => (
-          <span
-            className={`badge ${
-              value === 'Completed'
-                ? 'bg-success'
-                : value === 'Outstanding'
-                ? 'bg-danger'
-                : 'bg-warning'
-            }`}
-          >
-            {value}
-          </span>
-        ),
+        Cell: ({ value }) => {
+          const lower = (value || '').toLowerCase()
+          const cls =
+            lower === 'completed'  ? 'bg-success' :
+            lower === 'inprogress' ? 'bg-primary'  :
+            lower === 'pending'    ? 'bg-warning text-dark' :
+            lower === 'assigned'   ? 'bg-info text-dark'    :
+            'bg-secondary'
+          return <span className={`badge ${cls}`}>{value}</span>
+        },
       },
       {
         Header: 'Description',
@@ -181,6 +179,18 @@ const TaskList = ({ filterData }) => {
 
     return range
   }
+  if (!tasks.length) {
+    return (
+      <div className='gm-empty-state'>
+        <div className='gm-empty-state__icon'>✅</div>
+        <div className='gm-empty-state__title'>No tasks yet</div>
+        <p className='gm-empty-state__body'>
+          Tasks assigned to grants will appear here. Add a task from any grant record to get started.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <ErrorBoundary>
       {/* {showDeleteModal && (
@@ -200,7 +210,7 @@ const TaskList = ({ filterData }) => {
       <div className='col-sm-12'>
         <div className='card-table'>
           <div className='card-body'>
-            <div class='table-responsive'>
+            <div className='table-responsive'>
               <table
                 {...getTableProps()}
                 className='table task-table table-striped table-hover datatable task-table'
@@ -235,6 +245,13 @@ const TaskList = ({ filterData }) => {
                       <tr
                         {...row.getRowProps()}
                         onClick={() => handleTaskClick(row.original)}
+                        className={
+                          row.original.targeted_completion_date &&
+                          new Date(row.original.targeted_completion_date) < new Date() &&
+                          (row.original.status || '').toLowerCase() !== 'completed'
+                            ? 'gm-task-row--overdue'
+                            : ''
+                        }
                       >
                         {row.cells.map((cell, index) => (
                           <td key={index} {...cell.getCellProps()}>

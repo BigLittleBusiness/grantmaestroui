@@ -5,12 +5,14 @@ import AdminTeamCard from 'features/dashboard/AdminTeamCard'
 import GrantCalendar from 'features/dashboard/GrantCalendar'
 import GrantListComponent from 'features/dashboard/GrantListComponent'
 import OutstandingTask from 'features/dashboard/OutstandingTask'
+import GrantChartsCard from 'features/dashboard/GrantChartsCard'
 
 export default function Dashboard() {
   return (
     <div className='content container-fluid'>
       <CardsComponent />
       <div className='row'>
+        <GrantChartsCard />
         <AdminGrantCard />
         <AdminTeamCard />
         <GrantCalendar />

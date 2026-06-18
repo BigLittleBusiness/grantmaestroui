@@ -23,7 +23,10 @@ const TeamMemberList = () => {
     dispatch(fetchTeamMembers())
   }, [])
 
-  const data = useMemo(() => teamMembers, [teamMembers])
+  const data = useMemo(
+    () => (teamMembers.length > 0 ? teamMembers : [{ user_id: '' }]),
+    [teamMembers]
+  )
 
   const columns = useMemo(
     () => [
@@ -142,6 +145,18 @@ const TeamMemberList = () => {
       range.push(i)
     }
     return range
+  }
+
+  if (!teamMembers.length) {
+    return (
+      <div className='gm-empty-state'>
+        <div className='gm-empty-state__icon'>👥</div>
+        <div className='gm-empty-state__title'>No team members yet</div>
+        <p className='gm-empty-state__body'>
+          Invite colleagues to collaborate on grants. Click <strong>Add Team Member</strong> above to send an invitation.
+        </p>
+      </div>
+    )
   }
 
   return (

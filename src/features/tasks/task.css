@@ -1,3 +1,14 @@
-.task-table thead th{
-    background: #2e83ff !important; 
-  }
+.task-table thead th {
+    background: #2e83ff !important;
+    color: #fff !important;
+}
+
+/* Overdue task row — red left border + light red background */
+.gm-task-row--overdue {
+    background-color: #fdecea !important;
+    border-left: 3px solid #dc3545;
+}
+
+.gm-task-row--overdue td {
+    color: #721c24;
+}

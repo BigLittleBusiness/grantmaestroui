@@ -42,9 +42,9 @@ const GrantFileVault = () => {
         </div>
         <div className='card-body file-vault p-0'>
           {showForm ? (
-            <form onSubmit={formik.handleSubmit} className='mt-3'>
-              <div className='form-group'>
-                <label>File:</label>
+            <form onSubmit={formik.handleSubmit} className='mt-3 px-2'>
+              <div className='mb-3'>
+                <label className='form-label'>Select file to upload</label>
                 <input
                   type='file'
                   name='file'
@@ -54,19 +54,50 @@ const GrantFileVault = () => {
                   }}
                 />
                 {formik.errors.file && (
-                  <div className='text-danger'>{formik.errors.file}</div>
+                  <div className='text-danger small mt-1'>{formik.errors.file}</div>
                 )}
               </div>
-              <button type='submit' className='btn btn-primary mt-3'>
-                Save
-              </button>
+              <div className='d-flex gap-2'>
+                <button type='submit' className='btn btn-primary btn-sm'>Upload</button>
+                <button
+                  type='button'
+                  className='btn btn-outline-secondary btn-sm'
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
+          ) : files.length === 0 ? (
+            <div className='gm-empty-state' style={{ padding: '24px 0' }}>
+              <div className='gm-empty-state__icon' style={{ fontSize: 32 }}>📁</div>
+              <p className='gm-empty-state__body mb-0'>No files uploaded yet</p>
+            </div>
           ) : (
-            <ul className='mt-3'>
-              {files.map((file, index) => (
-                <li key={index}>{file.file.name}</li>
-              ))}
-            </ul>
+            <div className='mt-2 px-2'>
+              {files.map((file, index) => {
+                const name = file?.file?.name || file?.file_path || 'File'
+                const ext  = name.split('.').pop().toLowerCase()
+                const iconClass =
+                  ext === 'pdf'                     ? 'gm-file-icon--pdf'   :
+                  ['xls','xlsx','csv'].includes(ext) ? 'gm-file-icon--excel' :
+                  ['doc','docx'].includes(ext)       ? 'gm-file-icon--word'  :
+                  ['png','jpg','jpeg','gif'].includes(ext) ? 'gm-file-icon--image' :
+                  'gm-file-icon--other'
+                const iconChar =
+                  ext === 'pdf'                     ? '📄' :
+                  ['xls','xlsx','csv'].includes(ext) ? '📊' :
+                  ['doc','docx'].includes(ext)       ? '📝' :
+                  ['png','jpg','jpeg','gif'].includes(ext) ? '🖼️' :
+                  '📎'
+                return (
+                  <div key={index} className='gm-file-item'>
+                    <span className={`gm-file-icon ${iconClass}`}>{iconChar}</span>
+                    <span className='flex-grow-1 text-truncate' title={name}>{name}</span>
+                  </div>
+                )
+              })}
+            </div>
           )}
         </div>
       </div>
