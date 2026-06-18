@@ -1,14 +1,12 @@
-name: Deploy React to EC2
+name: Deploy Frontend UI to EC2
 
 on:
   push:
-    branches:
-      - main   # Trigger deployment on push to main
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -16,13 +14,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: 'yarn'
 
       - name: Install Dependencies
-        run: npm install -g yarn & yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Build React App
-        run: CI=false npm run build
+        run: CI=false yarn build
+        env:
+          REACT_APP_API_URL: https://grantmaestro.com/api/v1
 
       - name: Deploy to EC2 via SSH
         uses: easingthemes/ssh-deploy@v5.1.0
@@ -31,10 +32,9 @@ jobs:
           REMOTE_HOST: ${{ secrets.EC2_HOST }}
           REMOTE_USER: ${{ secrets.EC2_USERNAME }}
           TARGET: ${{ secrets.EC2_TARGET_DIR }}
-          SOURCE: "build/"   # Use "build/" if CRA
+          SOURCE: "build/"
           ARGS: "-rlgoDzvc -i --delete"
           SSH_CMD_ARGS: "-o StrictHostKeyChecking=no"
           SCRIPT_BEFORE: |
             sudo mkdir -p ${{ secrets.EC2_TARGET_DIR }}
-            sudo chmod 755 ${{ secrets.EC2_TARGET_DIR }}
             sudo chown -R ${{ secrets.EC2_USERNAME }}:${{ secrets.EC2_USERNAME }} ${{ secrets.EC2_TARGET_DIR }}
