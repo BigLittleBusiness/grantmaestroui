@@ -6,6 +6,7 @@ import logoSmall from 'assets/img/logos/logo-small.jpeg'
 import ProfileImage from 'assets/img/avatar-07.jpg'
 import { logout, viewProfile } from 'features/auth/authSlice'
 import './Header.css'
+import GlobalSearch from './GlobalSearch'
 
 const Header = ({ toggleSidebar }) => {
   const dispatch = useDispatch()
@@ -96,6 +97,10 @@ const Header = ({ toggleSidebar }) => {
       >
         <i className='fa fa-bars'></i>
       </button>
+
+      {/* Global search bar — sits between the hamburger and user avatar */}
+      <GlobalSearch />
+
       <ul className='nav nav-tabs user-menu'>
         <li className='nav-item dropdown'>
           <button

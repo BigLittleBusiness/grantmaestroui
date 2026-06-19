@@ -7,7 +7,7 @@ import {
   filterTeamMembers,
   deleteTeamMember
 } from './teamMemberSlice'
-import { createCheckoutSession } from '../settings/settingsSlice'
+import { createPinCharge } from '../settings/settingsSlice'
 import { useNavigate } from 'react-router-dom'
 import ErrorBoundary from '../../components/ErrorBoundary'
 import './teamMember.css'
@@ -133,7 +133,7 @@ const TeamMemberList = () => {
 
   const makePayment = (teamMemberId, preferredPlanId) => {
     console.log('Make payment for user with ID:', preferredPlanId)
-    dispatch(createCheckoutSession({'stripe_plan_id' : preferredPlanId, 'preferred_plan_id' : preferredPlanId , 'payment_made_for':teamMemberId}))
+    dispatch(createPinCharge({ preferred_plan_id: preferredPlanId, payment_made_for: teamMemberId }))
   }
 
   const getPageRange = (current, total) => {

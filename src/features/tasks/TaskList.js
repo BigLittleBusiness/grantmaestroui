@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTable, useSortBy, usePagination, useFilters } from 'react-table'
 import { fetchTasks, setSelectedTask, deleteTask } from './tasksSlice'
@@ -6,6 +6,34 @@ import ErrorBoundary from '../../components/ErrorBoundary'
 import './task.css'
 import { useNavigate } from 'react-router-dom'
 
+// ---------------------------------------------------------------------------
+// Priority helpers — stored in localStorage (no priority col in DB)
+// ---------------------------------------------------------------------------
+const PRIORITY_KEY = 'gm_task_priorities'
+
+const loadPriorities = () => {
+  try {
+    return JSON.parse(localStorage.getItem(PRIORITY_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+const savePriorities = (map) => {
+  localStorage.setItem(PRIORITY_KEY, JSON.stringify(map))
+}
+
+const PRIORITY_OPTIONS = ['High', 'Medium', 'Low']
+
+const PRIORITY_BADGE = {
+  High:   { cls: 'gm-priority--high',   label: 'High' },
+  Medium: { cls: 'gm-priority--medium', label: 'Med'  },
+  Low:    { cls: 'gm-priority--low',    label: 'Low'  },
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 const TaskList = ({ filterData }) => {
   const tasks = useSelector((state) => state.tasks.tasks)
 
@@ -14,6 +42,17 @@ const TaskList = ({ filterData }) => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [taskToDelete, setTaskToDelete] = useState(null)
+
+  // Priority map: { [taskId]: 'High' | 'Medium' | 'Low' }
+  const [priorities, setPriorities] = useState(loadPriorities)
+
+  const handlePriorityChange = useCallback((taskId, value) => {
+    setPriorities((prev) => {
+      const next = { ...prev, [taskId]: value }
+      savePriorities(next)
+      return next
+    })
+  }, [])
 
   useEffect(() => {
     if (!tasks.length) {
@@ -54,6 +93,37 @@ const TaskList = ({ filterData }) => {
 
   const columns = useMemo(
     () => [
+      // Priority flag column
+      {
+        Header: 'Priority',
+        id: 'priority',
+        accessor: (row) => priorities[row.id] || '',
+        Cell: ({ row }) => {
+          const taskId  = row.original.id
+          const current = priorities[taskId] || ''
+          const badge   = PRIORITY_BADGE[current]
+          return (
+            <div className='gm-priority-cell' onClick={(e) => e.stopPropagation()}>
+              {badge && (
+                <span className={`gm-priority-badge ${badge.cls}`}>
+                  {badge.label}
+                </span>
+              )}
+              <select
+                className='gm-priority-select'
+                value={current}
+                onChange={(e) => handlePriorityChange(taskId, e.target.value)}
+                title='Set priority'
+              >
+                <option value=''>—</option>
+                {PRIORITY_OPTIONS.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+          )
+        },
+      },
       {
         Header: 'Grant',
         accessor: 'grant',
@@ -88,6 +158,23 @@ const TaskList = ({ filterData }) => {
         Header: 'Description',
         accessor: 'description',
       },
+      // Due date column with overdue indicator
+      {
+        Header: 'Due Date',
+        accessor: 'targeted_completion_date',
+        Cell: ({ value, row }) => {
+          if (!value) return <span className='text-muted'>—</span>
+          const isOverdue =
+            new Date(value) < new Date() &&
+            (row.original.status || '').toLowerCase() !== 'completed'
+          return (
+            <span className={isOverdue ? 'gm-due-date--overdue' : 'gm-due-date'}>
+              {isOverdue && <span className='gm-overdue-icon' title='Overdue'>⚠ </span>}
+              {value}
+            </span>
+          )
+        },
+      },
       {
         Header: 'Actions',
         accessor: 'actions',
@@ -115,7 +202,7 @@ const TaskList = ({ filterData }) => {
         ),
       },
     ],
-    [navigate]
+    [navigate, priorities, handlePriorityChange]
   )
 
   const {
@@ -148,7 +235,6 @@ const TaskList = ({ filterData }) => {
   }
 
   const handleDeleteClick = (taskId) => {
-    console.log('Delete task with ID:', taskId)
     dispatch(deleteTask(taskId))
     // setTaskToDelete(taskId)
     // setShowDeleteModal(true)

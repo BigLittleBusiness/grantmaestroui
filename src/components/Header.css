@@ -1,4 +1,16 @@
+/* Ensure the header bar uses flex so the search bar fills the middle space */
+.header.header-one {
+  display: flex;
+  align-items: center;
+}
 
+/* Allow the search wrapper to grow and fill available space */
+.gm-search-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Profile dropdown anchored to the right */
 .profile-menu {
   right: 0px;
 }
