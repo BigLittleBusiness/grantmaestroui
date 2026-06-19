@@ -48,135 +48,109 @@ const Submission = ({
     enableReinitialize: true,
   })
 
+  // -------------------------------------------------------------------------
+  // viewOnly — visual field cards in a 2-column grid
+  // -------------------------------------------------------------------------
   if (viewOnly) {
-    // Render as static information when viewOnly is true
     return (
-      <div className='tab-pane fade show active' id='submission'>
-        <div className='card-body'>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Due Date:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.grant_submission_date}</span>
+      <div className='tab-pane fade show active gm-detail-tab' id='submission'>
+        {showTitle && <h5 className='gm-tab-title'>Submission</h5>}
+        <div className='gm-field-grid'>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Submission Date</span>
+            <span className='gm-field-value'>{grant.grant_submission_date || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Funding Sought:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.funding_sought_amount}</span>
-          </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Submitted By:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.grant_submitted_by}</span>
-          </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Department:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.submission_department}</span>
-          </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Department Representative:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>
-              {grant.submission_department_representative}
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Funding Sought</span>
+            <span className='gm-field-value'>
+              {grant.funding_sought_amount
+                ? `$${Number(grant.funding_sought_amount).toLocaleString('en-AU')}`
+                : '—'}
             </span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Project Name:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.submission_project_name}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Submitted By</span>
+            <span className='gm-field-value'>{grant.grant_submitted_by || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Reasoning:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.submission_reasoning}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Department</span>
+            <span className='gm-field-value'>{grant.submission_department || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Co-Contribution:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>
-              {grant.submission_co_contributor}
-            </span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Department Representative</span>
+            <span className='gm-field-value'>{grant.submission_department_representative || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Note:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.latest_submission_note}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Project Name</span>
+            <span className='gm-field-value'>{grant.submission_project_name || '—'}</span>
+          </div>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Co-Contribution</span>
+            <span className='gm-field-value'>{grant.submission_co_contributor || '—'}</span>
+          </div>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Reasoning</span>
+            <span className='gm-field-value'>{grant.submission_reasoning || '—'}</span>
+          </div>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Note</span>
+            <span className='gm-field-value'>{grant.latest_submission_note || '—'}</span>
           </div>
         </div>
       </div>
     )
   }
 
-  // Render as a form when viewOnly is false
+  // -------------------------------------------------------------------------
+  // Edit form — 2-column grid on desktop
+  // -------------------------------------------------------------------------
   return (
-    <div className='tab-pane fade show active' id='submission'>
-      {showTitle && <h5 className='mb-3'>Grant Submission</h5>}
-      <div className='card-body'>
-        <form onSubmit={formik.handleSubmit}>
-          <div className='form-group mb-3'>
-            <label>Submission Date:</label>
+    <div className='tab-pane fade show active gm-detail-tab' id='submission'>
+      {showTitle && <h5 className='gm-tab-title'>Submission</h5>}
+      <form onSubmit={formik.handleSubmit}>
+        <div className='gm-form-grid'>
+          {/* Submission Date */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Submission Date <span className='text-danger'>*</span>
+            </label>
             <input
               type='date'
               name='grant_submission_date'
-              className='form-control'
+              className={`form-control ${formik.errors.grant_submission_date ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.grant_submission_date}
             />
             {formik.errors.grant_submission_date && (
-              <div className='text-danger'>
-                {formik.errors.grant_submission_date}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.grant_submission_date}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='funding_sought_amount'>Funding Sought:</label>
+
+          {/* Funding Sought */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Funding Sought <span className='text-danger'>*</span>
+            </label>
             <input
               type='number'
-              id='funding_sought_amount'
               name='funding_sought_amount'
-              className='form-control'
+              className={`form-control ${formik.errors.funding_sought_amount ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.funding_sought_amount}
-              aria-describedby='funding_sought_amount_error'
             />
             {formik.errors.funding_sought_amount && (
-              <div id='funding_sought_amount_error' className='text-danger'>
-                {formik.errors.funding_sought_amount}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.funding_sought_amount}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label>Submitted By:</label>
+
+          {/* Submitted By */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Submitted By <span className='text-danger'>*</span>
+            </label>
             <select
               name='grant_submitted_by'
-              className='form-control'
+              className={`form-select ${formik.errors.grant_submitted_by ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.grant_submitted_by}
             >
@@ -188,105 +162,116 @@ const Submission = ({
               ))}
             </select>
             {formik.errors.grant_submitted_by && (
-              <div className='text-danger'>
-                {formik.errors.grant_submitted_by}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.grant_submitted_by}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label>Department:</label>
+
+          {/* Department */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Department <span className='text-danger'>*</span>
+            </label>
             <input
               type='text'
               name='submission_department'
-              className='form-control'
+              className={`form-control ${formik.errors.submission_department ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.submission_department}
             />
             {formik.errors.submission_department && (
-              <div className='text-danger'>
-                {formik.errors.submission_department}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.submission_department}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label>Department Representative:</label>
+
+          {/* Department Representative */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Department Representative <span className='text-danger'>*</span>
+            </label>
             <input
               type='text'
               name='submission_department_representative'
-              className='form-control'
+              className={`form-control ${formik.errors.submission_department_representative ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.submission_department_representative}
             />
             {formik.errors.submission_department_representative && (
-              <div className='text-danger'>
-                {formik.errors.submission_department_representative}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.submission_department_representative}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label>Project Name:</label>
+
+          {/* Project Name */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Project Name <span className='text-danger'>*</span>
+            </label>
             <input
               type='text'
               name='submission_project_name'
-              className='form-control'
+              className={`form-control ${formik.errors.submission_project_name ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.submission_project_name}
             />
             {formik.errors.submission_project_name && (
-              <div className='text-danger'>
-                {formik.errors.submission_project_name}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.submission_project_name}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label>Reasoning:</label>
-            <input
-              type='text'
-              name='submission_reasoning'
-              className='form-control'
-              onChange={formik.handleChange}
-              value={formik.values.submission_reasoning}
-            />
-            {formik.errors.submission_reasoning && (
-              <div className='text-danger'>
-                {formik.errors.submission_reasoning}
-              </div>
-            )}
-          </div>
-          <div className='form-group mb-3'>
-            <label>Co-Contribution:</label>
+
+          {/* Co-Contribution */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Co-Contribution <span className='text-danger'>*</span>
+            </label>
             <input
               type='text'
               name='submission_co_contributor'
-              className='form-control'
+              className={`form-control ${formik.errors.submission_co_contributor ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.submission_co_contributor}
             />
             {formik.errors.submission_co_contributor && (
-              <div className='text-danger'>
-                {formik.errors.submission_co_contributor}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.submission_co_contributor}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label>Note:</label>
+
+          {/* Reasoning — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label className='gm-form-label'>
+              Reasoning <span className='text-danger'>*</span>
+            </label>
+            <input
+              type='text'
+              name='submission_reasoning'
+              className={`form-control ${formik.errors.submission_reasoning ? 'is-invalid' : ''}`}
+              onChange={formik.handleChange}
+              value={formik.values.submission_reasoning}
+            />
+            {formik.errors.submission_reasoning && (
+              <div className='invalid-feedback'>{formik.errors.submission_reasoning}</div>
+            )}
+          </div>
+
+          {/* Note — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label className='gm-form-label'>Note</label>
             <textarea
               name='submission_note'
               className='form-control'
+              rows={2}
               onChange={formik.handleChange}
               value={formik.values.submission_note}
             />
-            {formik.errors.submission_note && (
-              <div className='text-danger'>{formik.errors.submission_note}</div>
-            )}
           </div>
-          {!viewOnly && (
-            <button type='submit' className='btn btn-primary mb-2'>
+        </div>
+
+        {!viewOnly && (
+          <div className='gm-form-actions'>
+            <button type='submit' className='btn btn-primary'>
               {showSaveButton ? 'Save' : 'Submit'}
             </button>
-          )}
-        </form>
-      </div>
+          </div>
+        )}
+      </form>
     </div>
   )
 }

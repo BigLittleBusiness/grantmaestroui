@@ -21,11 +21,11 @@ const Outcome = ({
 
   const formik = useFormik({
     initialValues: {
-      outcome: grant ? grant?.outcome : '',
-      outcome_date: grant ? grant?.outcome_date : '',
-      agreement_signed: grant ? grant?.agreement_signed : '',
-      learning: grant ? grant?.learning : '',
-      outcome_note: grant ? grant?.latest_outcome_note : '',
+      outcome: grant?.outcome || '',
+      outcome_date: grant?.outcome_date || '',
+      agreement_signed: grant?.agreement_signed || '',
+      learning: grant?.learning || '',
+      outcome_note: grant?.latest_outcome_note || '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -34,68 +34,68 @@ const Outcome = ({
     enableReinitialize: true,
   })
 
+  // -------------------------------------------------------------------------
+  // viewOnly — visual field cards in a 2-column grid
+  // -------------------------------------------------------------------------
   if (viewOnly) {
-    // Render as static information when viewOnly is true
     return (
-      <div className='tab-pane fade show active' id='outcome'>
-        <div className='card-body'>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Outcome:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.outcome}</span>
+      <div className='tab-pane fade show active gm-detail-tab' id='outcome'>
+        {showTitle && <h5 className='gm-tab-title'>Submission Outcome</h5>}
+        <div className='gm-field-grid'>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Outcome</span>
+            <span
+              className='gm-field-value'
+              style={{
+                color:
+                  grant.outcome === 'Won'
+                    ? '#28a745'
+                    : grant.outcome === 'Lost' || grant.outcome === 'Declined'
+                    ? '#dc3545'
+                    : 'inherit',
+                fontWeight: 600,
+              }}
+            >
+              {grant.outcome || '—'}
+            </span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Outcome Date:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.outcome_date}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Outcome Date</span>
+            <span className='gm-field-value'>{grant.outcome_date || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Agreement Signed:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.agreement_signed}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Agreement Signed</span>
+            <span className='gm-field-value'>{grant.agreement_signed || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Learnings:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.learning}</span>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Learnings</span>
+            <span className='gm-field-value'>{grant.learning || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Note:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.latest_outcome_note}</span>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Note</span>
+            <span className='gm-field-value'>{grant.latest_outcome_note || '—'}</span>
           </div>
         </div>
       </div>
     )
   }
 
-  // Render as a form when viewOnly is false
+  // -------------------------------------------------------------------------
+  // Edit form — 2-column grid on desktop
+  // -------------------------------------------------------------------------
   return (
-    <div className='tab-pane fade show active' id='outcome'>
-      {showTitle && <h5 className='mb-3'>Submission Outcome</h5>}
-      <div className='card-body'>
-        <form onSubmit={formik.handleSubmit}>
-          <div className='form-group mb-3'>
-            <label htmlFor='outcome'>Outcome:</label>
+    <div className='tab-pane fade show active gm-detail-tab' id='outcome'>
+      {showTitle && <h5 className='gm-tab-title'>Submission Outcome</h5>}
+      <form onSubmit={formik.handleSubmit}>
+        <div className='gm-form-grid'>
+          {/* Outcome */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Outcome <span className='text-danger'>*</span>
+            </label>
             <select
-              id='outcome'
               name='outcome'
-              className='form-select'
+              className={`form-select ${formik.errors.outcome ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.outcome}
             >
@@ -105,75 +105,85 @@ const Outcome = ({
               <option value='Declined'>Declined</option>
             </select>
             {formik.errors.outcome && (
-              <div className='text-danger'>{formik.errors.outcome}</div>
+              <div className='invalid-feedback'>{formik.errors.outcome}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='outcome_date'>Outcome Date:</label>
+
+          {/* Outcome Date */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Outcome Date <span className='text-danger'>*</span>
+            </label>
             <input
               type='date'
-              id='outcome_date'
               name='outcome_date'
-              className='form-control'
+              className={`form-control ${formik.errors.outcome_date ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.outcome_date}
             />
             {formik.errors.outcome_date && (
-              <div className='text-danger'>{formik.errors.outcome_date}</div>
+              <div className='invalid-feedback'>{formik.errors.outcome_date}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='agreement_signed'>Agreement Signed:</label>
+
+          {/* Agreement Signed */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Agreement Signed <span className='text-danger'>*</span>
+            </label>
             <select
-              id='agreement_signed'
               name='agreement_signed'
-              className='form-select'
+              className={`form-select ${formik.errors.agreement_signed ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.agreement_signed}
             >
-              <option value=''>Please Select</option>
+              <option value=''>Select</option>
               <option value='Yes'>Yes</option>
               <option value='No'>No</option>
             </select>
             {formik.errors.agreement_signed && (
-              <div className='text-danger'>
-                {formik.errors.agreement_signed}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.agreement_signed}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='learning'>Learnings:</label>
+
+          {/* Learnings — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label className='gm-form-label'>
+              Learnings <span className='text-danger'>*</span>
+            </label>
             <textarea
-              id='learning'
               name='learning'
-              className='form-control'
+              className={`form-control ${formik.errors.learning ? 'is-invalid' : ''}`}
+              rows={3}
               onChange={formik.handleChange}
               value={formik.values.learning}
             />
             {formik.errors.learning && (
-              <div className='text-danger'>{formik.errors.learning}</div>
+              <div className='invalid-feedback'>{formik.errors.learning}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='outcome_note'>Note:</label>
+
+          {/* Note — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label className='gm-form-label'>Note</label>
             <textarea
-              id='outcome_note'
               name='outcome_note'
               className='form-control'
+              rows={2}
               onChange={formik.handleChange}
               value={formik.values.outcome_note}
             />
-            {formik.errors.outcome_note && (
-              <div className='text-danger'>{formik.errors.outcome_note}</div>
-            )}
           </div>
-          {!viewOnly && (
-            <button type='submit' className='btn btn-primary mb-2'>
+        </div>
+
+        {!viewOnly && (
+          <div className='gm-form-actions'>
+            <button type='submit' className='btn btn-primary'>
               {showSaveButton ? 'Save' : 'Submit'}
             </button>
-          )}
-        </form>
-      </div>
+          </div>
+        )}
+      </form>
     </div>
   )
 }

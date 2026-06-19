@@ -26,6 +26,7 @@ const GrantFinding = ({
   const { grant, error } = useSelector((state) => state.grant)
   const dispatch = useDispatch()
   const categoryList = useSelector((state) => state.grant.grantCategory)
+
   const formik = useFormik({
     initialValues: {
       grant_title: grant?.grant_title || '',
@@ -50,222 +51,206 @@ const GrantFinding = ({
     dispatch(fetchGrantCategoryList())
   }, [dispatch])
 
+  const categoryName =
+    categoryList.find((c) => c.grant_category_id === grant?.category_id)
+      ?.grant_category_name || 'N/A'
+
+  // -------------------------------------------------------------------------
+  // viewOnly — visual field cards in a 2-column grid
+  // -------------------------------------------------------------------------
   if (viewOnly) {
-    // Render as static information when viewOnly is true
     return (
-      <div className='tab-pane fade show active' id='grant-finding'>
-        <div className='card-body'>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Grant Title:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.grant_title}</span>
+      <div className='tab-pane fade show active gm-detail-tab' id='grant-finding'>
+        {showTitle && <h5 className='gm-tab-title'>Grant Found</h5>}
+        <div className='gm-field-grid'>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Grant Title</span>
+            <span className='gm-field-value'>{grant.grant_title || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Grant URL:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.origination_url}</span>
-          </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Fund Originator:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.fund_originator}</span>
-          </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Max Funds:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.max_fund_amount}</span>
-          </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Category:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>
-              {categoryList.find(
-                (category) => category.grant_category_id === grant.category_id
-              )?.grant_category_name || 'N/A'}
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Grant URL</span>
+            <span className='gm-field-value'>
+              {grant.origination_url
+                ? <a href={grant.origination_url} target='_blank' rel='noreferrer'>{grant.origination_url}</a>
+                : '—'}
             </span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Opening Date:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.opening_date}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Opening Date</span>
+            <span className='gm-field-value'>{grant.opening_date || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Closing Date:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.closing_date}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Closing Date</span>
+            <span className='gm-field-value'>{grant.closing_date || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Note:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.latest_finding_note}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Fund Originator</span>
+            <span className='gm-field-value'>{grant.fund_originator || '—'}</span>
+          </div>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Max Funds</span>
+            <span className='gm-field-value'>
+              {grant.max_fund_amount
+                ? `$${Number(grant.max_fund_amount).toLocaleString('en-AU')}`
+                : '—'}
+            </span>
+          </div>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Category</span>
+            <span className='gm-field-value'>{categoryName}</span>
+          </div>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Note</span>
+            <span className='gm-field-value'>{grant.latest_finding_note || '—'}</span>
           </div>
         </div>
       </div>
     )
   }
 
-  // Render as a form when viewOnly is false
+  // -------------------------------------------------------------------------
+  // Edit form — 2-column grid on desktop
+  // -------------------------------------------------------------------------
   return (
-    <div className='tab-pane fade show active' id='grant-finding'>
-      {showTitle && <h5 className='mb-3'>Grant FOund</h5>}
-      <div className='card-body'>
-        <form onSubmit={formik.handleSubmit} aria-labelledby='grant-finding'>
-          <div className='form-group mb-3'>
-            <label htmlFor='grant_title'>Grant Title:</label>
+    <div className='tab-pane fade show active gm-detail-tab' id='grant-finding'>
+      {showTitle && <h5 className='gm-tab-title'>Grant Found</h5>}
+      <form onSubmit={formik.handleSubmit} aria-labelledby='grant-finding'>
+        <div className='gm-form-grid'>
+          {/* Grant Title — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label htmlFor='grant_title' className='gm-form-label'>
+              Grant Title <span className='text-danger'>*</span>
+            </label>
             <input
               type='text'
               id='grant_title'
               name='grant_title'
-              className='form-control'
+              className={`form-control ${formik.errors.grant_title ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.grant_title}
-              aria-describedby='grant_title_error'
             />
             {formik.errors.grant_title && (
-              <div id='grant_title_error' className='text-danger'>
-                {formik.errors.grant_title}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.grant_title}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='origination_url'>Grant URL:</label>
+
+          {/* Grant URL — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label htmlFor='origination_url' className='gm-form-label'>
+              Grant URL <span className='text-danger'>*</span>
+            </label>
             <input
               type='url'
               id='origination_url'
               name='origination_url'
-              className='form-control'
+              className={`form-control ${formik.errors.origination_url ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.origination_url}
-              aria-describedby='origination_url_error'
             />
             {formik.errors.origination_url && (
-              <div id='origination_url_error' className='text-danger'>
-                {formik.errors.origination_url}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.origination_url}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='closing_date'>Opening Date:</label>
+
+          {/* Opening Date */}
+          <div className='gm-form-field'>
+            <label htmlFor='opening_date' className='gm-form-label'>
+              Opening Date <span className='text-danger'>*</span>
+            </label>
             <input
               type='date'
               id='opening_date'
               name='opening_date'
-              className='form-control'
+              className={`form-control ${formik.errors.opening_date ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.opening_date}
-              aria-required='true'
-              aria-describedby='opening_date_error'
             />
             {formik.errors.opening_date && (
-              <div id='opening_date_error' className='text-danger' role='alert'>
-                {formik.errors.opening_date}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.opening_date}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='closing_date'>Closing Date:</label>
+
+          {/* Closing Date */}
+          <div className='gm-form-field'>
+            <label htmlFor='closing_date' className='gm-form-label'>
+              Closing Date <span className='text-danger'>*</span>
+            </label>
             <input
               type='date'
               id='closing_date'
               name='closing_date'
-              className='form-control'
+              className={`form-control ${formik.errors.closing_date ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.closing_date}
-              aria-required='true'
-              aria-describedby='closing_date_error'
             />
             {formik.errors.closing_date && (
-              <div id='closing_date_error' className='text-danger' role='alert'>
-                {formik.errors.closing_date}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.closing_date}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='fund_originator'>Fund Originator:</label>
+
+          {/* Fund Originator */}
+          <div className='gm-form-field'>
+            <label htmlFor='fund_originator' className='gm-form-label'>
+              Fund Originator <span className='text-danger'>*</span>
+            </label>
             <input
               type='text'
               id='fund_originator'
               name='fund_originator'
-              className='form-control'
+              className={`form-control ${formik.errors.fund_originator ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.fund_originator}
-              aria-describedby='fund_originator_error'
             />
             {formik.errors.fund_originator && (
-              <div id='fund_originator_error' className='text-danger'>
-                {formik.errors.fund_originator}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.fund_originator}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='max_fund_amount'>Max Funds:</label>
+
+          {/* Max Funds */}
+          <div className='gm-form-field'>
+            <label htmlFor='max_fund_amount' className='gm-form-label'>
+              Max Funds <span className='text-danger'>*</span>
+            </label>
             <input
               type='number'
               id='max_fund_amount'
               name='max_fund_amount'
-              className='form-control'
+              className={`form-control ${formik.errors.max_fund_amount ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.max_fund_amount}
-              aria-describedby='max_fund_amount_error'
             />
             {formik.errors.max_fund_amount && (
-              <div id='max_fund_amount_error' className='text-danger'>
-                {formik.errors.max_fund_amount}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.max_fund_amount}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='category_id'>Category:</label>
+
+          {/* Category */}
+          <div className='gm-form-field'>
+            <label htmlFor='category_id' className='gm-form-label'>
+              Category <span className='text-danger'>*</span>
+            </label>
             <select
               id='category_id'
               name='category_id'
-              className='form-select'
+              className={`form-select ${formik.errors.category_id ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.category_id}
-              aria-describedby='category_id_error'
             >
               <option value=''>Select a category</option>
               {categoryList?.map((category) => (
-                <option
-                  key={category.grant_category_id}
-                  value={category.grant_category_id}
-                >
+                <option key={category.grant_category_id} value={category.grant_category_id}>
                   {category.grant_category_name}
                 </option>
               ))}
             </select>
             {formik.errors.category_id && (
-              <div id='category_id_error' className='text-danger'>
-                {formik.errors.category_id}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.category_id}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='finding_note'>Note:</label>
+
+          {/* Note — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label htmlFor='finding_note' className='gm-form-label'>Note</label>
             <input
               type='text'
               id='finding_note'
@@ -273,26 +258,23 @@ const GrantFinding = ({
               className='form-control'
               onChange={formik.handleChange}
               value={formik.values.finding_note}
-              aria-describedby='finding_note_error'
             />
-            {formik.errors.finding_note && (
-              <div id='finding_note_error' className='text-danger'>
-                {formik.errors.finding_note}
-              </div>
-            )}
           </div>
-          {!viewOnly && (
+        </div>
+
+        {!viewOnly && (
+          <div className='gm-form-actions'>
             <button
               type='submit'
-              className='btn btn-primary mb-2'
+              className='btn btn-primary'
               aria-label={showSaveButton ? 'Save Grant' : 'Submit Grant'}
             >
               {showSaveButton ? 'Save' : 'Submit'}
             </button>
-          )}
-        </form>
-        {error && <p className='text-danger'>{error.message}</p>}
-      </div>
+          </div>
+        )}
+      </form>
+      {error && <p className='text-danger mt-2'>{error.message}</p>}
     </div>
   )
 }

@@ -36,189 +36,152 @@ const Suitability = ({
     enableReinitialize: true,
   })
 
+  // -------------------------------------------------------------------------
+  // viewOnly — visual field cards in a 2-column grid
+  // -------------------------------------------------------------------------
   if (viewOnly) {
-    // Render as static information when viewOnly is true
     return (
-      <div className='tab-pane fade show active' id='suitability'>
-        <div className='card-body'>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Closing Date:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.closing_date}</span>
+      <div className='tab-pane fade show active gm-detail-tab' id='suitability'>
+        {showTitle && <h5 className='gm-tab-title'>Suitability</h5>}
+        <div className='gm-field-grid'>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Internal Decision Date</span>
+            <span className='gm-field-value'>{grant.decision_date || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Internal Decision Date:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.decision_date}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Closing Date</span>
+            <span className='gm-field-value'>{grant.closing_date || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Determination:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.determination}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Determination</span>
+            <span className='gm-field-value'>{grant.determination || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Rationale:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.rationale_of_importance}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Assessment Outcome Date</span>
+            <span className='gm-field-value'>{grant.assessment_outcome_date || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Assessment Outcome Date:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.assessment_outcome_date}</span>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Rationale</span>
+            <span className='gm-field-value'>{grant.rationale_of_importance || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Note:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.latest_suitability_note}</span>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Note</span>
+            <span className='gm-field-value'>{grant.latest_suitability_note || '—'}</span>
           </div>
         </div>
       </div>
     )
   }
 
-  // Render as a form when viewOnly is false
+  // -------------------------------------------------------------------------
+  // Edit form — 2-column grid on desktop
+  // -------------------------------------------------------------------------
   return (
-    <div className='tab-pane fade show active' id='suitability'>
-      {showTitle && <h5 className='mb-3'>Suitability of Grants</h5>}
-      <div className='card-body'>
-        <form onSubmit={formik.handleSubmit}>
-          <div className='form-group mb-3'>
-            <label htmlFor='decision_date'>Internal Decision Date:</label>
+    <div className='tab-pane fade show active gm-detail-tab' id='suitability'>
+      {showTitle && <h5 className='gm-tab-title'>Suitability</h5>}
+      <form onSubmit={formik.handleSubmit}>
+        <div className='gm-form-grid'>
+          {/* Internal Decision Date */}
+          <div className='gm-form-field'>
+            <label htmlFor='decision_date' className='gm-form-label'>
+              Internal Decision Date <span className='text-danger'>*</span>
+            </label>
             <input
               type='date'
               id='decision_date'
               name='decision_date'
-              className='form-control'
+              className={`form-control ${formik.errors.decision_date ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.decision_date}
-              aria-required='true'
-              aria-describedby='decision_date_error'
             />
             {formik.errors.decision_date && (
-              <div
-                id='decision_date_error'
-                className='text-danger'
-                role='alert'
-              >
-                {formik.errors.decision_date}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.decision_date}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='determination'>Determination:</label>
+
+          {/* Assessment Outcome Date */}
+          <div className='gm-form-field'>
+            <label htmlFor='assessment_outcome_date' className='gm-form-label'>
+              Assessment Outcome Date <span className='text-danger'>*</span>
+            </label>
+            <input
+              type='date'
+              id='assessment_outcome_date'
+              name='assessment_outcome_date'
+              className={`form-control ${formik.errors.assessment_outcome_date ? 'is-invalid' : ''}`}
+              onChange={formik.handleChange}
+              value={formik.values.assessment_outcome_date}
+            />
+            {formik.errors.assessment_outcome_date && (
+              <div className='invalid-feedback'>{formik.errors.assessment_outcome_date}</div>
+            )}
+          </div>
+
+          {/* Determination */}
+          <div className='gm-form-field'>
+            <label htmlFor='determination' className='gm-form-label'>
+              Determination <span className='text-danger'>*</span>
+            </label>
             <select
               id='determination'
               name='determination'
-              className='form-select'
+              className={`form-select ${formik.errors.determination ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.determination}
-              aria-required='true'
-              aria-describedby='determination_error'
             >
               <option value=''>Select an option</option>
               <option value='Proceed'>Proceed</option>
               <option value='Not Proceed'>Not Proceed</option>
             </select>
             {formik.errors.determination && (
-              <div
-                id='determination_error'
-                className='text-danger'
-                role='alert'
-              >
-                {formik.errors.determination}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.determination}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='rationale_of_importance'>Rationale:</label>
+
+          {/* Rationale — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label htmlFor='rationale_of_importance' className='gm-form-label'>
+              Rationale <span className='text-danger'>*</span>
+            </label>
             <textarea
               id='rationale_of_importance'
               name='rationale_of_importance'
-              className='form-control'
+              className={`form-control ${formik.errors.rationale_of_importance ? 'is-invalid' : ''}`}
+              rows={3}
               onChange={formik.handleChange}
               value={formik.values.rationale_of_importance}
-              aria-required='true'
-              aria-describedby='rationale_error'
             />
             {formik.errors.rationale_of_importance && (
-              <div id='rationale_error' className='text-danger' role='alert'>
-                {formik.errors.rationale_of_importance}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.rationale_of_importance}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='assessment_outcome_date'>
-              Assessment Outcome Date:
-            </label>
-            <input
-              type='date'
-              id='assessment_outcome_date'
-              name='assessment_outcome_date'
-              className='form-control'
-              onChange={formik.handleChange}
-              value={formik.values.assessment_outcome_date}
-              aria-required='true'
-              aria-describedby='assessment_outcome_date_error'
-            />
-            {formik.errors.assessment_outcome_date && (
-              <div
-                id='assessment_outcome_date_error'
-                className='text-danger'
-                role='alert'
-              >
-                {formik.errors.assessment_outcome_date}
-              </div>
-            )}
-          </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='sutability_note'>Note:</label>
+
+          {/* Note — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label htmlFor='sutability_note' className='gm-form-label'>Note</label>
             <textarea
               id='sutability_note'
               name='sutability_note'
               className='form-control'
+              rows={2}
               onChange={formik.handleChange}
               value={formik.values.sutability_note}
-              aria-describedby='sutability_note_error'
             />
-            {formik.errors.sutability_note && (
-              <div
-                id='sutability_note_error'
-                className='text-danger'
-                role='alert'
-              >
-                {formik.errors.sutability_note}
-              </div>
-            )}
           </div>
-          {!viewOnly && (
+        </div>
+
+        {!viewOnly && (
+          <div className='gm-form-actions'>
             <button
               type='submit'
-              className='btn btn-primary mb-2'
+              className='btn btn-primary'
               aria-label={showSaveButton ? 'Save the form' : 'Submit the form'}
             >
               {showSaveButton ? 'Save' : 'Submit'}
             </button>
-          )}
-        </form>
-      </div>
+          </div>
+        )}
+      </form>
     </div>
   )
 }

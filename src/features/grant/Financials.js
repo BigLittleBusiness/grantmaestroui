@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import ExpenseItem from './ExpenseItem'
-import { fetchTeamMembers } from '../teamMember/teamMemberSlice'
+import { fetchTeamMembers } from 'features/teamMember/teamMemberSlice'
+import ExpenseItem from 'features/grant/ExpenseItem'
 
 const validationSchema = yup.object({
   won_fund_amount: yup.number().required('Won fund amount is required'),
-  received_fund_amount: yup
-    .number()
-    .required('Received fund amount is required'),
+  received_fund_amount: yup.number().required('Received fund amount is required'),
   total_amount_spent: yup.number().required('Total amount spent is required'),
   financial_note: yup.string().required('Financial note is required'),
-  account_used_for_expenses: yup
-    .string()
-    .required('Please provide account number'),
+  account_used_for_expenses: yup.string().required('Please provide account number'),
 })
 
 const Financials = ({
@@ -24,7 +20,7 @@ const Financials = ({
   showSaveButton = false,
 }) => {
   const dispatch = useDispatch()
-  const grant = useSelector((state) => state.grant.grant)
+  const grant    = useSelector((state) => state.grant.grant)
   const [expenses, setExpenses] = useState(grant?.item_expenses || [])
 
   const formik = useFormik({
@@ -46,55 +42,44 @@ const Financials = ({
     dispatch(fetchTeamMembers())
   }, [dispatch])
 
+  // Keep local expenses in sync when grant changes
+  useEffect(() => {
+    setExpenses(grant?.item_expenses || [])
+  }, [grant])
+
+  const fmt = (n) =>
+    n ? `$${Number(n).toLocaleString('en-AU')}` : '—'
+
+  // -------------------------------------------------------------------------
+  // viewOnly — visual field cards in a 2-column grid
+  // -------------------------------------------------------------------------
   if (viewOnly) {
-    // Render as static information when viewOnly is true
     return (
-      <div className='tab-pane fade show active' id='financials1'>
-        <div className='card-body'>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Funds Won:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.won_fund_amount}</span>
+      <div className='tab-pane fade show active gm-detail-tab' id='financials1'>
+        {showTitle && <h5 className='gm-tab-title'>Financials</h5>}
+        <div className='gm-field-grid'>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Funds Won</span>
+            <span className='gm-field-value'>{fmt(grant.won_fund_amount)}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Funds Received:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.received_fund_amount}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Funds Received</span>
+            <span className='gm-field-value'>{fmt(grant.received_fund_amount)}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Total Amount Spent:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.total_amount_spent}</span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Total Amount Spent</span>
+            <span className='gm-field-value'>{fmt(grant.total_amount_spent)}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Account Used:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>
-              {grant.account_used_for_expenses}
-            </span>
+          <div className='gm-field-card'>
+            <span className='gm-field-label'>Account Used</span>
+            <span className='gm-field-value'>{grant.account_used_for_expenses || '—'}</span>
           </div>
-          <div className='dash-plane-list pt-2 pb-2'>
-            <div className='plane-info'>
-              <div className='plane-name'>
-                <strong>Note:</strong>
-              </div>
-            </div>
-            <span className='plane-rate'>{grant.latest_financial_note}</span>
+          <div className='gm-field-card gm-field-card--full'>
+            <span className='gm-field-label'>Note</span>
+            <span className='gm-field-value'>{grant.latest_financial_note || '—'}</span>
           </div>
         </div>
-        <div className='card-body'>
+        <div className='mt-3'>
           <ExpenseItem
             expenses={expenses}
             setExpenses={setExpenses}
@@ -106,92 +91,111 @@ const Financials = ({
     )
   }
 
-  // Render as a form when viewOnly is false
+  // -------------------------------------------------------------------------
+  // Edit form — 2-column grid on desktop
+  // -------------------------------------------------------------------------
   return (
-    <div className='tab-pane fade show active' id='financials1'>
-      {showTitle && <h5 className='mb-2'>Financials</h5>}
-      <div className='card-body'>
-        <form onSubmit={formik.handleSubmit}>
-          <div className='form-group'>
-            <label>Funds Won:</label>
+    <div className='tab-pane fade show active gm-detail-tab' id='financials1'>
+      {showTitle && <h5 className='gm-tab-title'>Financials</h5>}
+      <form onSubmit={formik.handleSubmit}>
+        <div className='gm-form-grid'>
+          {/* Funds Won */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Funds Won <span className='text-danger'>*</span>
+            </label>
             <input
               type='number'
               name='won_fund_amount'
-              className='form-control'
+              className={`form-control ${formik.errors.won_fund_amount ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.won_fund_amount}
             />
             {formik.errors.won_fund_amount && (
-              <div className='text-danger'>{formik.errors.won_fund_amount}</div>
+              <div className='invalid-feedback'>{formik.errors.won_fund_amount}</div>
             )}
           </div>
-          <div className='form-group'>
-            <label>Funds Received:</label>
+
+          {/* Funds Received */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Funds Received <span className='text-danger'>*</span>
+            </label>
             <input
               type='number'
               name='received_fund_amount'
-              className='form-control'
+              className={`form-control ${formik.errors.received_fund_amount ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.received_fund_amount}
             />
             {formik.errors.received_fund_amount && (
-              <div className='text-danger'>
-                {formik.errors.received_fund_amount}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.received_fund_amount}</div>
             )}
           </div>
-          <div className='form-group'>
-            <label>Total Amount Spent:</label>
+
+          {/* Total Amount Spent */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Total Amount Spent <span className='text-danger'>*</span>
+            </label>
             <input
               type='number'
               name='total_amount_spent'
-              className='form-control'
+              className={`form-control ${formik.errors.total_amount_spent ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.total_amount_spent}
             />
             {formik.errors.total_amount_spent && (
-              <div className='text-danger'>
-                {formik.errors.total_amount_spent}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.total_amount_spent}</div>
             )}
           </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='account_used_for_expenses'>Account Used:</label>
+
+          {/* Account Used */}
+          <div className='gm-form-field'>
+            <label className='gm-form-label'>
+              Account Used <span className='text-danger'>*</span>
+            </label>
             <input
               type='text'
-              id='account_used_for_expenses'
               name='account_used_for_expenses'
-              className='form-control'
+              className={`form-control ${formik.errors.account_used_for_expenses ? 'is-invalid' : ''}`}
               onChange={formik.handleChange}
               value={formik.values.account_used_for_expenses}
-              aria-describedby='account_used_for_expenses_error'
             />
             {formik.errors.account_used_for_expenses && (
-              <div id='account_used_for_expenses_error' className='text-danger'>
-                {formik.errors.account_used_for_expenses}
-              </div>
+              <div className='invalid-feedback'>{formik.errors.account_used_for_expenses}</div>
             )}
           </div>
-          <div className='form-group  mt-2'>
-            <label>Note:</label>
+
+          {/* Financial Note — full width */}
+          <div className='gm-form-field gm-form-field--full'>
+            <label className='gm-form-label'>
+              Financial Note <span className='text-danger'>*</span>
+            </label>
             <textarea
               name='financial_note'
-              className='form-control'
+              className={`form-control ${formik.errors.financial_note ? 'is-invalid' : ''}`}
+              rows={2}
               onChange={formik.handleChange}
               value={formik.values.financial_note}
             />
             {formik.errors.financial_note && (
-              <div className='text-danger'>{formik.errors.financial_note}</div>
+              <div className='invalid-feedback'>{formik.errors.financial_note}</div>
             )}
           </div>
-          {!viewOnly && (
-            <button type='submit' className='btn btn-primary mt-3'>
+        </div>
+
+        {!viewOnly && (
+          <div className='gm-form-actions'>
+            <button type='submit' className='btn btn-primary'>
               {showSaveButton ? 'Save' : 'Submit'}
             </button>
-          )}
-        </form>
-      </div>
-      <div className='card-body' styles={{ marginTop: '-5rem' }}>
+          </div>
+        )}
+      </form>
+
+      {/* Expense items always shown below the form */}
+      <div className='mt-3'>
         <ExpenseItem
           expenses={expenses}
           setExpenses={setExpenses}

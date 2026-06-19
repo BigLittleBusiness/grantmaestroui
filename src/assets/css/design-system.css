@@ -428,3 +428,128 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--gm-border-dark); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gm-secondary); }
 * { scrollbar-width: thin; scrollbar-color: var(--gm-border-dark) var(--gm-bg); }
+
+/* ============================================================
+   GRANT DETAIL VIEW — FIELD CARDS (viewOnly)
+   Two-column grid of read-only field cards that mirror the
+   edit form layout for visual parity.
+   ============================================================ */
+
+.gm-detail-tab {
+  padding: var(--gm-space-4) 0;
+}
+
+.gm-tab-title {
+  font-size: var(--gm-font-size-md);
+  font-weight: var(--gm-font-weight-bold);
+  color: var(--gm-text);
+  margin-bottom: var(--gm-space-4);
+  padding-bottom: var(--gm-space-2);
+  border-bottom: 2px solid var(--gm-primary-light);
+}
+
+/* 2-column responsive grid for field cards */
+.gm-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gm-space-3);
+}
+
+@media (max-width: 768px) {
+  .gm-field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual field card */
+.gm-field-card {
+  background: var(--gm-bg);
+  border: 1px solid var(--gm-border);
+  border-radius: var(--gm-radius-md);
+  padding: var(--gm-space-3) var(--gm-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gm-space-1);
+  transition: box-shadow var(--gm-transition-fast);
+}
+
+.gm-field-card:hover {
+  box-shadow: var(--gm-shadow-sm);
+}
+
+/* Full-width card that spans both columns */
+.gm-field-card--full {
+  grid-column: 1 / -1;
+}
+
+.gm-field-label {
+  font-size: var(--gm-font-size-xs);
+  font-weight: var(--gm-font-weight-bold);
+  color: var(--gm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gm-field-value {
+  font-size: var(--gm-font-size-base);
+  color: var(--gm-text);
+  font-weight: var(--gm-font-weight-medium);
+  word-break: break-word;
+}
+
+.gm-field-value a {
+  color: var(--gm-primary);
+  text-decoration: none;
+}
+
+.gm-field-value a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   GRANT DETAIL VIEW — EDIT FORM GRID
+   2-column responsive grid for edit forms to match viewOnly
+   card layout and reduce vertical scrolling.
+   ============================================================ */
+
+.gm-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gm-space-4) var(--gm-space-5);
+  margin-bottom: var(--gm-space-4);
+}
+
+@media (max-width: 768px) {
+  .gm-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual form field wrapper */
+.gm-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gm-space-1);
+}
+
+/* Full-width field that spans both columns */
+.gm-form-field--full {
+  grid-column: 1 / -1;
+}
+
+.gm-form-label {
+  font-size: var(--gm-font-size-sm);
+  font-weight: var(--gm-font-weight-bold);
+  color: var(--gm-text);
+  margin-bottom: 0;
+}
+
+/* Submit / action row */
+.gm-form-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--gm-space-3);
+  padding-top: var(--gm-space-4);
+  border-top: 1px solid var(--gm-border);
+  margin-top: var(--gm-space-2);
+}
