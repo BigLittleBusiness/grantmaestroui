@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { fetchGrants } from 'features/grant/grantSlice'
+import { useSelector } from 'react-redux'
 
 const grantsClass = {
   'Opening Soon': 'open',
@@ -11,15 +10,8 @@ const grantsClass = {
 
 export default function GrantListComponent() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const grants = useSelector((state) => state.grant?.grants)
+  const grants = useSelector((state) => state.grant?.grants ?? [])
   const [grantsList, setGrantsList] = useState([])
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (!grants.length) {
-      dispatch(fetchGrants())
-    }
-  }, [dispatch, grants.length])
 
   useEffect(() => {
     const today = new Date()

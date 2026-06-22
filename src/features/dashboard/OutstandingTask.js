@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { fetchTasks } from 'features/tasks/tasksSlice'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -56,14 +55,7 @@ function formatDate(dateStr) {
 // Main component
 // ---------------------------------------------------------------------------
 export default function OutstandingTask() {
-  const dispatch    = useDispatch()
-  const tasksResult = useSelector((state) => state.tasks.tasks)
-
-  useEffect(() => {
-    if (!tasksResult.length) {
-      dispatch(fetchTasks())
-    }
-  }, [dispatch, tasksResult.length])
+  const tasksResult = useSelector((state) => state.tasks.tasks ?? [])
 
   // Show only non-completed tasks; sort overdue tasks to the top, then by due date
   const tasks = [...tasksResult]

@@ -102,24 +102,24 @@ const ReportPage = () => {
               <GrantAppliedFor appliedGrants={appliedGrants} />
             </div>
             <div className='card-body'>
-              <div class='super-admin-dash-card mt-1  mb-0 border-0 p-0'>
-                <div class='row'>
-                  <div class='col-md-5'>
-                    <div class='dash-plane-list pt-3 pb-3 card bg-white'>
-                      <div class='plane-info'>
-                        <div class='plane-name'>
+              <div className='super-admin-dash-card mt-1 mb-0 border-0 p-0'>
+                <div className='row'>
+                  <div className='col-md-5'>
+                    <div className='dash-plane-list pt-3 pb-3 card bg-white'>
+                      <div className='plane-info'>
+                        <div className='plane-name'>
                           <strong>Grant Value Applied For:</strong>
                         </div>
                       </div>
-                      <span class='plane-rate'>${grantAppliedValue}</span>
+                      <span className='plane-rate'>${grantAppliedValue}</span>
                     </div>
-                    <div class='dash-plane-list pt-3 card pb-3 bg-white'>
-                      <div class='plane-info'>
-                        <div class='plane-name'>
+                    <div className='dash-plane-list pt-3 card pb-3 bg-white'>
+                      <div className='plane-info'>
+                        <div className='plane-name'>
                           <strong>Grants Won vs Grants Lost:</strong>
                         </div>
                       </div>
-                      <span class='plane-rate'>
+                      <span className='plane-rate'>
                         {' '}
                         {grantsOwn} Won / {grantsLost} Lost
                       </span>

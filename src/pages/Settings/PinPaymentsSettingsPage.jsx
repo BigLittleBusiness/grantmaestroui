@@ -6,7 +6,12 @@ import {
   testPinConnection,
   clearPinTestResult,
 } from '../../features/settings/settingsSlice'
+import baseServerUrl from '../../config/apiConfig'
 import './settings.css'
+
+// Derive the webhook URL from the same base URL used by the rest of the app.
+// baseServerUrl ends with "/v1/" — strip that suffix and append the webhook path.
+const WEBHOOK_URL = `${baseServerUrl.replace(/\/v1\/$/, '')}/v1/subscription/pin-webhook`
 
 /**
  * PinPaymentsSettingsPage
@@ -249,16 +254,14 @@ export default function PinPaymentsSettingsPage() {
                     <input
                       type="text"
                       className="form-control font-monospace bg-light"
-                      value={`${window.location.origin.replace(':5173', ':3005')}/v1/subscription/pin-webhook`}
+                      value={WEBHOOK_URL}
                       readOnly
                     />
                     <button
                       type="button"
                       className="btn btn-outline-secondary"
                       onClick={() =>
-                        navigator.clipboard.writeText(
-                          `${window.location.origin.replace(':5173', ':3005')}/v1/subscription/pin-webhook`
-                        )
+                        navigator.clipboard.writeText(WEBHOOK_URL)
                       }
                     >
                       <i className="fa fa-copy" />

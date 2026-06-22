@@ -1,16 +1,9 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import CardComponent from 'components/CardComponent'
-import { fetchGrants } from 'features/grant/grantSlice'
 
 export default function CardsComponent() {
-  const dispatch = useDispatch()
-  const grants = useSelector((state) => state.grant?.grants)
-  useEffect(() => {
-    if (!grants.length) {
-      dispatch(fetchGrants({ searchText: '' }))
-    }
-  }, [dispatch])
+  const grants = useSelector((state) => state.grant?.grants ?? [])
 
   const openGrants = grants?.filter((g) => new Date(g.closingDate) > new Date())
 

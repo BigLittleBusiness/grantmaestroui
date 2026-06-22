@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { fetchGrants } from 'features/grant/grantSlice'
+import { useSelector } from 'react-redux'
 
 // ---------------------------------------------------------------------------
 // Stage definitions — 6 lifecycle stages with colour coding
@@ -104,14 +103,6 @@ function StageProgressBar({ grant }) {
 // ---------------------------------------------------------------------------
 export default function AdminGrantCard() {
   const grants   = useSelector((state) => state.grant?.grants ?? [])
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (!grants.length) {
-      dispatch(fetchGrants())
-    }
-  }, [dispatch, grants.length])
-
   const navigate = useNavigate()
   const handleViewAllClick = () => {
     navigate('/grant')
