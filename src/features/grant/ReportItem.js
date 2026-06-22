@@ -23,7 +23,6 @@ const ReportItem = (props) => {
     document.body.removeChild(link)
   }
 
-  console.log('reports', reports)
   return (
     <>
       <table className='table'>

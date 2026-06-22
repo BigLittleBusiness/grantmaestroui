@@ -28,7 +28,6 @@ const Register = () => {
   const navigate = useNavigate()
   const query = new URLSearchParams(useLocation().search);
   const membership= query.get('membership-preference');
-  console.log(membership)
   const { loading, error, isLoggedIn } = useSelector((state) => state.auth)
 
   useEffect(() => {

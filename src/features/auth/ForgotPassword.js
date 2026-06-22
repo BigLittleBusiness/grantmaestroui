@@ -21,7 +21,6 @@ const ForgotPassword = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log(values)
             const user = {
                 email: values.email
             }

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { removeGrantExpenses, manageGrantExpenses } from './grantSlice'
 
 const ExpenseItem = ({ expenses, setExpenses, grantId, viewOnly }) => {
-  console.log('viewOnly', viewOnly)
   const dispatch = useDispatch()
   const teamMembers = useSelector((state) => state.teamMember.teamMembers)
   const [editingRow, setEditingRow] = useState(null)

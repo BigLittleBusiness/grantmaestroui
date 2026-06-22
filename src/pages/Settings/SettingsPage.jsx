@@ -53,7 +53,6 @@ export default function SettingsPage() {
   }
 
   const handleSaveChanges = () => {
-    console.log('Settings saved:', settings)
     alert('Settings saved successfully!')
   }
 

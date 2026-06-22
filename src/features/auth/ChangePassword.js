@@ -24,7 +24,6 @@ const ChangePassword = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log(values)
             const passObj = {
                 old_password: btoa(values.old_password),
                 new_password: btoa(values.new_password) //values.password,

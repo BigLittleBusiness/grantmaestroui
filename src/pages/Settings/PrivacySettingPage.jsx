@@ -16,7 +16,6 @@ export default function PrivacySettingPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('Saved Settings:', settings)
     // Add logic to save settings to the backend or state management
     alert('Privacy settings saved successfully!')
   }

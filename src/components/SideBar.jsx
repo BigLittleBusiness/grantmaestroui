@@ -7,7 +7,6 @@ import './SideBar.css'
 const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
   const location = useLocation()
   const loggedInUser = useSelector((state) => state.auth?.user)
-  console.log('loggedInUser', loggedInUser)
   const isAdmin = loggedInUser?.user_role_id === 2
   const activeTab = location.pathname
   const sidebarRef = useRef(null)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import GrantList from 'features/grant/GrantList'
 import filterIcon from 'assets/img/icons/filter-icon.svg'
 import { fetchGrants } from '../../features/grant/grantSlice'
@@ -14,6 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const GrantListPage = () => {
   const dispatch = useDispatch()
+  const grants = useSelector((state) => state.grant?.grants ?? [])
   const [isFilterVisible, setIsFilterVisible] = useState(false)
   const [grantTitle, setGrantTitle] = useState('')
   const [maxFundAmount, setMaxFundAmount] = useState(null)
@@ -82,6 +83,47 @@ const GrantListPage = () => {
     setGrantOutcome('')
   }
 
+  // ---------------------------------------------------------------------------
+  // Safe CSV cell — wraps value in quotes and escapes embedded quotes
+  // ---------------------------------------------------------------------------
+  const csvCell = (val) => {
+    const s = val == null ? '' : String(val)
+    return '"' + s.replace(/"/g, '""') + '"'
+  }
+
+  const downloadCSV = () => {
+    if (!grants.length) {
+      alert('No grants available to export.')
+      return
+    }
+    const headers = ['Grant Title', 'Funder', 'Category', 'Status', 'Outcome', 'Opening Date', 'Closing Date', 'Max Fund Amount', 'Funds Sought']
+    const rows = grants.map((g) => [
+      csvCell(g.grant_title),
+      csvCell(g.fund_originator),
+      csvCell(g.category_name),
+      csvCell(g.grant_status),
+      csvCell(g.outcome),
+      csvCell(g.opening_date),
+      csvCell(g.closingDate),
+      csvCell(g.max_fund_amount),
+      csvCell(g.funding_sought_amount),
+    ])
+    const csv = [headers.map(csvCell).join(','), ...rows.map((r) => r.join(','))].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url  = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'grants_export.csv'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
+  const printGrantList = () => {
+    window.print()
+  }
+
   return (
     <div className='content container-fluid grantList'>
       <div className='page-header mb-0'>
@@ -121,39 +163,39 @@ const GrantListPage = () => {
                   <div className='dropdown-menu dropdown-menu-end'>
                     <ul className='d-block'>
                       <li>
-                        <a
-                          className='d-flex align-items-center download-item'
-                          href='#'
-                          download
+                        <button
+                          className='d-flex align-items-center download-item btn btn-link'
+                          onClick={printGrantList}
+                          style={{ textDecoration: 'none', color: 'inherit' }}
                         >
-                          <i className='far fa-file-pdf me-2'></i>PDF
-                        </a>
+                          <i className='far fa-file-pdf me-2'></i>Print / PDF
+                        </button>
                       </li>
                       <li>
-                        <a
-                          className='d-flex align-items-center download-item'
-                          href='#'
-                          download
+                        <button
+                          className='d-flex align-items-center download-item btn btn-link'
+                          onClick={downloadCSV}
+                          style={{ textDecoration: 'none', color: 'inherit' }}
                         >
                           <i className='far fa-file-text me-2'></i>CSV
-                        </a>
+                        </button>
                       </li>
                     </ul>
                   </div>
                 </div>
               </li>
               <li>
-                <a
-                  className='btn-filters'
-                  href='#'
+                <button
+                  className='btn-filters btn'
+                  onClick={printGrantList}
                   data-bs-toggle='tooltip'
                   data-bs-placement='bottom'
                   title='Print'
                 >
                   <span>
                     <i className='fe fe-printer'></i>
-                  </span>{' '}
-                </a>
+                  </span>
+                </button>
               </li>
               <li>
                 <Link to='/grant/create' className='btn btn-primary'>

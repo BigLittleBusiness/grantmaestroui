@@ -38,37 +38,35 @@ const ReportPage = () => {
     )
   }, [grants])
 
+  // Safe CSV cell — wraps value in double-quotes and escapes embedded quotes
+  const csvCell = (val) => {
+    const s = val == null ? '' : String(val)
+    return '"' + s.replace(/"/g, '""') + '"'
+  }
+
   const downloadExcel = () => {
-    if (appliedGrants.length > 0) {
-      const headers = [
-        'Grant Title',
-        'Outcome',
-        'Closing Date',
-        'Opening Date',
-        'Funds Sought',
-      ]
-      const rows = appliedGrants.map((grant) => [
-        `"${grant.grant_title || ''}"`,
-        `"${grant.outcome || ''}"`,
-        `"${grant.closingDate || ''}"`,
-        `"${grant.opening_date || ''}"`,
-        `"${grant.funding_sought_amount || ''}"`,
-      ])
-
-      const csvContent =
-        'data:text/csv;charset=utf-8,' +
-        [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')
-
-      const encodedUri = encodeURI(csvContent)
-      const link = document.createElement('a')
-      link.setAttribute('href', encodedUri)
-      link.setAttribute('download', 'applied_grants.csv')
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    } else {
+    if (appliedGrants.length === 0) {
       alert('No applied grants available to download.')
+      return
     }
+    const headers = ['Grant Title', 'Outcome', 'Closing Date', 'Opening Date', 'Funds Sought']
+    const rows = appliedGrants.map((grant) => [
+      csvCell(grant.grant_title),
+      csvCell(grant.outcome),
+      csvCell(grant.closingDate),
+      csvCell(grant.opening_date),
+      csvCell(grant.funding_sought_amount),
+    ])
+    const csv = [headers.map(csvCell).join(','), ...rows.map((r) => r.join(','))].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url  = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'applied_grants.csv'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   return (

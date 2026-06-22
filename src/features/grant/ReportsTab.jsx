@@ -46,7 +46,6 @@ export default function ReportsTab({ viewOnly }) {
   }
 
   const handleFinancialSubmit = (id, values) => {
-    console.log(values)
     dispatch(updateGrant({ id, values }))
   }
 

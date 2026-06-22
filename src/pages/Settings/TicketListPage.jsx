@@ -6,7 +6,6 @@ import { fetchtickets, updateTicketStatus, deleteSupportTicket } from '../../fea
 const TicketListPage = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   const tickets = useSelector((state) => state.settings.tickets)
-  console.log(tickets)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const handleAddTicketClick = () => {
@@ -19,11 +18,9 @@ const TicketListPage = () => {
     setActiveIndex(activeIndex === index ? -1 : index)
   }
   const handleDeleteClick = (ticketId) => {
-    console.log('Delete ticket with ID:', ticketId)
     dispatch(deleteSupportTicket(ticketId))
   }
   const markResolved = (ticketId) => {
-    console.log('update ticket status with ID:', ticketId)
     dispatch(updateTicketStatus({ticket_id : ticketId, ticket_status: 'resolved'}))
       
   }

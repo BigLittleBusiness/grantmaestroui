@@ -118,7 +118,6 @@ export const updateGrant = createAsyncThunk(
   'grants/updateGrant',
   async (formData, { rejectWithValue }) => {
     try {
-      console.log('grantValues', formData)
       const response = await api.post(
         `grant/grant-update/${formData.id}`,
         formData.values
@@ -367,7 +366,6 @@ const grantSlice = createSlice({
         state.loading = true
       })
       .addCase(manageGrantExpenses.fulfilled, (state, action) => {
-        // console.log(action.payload)
         state.loading = false
         const index = state.grant.item_expenses.findIndex(
           (expense) =>
@@ -375,7 +373,6 @@ const grantSlice = createSlice({
         )
         // console.log(index)
         if (index !== -1) {
-          console.log('hererererere')
           state.grant.item_expenses[index] = action.payload?.data?.expense
         } else {
           state.grant.item_expenses.push(action.payload?.data?.expense)
@@ -386,7 +383,6 @@ const grantSlice = createSlice({
         state.loading = false
       })
       .addCase(removeGrantExpenses.fulfilled, (state, action) => {
-        console.log(action.payload)
         const index = state.grant.item_expenses.findIndex(
           (expense) => expense.expense_id === action.payload?.expense_id
         )
@@ -414,7 +410,6 @@ const grantSlice = createSlice({
         })
       })
       .addCase(removeGrantReport.fulfilled, (state, action) => {
-        console.log(action.payload)
         const index = state.grant.reports.findIndex(
           (report) => report.report_id === action.payload?.report_id
         )

@@ -141,8 +141,8 @@ const TaskAdd = () => {
                 <option value='inprogress'>Inprogress</option>
                 <option value='completed'>Completed</option>
               </select>
-              {formik.errors.task_sattus && (
-                <div className='text-danger'>{formik.errors.task_sattus}</div>
+              {formik.errors.task_status && (
+                <div className='text-danger'>{formik.errors.task_status}</div>
               )}
             </div>
             <div className='d-flex gap-3'>

@@ -52,7 +52,6 @@ export const viewProfile = createAsyncThunk(
       }
       return response.data
     } catch (error) {
-      console.log(error?.response?.status)
       return rejectWithValue(error.response.data)
     }
   }
@@ -101,7 +100,6 @@ export const logout = createAsyncThunk(
       }
       return response.data
     } catch (error) {
-      console.log(error?.response?.status)
       if (error?.response?.status === 403) {
         //request for new access token
       }

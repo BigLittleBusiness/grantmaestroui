@@ -126,13 +126,11 @@ const TeamMemberList = () => {
   }
 
   const handleDelete = (teamMemberId) => {
-    console.log('Delete member with ID:', teamMemberId)
     dispatch(deleteTeamMember(teamMemberId))
     // Handle delete action
   }
 
   const makePayment = (teamMemberId, preferredPlanId) => {
-    console.log('Make payment for user with ID:', preferredPlanId)
     dispatch(createPinCharge({ preferred_plan_id: preferredPlanId, payment_made_for: teamMemberId }))
   }
 

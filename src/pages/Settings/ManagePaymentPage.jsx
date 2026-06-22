@@ -57,7 +57,6 @@ export default function ManagePaymentPage() {
   }
 
   const makePayment = async()=>{
-    console.log(localStorage.getItem('authToken'))
 
     
     const headers = {
@@ -68,7 +67,6 @@ export default function ManagePaymentPage() {
       headers:headers
     });
 
-    console.log(response)
 
     const session = response?.data?.data;
 

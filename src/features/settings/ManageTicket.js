@@ -30,7 +30,6 @@ const ManageTicket = () => {
           formData.append('ticket_title', values.ticket_title)
           formData.append('ticket_description', values.ticket_description)
           formData.append('support_ticket_file', supportFile)
-          console.log(formData)
           
           dispatch(manageTicket(formData))
           formik.resetForm()
