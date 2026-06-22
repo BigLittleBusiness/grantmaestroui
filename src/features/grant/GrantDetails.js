@@ -32,7 +32,6 @@ const GrantDetails = () => {
   if (!grant) {
     return <div>No grant found</div>
   }
-  console.log('grant', grant)
   return (
     <div>
       <div className='row'>
@@ -51,10 +50,10 @@ const GrantDetails = () => {
         </div>
         <TeamTask />
       </div>
-      {/* <div className='row'>
+      <div className='row'>
         <GrantNote />
         <GrantFileVault />
-      </div> */}
+      </div>
     </div>
   )
 }

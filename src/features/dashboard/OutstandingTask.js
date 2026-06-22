@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { fetchTasks } from 'features/tasks/tasksSlice'
 
 // ---------------------------------------------------------------------------
@@ -76,8 +77,9 @@ export default function OutstandingTask() {
       return aDate - bDate
     })
 
+  const navigate = useNavigate()
   const handleViewAll = () => {
-    window.location.href = '/tasks'
+    navigate('/tasks')
   }
 
   return (

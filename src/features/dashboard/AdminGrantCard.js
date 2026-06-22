@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchGrants } from 'features/grant/grantSlice'
 
@@ -112,8 +112,9 @@ export default function AdminGrantCard() {
     }
   }, [dispatch, grants.length])
 
+  const navigate = useNavigate()
   const handleViewAllClick = () => {
-    window.location.href = '/grant'
+    navigate('/grant')
   }
 
   return (

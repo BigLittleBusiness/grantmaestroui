@@ -29,7 +29,6 @@ const GrantListPage = () => {
   const [grantOutcome, setGrantOutcome] = useState('')
 
   // console.log(closingDate)
-  console.log(grantStatus)
 
   const onChangeOpeningDate = (dates) =>{
     const [openingStartDate, openingEndDate] = dates
@@ -38,9 +37,9 @@ const GrantListPage = () => {
   }
 
   const onChangeClosingDate = (dates) =>{
-    const [openingStartDate, openingEndDate] = dates
-    setOpeningStartDate(openingStartDate)
-    setOpeningEndDate(openingEndDate)
+    const [closingStartDate, closingEndDate] = dates
+    setClosingStartDate(closingStartDate)
+    setClosingEndDate(closingEndDate)
   }
 
   useEffect(()=>{

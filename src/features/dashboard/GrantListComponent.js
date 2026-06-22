@@ -67,7 +67,7 @@ export default function GrantListComponent() {
             </div>
             <div className='col-auto'>
               <Link
-                to='/grant-list'
+                to='/grant'
                 className='btn-right btn btn-sm btn-primary'
               >
                 View All
@@ -119,7 +119,7 @@ export default function GrantListComponent() {
                     </div>
                   ))}
                   <Link
-                    to='/grant-list'
+                    to='/grant'
                     className='btn btn-link'
                     style={{ float: 'right' }}
                   >

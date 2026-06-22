@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import { fetchTeamMembers } from 'features/teamMember/teamMemberSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { fetchTasks } from 'features/tasks/tasksSlice'
 
 export default function TeamTask() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const teamMembers = useSelector((state) => state.teamMember.teamMembers)
   const tasks = useSelector((state) => state.tasks.tasks)
 
@@ -29,7 +31,6 @@ export default function TeamTask() {
   const totalRemainingTasks =
     tasks.filter((task) => task.status === 'pending')?.length || 0
 
-  console.log('tasks', tasks)
   return (
     <div className='col-xl-4 col-md-4'>
       <div
@@ -44,13 +45,13 @@ export default function TeamTask() {
                 <button
                   className='btn btn-primary btn-action-icon'
                   style={{ marginRight: '10px' }}
-                  onClick={() => (window.location.href = '/add-team')}
+                  onClick={() => navigate('/add-team-member')}
                 >
                   Add Team
                 </button>
                 <button
                   className='btn btn-primary btn-action-icon'
-                  onClick={() => (window.location.href = '/add-task')}
+                  onClick={() => navigate('/add-task')}
                 >
                   Add Task
                 </button>
