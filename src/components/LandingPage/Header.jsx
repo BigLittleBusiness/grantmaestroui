@@ -17,6 +17,18 @@ export default function Header({ noButtons = false }) {
     }
   }, [isMenuOpen])
 
+  const scrollToPricing = (e) => {
+    e.preventDefault()
+    const el = document.getElementById('pricing_section')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      // If we are not on the home page, navigate to home with hash
+      window.location.href = '/#pricing_section'
+    }
+    setIsMenuOpen(false)
+  }
+
   return (
     <header
       id='header'
@@ -27,8 +39,8 @@ export default function Header({ noButtons = false }) {
         <div className='container'>
           <div className='row'>
             <div className='col-md-12'>
-              <a className='logo logo-header' href='#'>
-                <img src={ColorLogo} data-logo-alt='' alt='' />
+              <a className='logo logo-header' href='/'>
+                <img src={ColorLogo} data-logo-alt='' alt='Grant Maestro logo' />
                 <h3>
                   <span className='colored'>Grant Maestro</span>
                 </h3>
@@ -57,8 +69,8 @@ export default function Header({ noButtons = false }) {
                       </a>
                     </li>
                     <li>
-                      <a data-scroll-nav='4' href='#pricing_section'>
-                        Get It Now
+                      <a data-scroll-nav='4' href='#pricing_section' onClick={scrollToPricing}>
+                        Pricing
                       </a>
                     </li>
                   </ul>
@@ -66,8 +78,9 @@ export default function Header({ noButtons = false }) {
                     <a
                       className='scroll-to btn small colorful hover-white mt-4'
                       href='#pricing_section'
+                      onClick={scrollToPricing}
                     >
-                      Sign Up
+                      Start Free Trial
                     </a>
                     <a
                       className='scroll-to btn small colorful hover-white ml-2 mt-4'
@@ -100,9 +113,7 @@ export default function Header({ noButtons = false }) {
                       <a
                         data-scroll-nav='0'
                         href='#header'
-                        onClick={() => {
-                          setIsMenuOpen(false)
-                        }}
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         Home
                       </a>
@@ -111,9 +122,7 @@ export default function Header({ noButtons = false }) {
                       <a
                         data-scroll-nav='1'
                         href='#fun-facts'
-                        onClick={() => {
-                          setIsMenuOpen(false)
-                        }}
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         About Us
                       </a>
@@ -122,9 +131,7 @@ export default function Header({ noButtons = false }) {
                       <a
                         data-scroll-nav='2'
                         href='#service-features'
-                        onClick={() => {
-                          setIsMenuOpen(false)
-                        }}
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         Our Services
                       </a>
@@ -133,9 +140,7 @@ export default function Header({ noButtons = false }) {
                       <a
                         data-scroll-nav='3'
                         href='#clients-testmonials'
-                        onClick={() => {
-                          setIsMenuOpen(false)
-                        }}
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         Our Clients
                       </a>
@@ -143,24 +148,20 @@ export default function Header({ noButtons = false }) {
                     <li>
                       <a
                         data-scroll-nav='4'
-                        href='#cta-title-1'
-                        onClick={() => {
-                          setIsMenuOpen(false)
-                        }}
+                        href='#pricing_section'
+                        onClick={scrollToPricing}
                       >
-                        Get It Now
+                        Pricing
                       </a>
                     </li>
                     <li>
                       <div className='hm-content'>
                         <a
                           className='scroll-to btn small colorful hover-white'
-                          href='/register'
-                          onClick={() => {
-                            setIsMenuOpen(false)
-                          }}
+                          href='#pricing_section'
+                          onClick={scrollToPricing}
                         >
-                          Sign Up
+                          Start Free Trial
                         </a>
                       </div>
                     </li>
@@ -169,11 +170,9 @@ export default function Header({ noButtons = false }) {
                         <a
                           className='scroll-to btn small colorful hover-white'
                           href='/login'
-                          onClick={() => {
-                            setIsMenuOpen(false)
-                          }}
+                          onClick={() => setIsMenuOpen(false)}
                         >
-                          Sign In
+                          Login
                         </a>
                       </div>
                     </li>

@@ -1,3 +1,4 @@
+/* Legacy mini footer (kept for reference) */
 #footer-mini {
     background: #0d0d0d url(assets/img/footer-mini.jpg) top center/cover no-repeat;
     padding: 60px;
@@ -33,3 +34,130 @@
         color: #fff; }
       #footer-mini .copyrights-message + .social-icons {
         margin-top: 30px; }
+
+/* ---- Expanded Footer ---- */
+#footer-main {
+  background: #1a1a2e;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.footer-top {
+  padding: 60px 0 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-logo {
+  max-width: 160px;
+  margin-bottom: 14px;
+  filter: brightness(1.1);
+}
+
+.footer-tagline {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.footer-security-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.footer-badge .fa {
+  color: #4fc3f7;
+}
+
+.footer-heading {
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #fff;
+}
+
+.footer-links .fa {
+  margin-right: 5px;
+  color: #4fc3f7;
+}
+
+.footer-support-note {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.footer-bottom {
+  padding: 18px 0;
+}
+
+.footer-copyright {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.footer-copyright a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+}
+
+.footer-copyright a:hover {
+  color: #fff;
+}
+
+.footer-privacy-note {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.78rem;
+  margin: 0;
+}
+
+.footer-privacy-note .fa {
+  color: #4fc3f7;
+  margin-right: 4px;
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    padding: 40px 0 20px;
+  }
+  .footer-security-badges {
+    flex-direction: column;
+  }
+}

@@ -35,15 +35,14 @@ export default function CouncilServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-clipboard' style={{ color: 'white' }}></i>
+                  <i className='fa fa-calendar-times-o' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>
-                    Missing Grant Deadlines Costs Your Community
-                  </h4>
+                  <h4 className='capitalized'>Never Miss a Grant Deadline Again</h4>
                   <p>
-                    Juggling grants? Manage every application in one place and
-                    let your team contribute with ease.
+                    Automated deadline reminders and a centralised grant calendar
+                    ensure your team is always ahead of closing dates — protecting
+                    your community's funding opportunities.
                   </p>
                 </div>
               </div>
@@ -51,18 +50,14 @@ export default function CouncilServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i
-                    className='fa fa-line-chart'
-                    style={{ color: 'white' }}
-                  ></i>
+                  <i className='fa fa-table' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>
-                    Spreadsheet Chaos Slowing Down Your Team
-                  </h4>
+                  <h4 className='capitalized'>Replace Spreadsheet Chaos with Clarity</h4>
                   <p>
-                    Excel has been a great tool for years but now you have
-                    something better, much better!
+                    Move every grant out of scattered spreadsheets and into a
+                    single, structured platform — so your team always knows the
+                    current status, who is responsible, and what is due next.
                   </p>
                 </div>
               </div>
@@ -70,15 +65,14 @@ export default function CouncilServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-share-alt'></i>
+                  <i className='fa fa-folder-open' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>
-                    Missing documentation for each grant
-                  </h4>
+                  <h4 className='capitalized'>All Grant Documents in One Secure Place</h4>
                   <p>
-                    Team out of sync? Work together in real time so everyone
-                    knows grant progress and what’s due next.
+                    Store requirement documents, images, reports, and
+                    correspondence against each grant — accessible to the right
+                    team members, always audit-ready.
                   </p>
                 </div>
               </div>
@@ -86,13 +80,14 @@ export default function CouncilServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-md-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-lightbulb-o'></i>
+                  <i className='fa fa-users' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Team Members Working in Silos</h4>
+                  <h4 className='capitalized'>Align Every Department on Every Grant</h4>
                   <p>
-                    Unclear on priorities? Use clear reports and insights to
-                    focus your efforts where they matter most.
+                    Assign tasks across departments — from procurement and finance
+                    to communications and project management — so every stakeholder
+                    contributes without duplicating effort.
                   </p>
                 </div>
               </div>
@@ -100,15 +95,14 @@ export default function CouncilServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-md-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-bell'></i>
+                  <i className='fa fa-bar-chart' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>
-                    Reporting to Council Taking Too Long
-                  </h4>
+                  <h4 className='capitalized'>Report to Council with Confidence</h4>
                   <p>
-                    Forgetting key dates? Automate reminders for deadlines,
-                    reports, and renewals so nothing is missed.
+                    Generate clear progress reports for elected members and senior
+                    management in minutes — not hours. Demonstrate accountability
+                    and the value of every grant dollar secured.
                   </p>
                 </div>
               </div>
@@ -116,15 +110,14 @@ export default function CouncilServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-folder'></i>
+                  <i className='fa fa-shield' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>
-                    Public Transparency Requirements Overwhelming
-                  </h4>
+                  <h4 className='capitalized'>Built for Public Sector Transparency</h4>
                   <p>
-                    Lost in paperwork? Securely store all grant files and emails
-                    for quick, easy access when you need them.
+                    Maintain a complete, timestamped audit trail of every grant
+                    action — meeting the transparency and accountability standards
+                    expected of Australian and New Zealand local governments.
                   </p>
                 </div>
               </div>

@@ -143,6 +143,23 @@ export const resetPassword = createAsyncThunk(
   }
 )
 
+// Verify account OTP after signup — auto-logs in on success
+export const verifyOtp = createAsyncThunk(
+  'auth/verifyOtp',
+  async (inputData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('auth/verify-otp', inputData)
+      if (response?.data?.status === false) {
+        return rejectWithValue(response.data)
+      }
+      toast.success('Account verified! Welcome to Grant Maestro.', { duration: 3000 })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -262,6 +279,20 @@ const authSlice = createSlice({
       .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload?.data?.message
+      })
+      // Verify OTP — auto-login on success
+      .addCase(verifyOtp.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        state.user = action.payload?.data?.userDetails
+        state.isLoggedIn = true
+        state.loading = false
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload?.message || 'Verification failed. Please try again.'
       })
   },
 })

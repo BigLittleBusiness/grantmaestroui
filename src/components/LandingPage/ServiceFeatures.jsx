@@ -38,10 +38,11 @@ export default function ServiceFeatures() {
                   <i className='fa fa-clipboard' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Too Many Grants, No System</h4>
+                  <h4 className='capitalized'>One Platform for Every Grant</h4>
                   <p>
-                    Juggling grants? Manage every application in one place and
-                    let your team contribute with ease.
+                    Consolidate every application, deadline, and document into a
+                    single workspace — so your team stops juggling spreadsheets
+                    and starts winning more funding.
                   </p>
                 </div>
               </div>
@@ -49,16 +50,14 @@ export default function ServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i
-                    className='fa fa-line-chart'
-                    style={{ color: 'white' }}
-                  ></i>
+                  <i className='fa fa-calendar-check-o' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Missed Deadlines, Lost Funds</h4>
+                  <h4 className='capitalized'>Never Miss a Critical Deadline</h4>
                   <p>
-                    Juggling grants? Manage every application in one place and
-                    let your team contribute with ease.
+                    Automated reminders for closing dates, milestone reports, and
+                    acquittals keep your team ahead of schedule — protecting every
+                    funding opportunity you have worked to secure.
                   </p>
                 </div>
               </div>
@@ -66,13 +65,14 @@ export default function ServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-share-alt'></i>
+                  <i className='fa fa-users' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Team Not on the Same Page</h4>
+                  <h4 className='capitalized'>Keep Your Whole Team in Sync</h4>
                   <p>
-                    Team out of sync? Work together in real time so everyone
-                    knows grant progress and what’s due next.
+                    Assign tasks, track progress, and collaborate across
+                    departments in real time — so everyone knows exactly what
+                    needs to happen and when.
                   </p>
                 </div>
               </div>
@@ -80,13 +80,14 @@ export default function ServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-md-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-lightbulb-o'></i>
+                  <i className='fa fa-bar-chart' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Unsure Where to Focus</h4>
+                  <h4 className='capitalized'>Focus Effort Where It Matters Most</h4>
                   <p>
-                    Unclear on priorities? Use clear reports and insights to
-                    focus your efforts where they matter most.
+                    Clear dashboards and reporting give you an instant view of
+                    grant health, team workload, and upcoming priorities — so
+                    nothing important slips through the cracks.
                   </p>
                 </div>
               </div>
@@ -94,13 +95,14 @@ export default function ServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-md-50 anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-bell'></i>
+                  <i className='fa fa-bell' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Forgetting Key Dates</h4>
+                  <h4 className='capitalized'>Automated Reminders, Zero Surprises</h4>
                   <p>
-                    Forgetting key dates? Automate reminders for deadlines,
-                    reports, and renewals so nothing is missed.
+                    Set it once and let Grant Maestro handle the follow-up.
+                    Deadline alerts, reporting reminders, and renewal notifications
+                    are sent automatically — to the right people, at the right time.
                   </p>
                 </div>
               </div>
@@ -108,13 +110,14 @@ export default function ServiceFeatures() {
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white anim-scaledown-seq'>
                 <div className='box-icon icon x2 colorful-icon mr-20'>
-                  <i className='fa fa-folder'></i>
+                  <i className='fa fa-folder-open' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Can’t Find Grant Files</h4>
+                  <h4 className='capitalized'>Every File, Instantly Accessible</h4>
                   <p>
-                    Lost in paperwork? Securely store all grant files and emails
-                    for quick, easy access when you need them.
+                    Securely store all grant documents, correspondence, and
+                    evidence in one central location — searchable, organised, and
+                    always ready for audit or acquittal.
                   </p>
                 </div>
               </div>
