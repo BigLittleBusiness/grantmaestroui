@@ -3,17 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import FunFacts from 'components/LandingPage/FunFacts'
 import ServiceFeatures from 'components/LandingPage/ServiceFeatures'
 import 'components/LandingPage/MainContent.css'
-import ColorLogo from 'assets/img/color_logo.png'
-import CtaTitleShape1 from 'assets/img/cta-title-shape-1.png'
-import CtaTitleShape2 from 'assets/img/cta-title-shape-2.png'
-import CtaTitleShape3 from 'assets/img/cta-title-shape-3.png'
-import CtaTitleShape4 from 'assets/img/cta-title-shape-4.png'
 import FeatureSection from 'components/LandingPage/FeatureSection'
 import CouncilServiceFeatures from 'components/LandingPage/CouncilServiceFeatures'
-// import HubSpotForm from 'components/LandingPage/HubspotForm'
 import MembershipPricing from 'components/MembershipPricing'
 
-const TiralButton = () => {
+const TrialButton = () => {
   const navigate = useNavigate()
 
   return (
@@ -29,13 +23,15 @@ const TiralButton = () => {
 }
 
 export default function MainContent({ landingPage = 'homepage' }) {
+  const navigate = useNavigate()
+
   return (
     <section id='content'>
       <div id='content-wrap'>
         <FunFacts />
         {landingPage === 'councils' ? (
           <>
-            <TiralButton />
+            <TrialButton />
             <CouncilServiceFeatures />
           </>
         ) : (
@@ -75,46 +71,32 @@ export default function MainContent({ landingPage = 'homepage' }) {
         </div>
         <FeatureSection landingPage={landingPage} />
         <MembershipPricing />
-        <div id='cta-title-1' className='flat-section' data-scroll-index='4'>
-          <div className='section-content'>
-            <div className='container'>
-              <div className='row'>
-                <div className='col-md-12'>
-                  <div className='box-cta text-center'>
-                    <img src={ColorLogo} alt='' />
-                    <div className='row contact_row'>
-                      <div className='col col-md-8 contact_form'></div>
-                    </div>
-                    <img
-                      className='shape-1 anim-moveleft-seq'
-                      src={CtaTitleShape1}
-                      alt=''
-                      data-move-duration='2000'
-                    />
-                    <img
-                      className='shape-2 anim-moveright-seq'
-                      src={CtaTitleShape2}
-                      alt=''
-                      data-move-duration='2000'
-                    />
-                    <img
-                      className='shape-3 anim-moveleft-seq'
-                      src={CtaTitleShape3}
-                      alt=''
-                      data-move-duration='2000'
-                    />
-                    <img
-                      className='shape-4 anim-moveright-seq'
-                      src={CtaTitleShape4}
-                      alt=''
-                      data-move-duration='2000'
-                    />
-                  </div>
-                </div>
-              </div>
+
+        {/* ── Final CTA Block ── replaces the flat-lay brand strip ── */}
+        <div id='final-cta' className='final-cta-section'>
+          <div className='final-cta-inner'>
+            <h2 className='final-cta-heading'>
+              Ready to take control of your grant portfolio?
+            </h2>
+            <p className='final-cta-sub'>
+              Join councils and organisations across Australia and New Zealand
+              who are winning more funding with less effort.
+            </p>
+            <button
+              className='btn final-cta-btn'
+              onClick={() => navigate('/register')}
+            >
+              Start Your Free 14-Day Trial
+            </button>
+            <p className='final-cta-note'>No credit card required. Cancel anytime.</p>
+            <div className='final-cta-badges'>
+              <span>🔒 Secure &amp; Encrypted</span>
+              <span>🇦🇺 Australian Hosted</span>
+              <span>✅ 14-Day Free Trial</span>
             </div>
           </div>
         </div>
+        {/* ── End Final CTA Block ── */}
       </div>
     </section>
   )

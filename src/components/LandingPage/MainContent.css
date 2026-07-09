@@ -989,3 +989,87 @@
       height: auto;
   }
 }
+
+/* ── Final CTA Block ─────────────────────────────────────────── */
+#final-cta.final-cta-section {
+  width: 100%;
+  background: linear-gradient(135deg, #0f3460 0%, #1a1a6e 50%, #16213e 100%);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.final-cta-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.final-cta-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+  line-height: 1.25;
+}
+
+.final-cta-sub {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.final-cta-btn {
+  display: inline-block;
+  background: #2486ff;
+  color: #ffffff !important;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 16px 40px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  text-decoration: none;
+}
+
+.final-cta-btn:hover {
+  background: #1a6fd4;
+  transform: translateY(-2px);
+  color: #ffffff !important;
+}
+
+.final-cta-note {
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 24px;
+}
+
+.final-cta-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.final-cta-badges span {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 576px) {
+  .final-cta-heading {
+    font-size: 1.5rem;
+  }
+  .final-cta-btn {
+    width: 100%;
+    padding: 14px 20px;
+  }
+}
+/* ── End Final CTA Block ─────────────────────────────────────── */
