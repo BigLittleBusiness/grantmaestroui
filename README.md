@@ -5,7 +5,7 @@ The frontend React application for Grant Maestro.
 ## Prerequisites
 
 - Node.js 22.x
-- Yarn package manager
+- Yarn package manager, or npm with legacy peer dependency support
 
 ## Local Development Setup
 
@@ -41,16 +41,49 @@ The frontend React application for Grant Maestro.
 - **Styling:** Bootstrap 5 + custom CSS
 - **HTTP Client:** Axios
 
-## Deployment (AWS EC2 / Nginx)
+## AWS Deployment
 
-This repository includes a GitHub Actions workflow (`.github/workflows/aws.yml`) that automatically builds the React app and deploys the static files to an EC2 instance.
+GrantMaestro UI is deployed in the same localhost-first style as GrantThrive:
 
-**Required GitHub Secrets:**
-- `EC2_HOST`: The Elastic IP of the EC2 instance
-- `EC2_USERNAME`: Usually `ubuntu`
-- `EC2_SSH_KEY`: The private SSH key for the instance
-- `EC2_TARGET_DIR`: The directory Nginx serves from (e.g., `/var/www/grantmaestroui/build`)
+- Terraform is applied manually from a local machine using the `grantmaestro` AWS profile.
+- GitHub Actions does not manage Terraform.
+- GitHub Actions only builds React assets, syncs S3, invalidates CloudFront, and verifies the app URL after infrastructure exists.
+- UAT uses `https://app.uat.grantmaestro.com`.
+- Production uses `https://app.grantmaestro.com`.
+- Route53 manages DNS for `grantmaestro.com`.
+- CloudFront serves the static React app from S3.
 
-**Server Requirements:**
-- Nginx configured to serve static files and fallback to `index.html` for React Router
-- Directory permissions allowing the deployment user to write to the target directory
+### Frontend Infrastructure
+
+```bash
+AWS_PROFILE=grantmaestro scripts/infra.sh uat plan
+AWS_PROFILE=grantmaestro scripts/infra.sh uat apply
+
+AWS_PROFILE=grantmaestro scripts/infra.sh prod plan
+AWS_PROFILE=grantmaestro scripts/infra.sh prod apply
+```
+
+Terraform files for each environment live in:
+
+- `terraform/terraform.uat.tfvars`
+- `terraform/terraform.prod.tfvars`
+
+The frontend stack manages S3 static hosting, CloudFront, us-east-1 ACM validation for CloudFront, and Route53 app DNS records.
+
+### Frontend Deploy
+
+```bash
+AWS_PROFILE=grantmaestro scripts/deploy.sh uat
+AWS_PROFILE=grantmaestro scripts/deploy.sh prod
+```
+
+The deploy script builds React, syncs `build/` to S3, discovers the matching CloudFront distribution, and invalidates `/*`.
+
+If Yarn is not installed, the deploy script falls back to npm with `--legacy-peer-deps`.
+
+### API URLs
+
+The deployed builds use:
+
+- UAT: `https://api.uat.grantmaestro.com/v1/`
+- Production: `https://api.grantmaestro.com/v1/`

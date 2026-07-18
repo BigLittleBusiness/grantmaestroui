@@ -1,0 +1,77 @@
+name: GrantMaestro Frontend Asset Deploy
+
+on:
+  push:
+    branches:
+      - staging
+      - prod
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: Environment to deploy
+        required: true
+        type: choice
+        options:
+          - uat
+          - prod
+
+concurrency:
+  group: frontend-asset-deploy-${{ github.event_name == 'workflow_dispatch' && inputs.target_env || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ap-southeast-2
+
+jobs:
+  deploy:
+    name: Build and Deploy Frontend Assets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine target environment
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TARGET_ENV="${{ inputs.target_env }}"
+          elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+            TARGET_ENV="prod"
+          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
+            TARGET_ENV="uat"
+          else
+            echo "Unsupported branch: ${{ github.ref_name }}" >&2
+            exit 1
+          fi
+
+          if [[ "$TARGET_ENV" == "prod" ]]; then
+            APP_URL="https://app.grantmaestro.com"
+            API_URL="https://api.grantmaestro.com/v1/"
+          else
+            APP_URL="https://app.uat.grantmaestro.com"
+            API_URL="https://api.uat.grantmaestro.com/v1/"
+          fi
+
+          echo "TARGET_ENV=$TARGET_ENV" >> "$GITHUB_ENV"
+          echo "APP_URL=$APP_URL" >> "$GITHUB_ENV"
+          echo "REACT_APP_API_URL=$API_URL" >> "$GITHUB_ENV"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Deploy frontend assets
+        run: ./scripts/deploy.sh "$TARGET_ENV"
+
+      - name: Verify frontend
+        run: curl -fsS -I "$APP_URL"

@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+build
+coverage
+.env
+.env.*
+**/.terraform
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+.DS_Store
