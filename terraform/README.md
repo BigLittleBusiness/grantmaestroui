@@ -62,6 +62,32 @@ The deploy script builds React, syncs the `build/` folder to S3, finds the Cloud
 
 If Yarn is not installed locally, the deploy script falls back to npm with `--legacy-peer-deps` because this React app currently has older peer dependency ranges in its dependency tree.
 
+## Production Cutover
+
+Production uses the same two-phase flow as UAT:
+
+```bash
+cd grantmaestroui
+cp terraform/terraform.prod.tfvars.example terraform/terraform.prod.tfvars
+# Keep cloudfront_use_custom_domain=false for the first apply.
+AWS_PROFILE=grantmaestro scripts/infra.sh prod apply
+AWS_PROFILE=grantmaestro scripts/deploy.sh prod
+```
+
+After the CloudFront ACM certificate is issued, update `terraform/terraform.prod.tfvars`:
+
+```hcl
+cloudfront_use_custom_domain = true
+```
+
+Then re-apply:
+
+```bash
+AWS_PROFILE=grantmaestro scripts/infra.sh prod apply
+```
+
+Only after this second apply should the GitHub `prod` branch deployment be used, because the workflow verifies `https://app.grantmaestro.com`.
+
 ## GitHub Actions
 
 `.github/workflows/deploy-aws.yml` does not run Terraform. It only:
@@ -70,3 +96,9 @@ If Yarn is not installed locally, the deploy script falls back to npm with `--le
 2. Syncs assets to S3.
 3. Invalidates CloudFront.
 4. Verifies the app URL.
+
+Branch behavior:
+
+- Push to `staging` deploys UAT.
+- Push to `prod` deploys production.
+- Manual `workflow_dispatch` can deploy either `uat` or `prod`.
