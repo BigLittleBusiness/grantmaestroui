@@ -75,7 +75,7 @@ jobs:
           node-version: 22
 
       - name: Deploy frontend assets
-        run: ./scripts/deploy.sh "$TARGET_ENV"
+        run: ./scripts/deploy.sh "$TARGET_ENV" --region "$AWS_REGION"
 
       - name: Verify frontend
         run: curl -fsS -I "$APP_URL"
