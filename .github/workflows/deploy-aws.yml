@@ -65,6 +65,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Verify AWS deploy identity
+        run: |
+          aws sts get-caller-identity
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
