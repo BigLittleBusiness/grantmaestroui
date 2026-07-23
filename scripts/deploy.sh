@@ -25,7 +25,7 @@ TARGET_ENV="$1"
 shift
 
 SKIP_BUILD="false"
-AWS_REGION=""
+DEPLOY_REGION="${AWS_REGION:-${AWS_DEFAULT_REGION:-}}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --region)
-      AWS_REGION="$2"
+      DEPLOY_REGION="$2"
       shift 2
       ;;
     *)
@@ -79,8 +79,8 @@ for cmd in aws; do
 done
 
 AWS_ARGS=()
-if [[ -n "$AWS_REGION" ]]; then
-  AWS_ARGS+=(--region "$AWS_REGION")
+if [[ -n "$DEPLOY_REGION" ]]; then
+  AWS_ARGS+=(--region "$DEPLOY_REGION")
 fi
 
 run_aws() {
@@ -109,14 +109,14 @@ fi
 
 CLOUDFRONT_DISTRIBUTION_ID="${CLOUDFRONT_DISTRIBUTION_ID:-}"
 if [[ -z "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
-  CLOUDFRONT_DISTRIBUTION_ID="$(aws cloudfront list-distributions \
+  CLOUDFRONT_DISTRIBUTION_ID="$(run_aws cloudfront list-distributions \
     --query "DistributionList.Items[?Aliases.Items && contains(Aliases.Items, '${CLOUDFRONT_ALIAS}')].Id | [0]" \
     --output text)"
 fi
 
 if [[ -z "$CLOUDFRONT_DISTRIBUTION_ID" || "$CLOUDFRONT_DISTRIBUTION_ID" == "None" ]]; then
   ORIGIN_DOMAIN="${S3_BUCKET_NAME}.s3.ap-southeast-2.amazonaws.com"
-  CLOUDFRONT_DISTRIBUTION_ID="$(aws cloudfront list-distributions \
+  CLOUDFRONT_DISTRIBUTION_ID="$(run_aws cloudfront list-distributions \
     --query "DistributionList.Items[?Origins.Items[?DomainName=='${ORIGIN_DOMAIN}']].Id | [0]" \
     --output text)"
 fi
@@ -127,8 +127,8 @@ if [[ -z "$CLOUDFRONT_DISTRIBUTION_ID" || "$CLOUDFRONT_DISTRIBUTION_ID" == "None
   exit 1
 fi
 
-aws s3 sync ./build "s3://${S3_BUCKET_NAME}" --delete
-aws cloudfront create-invalidation \
+run_aws s3 sync ./build "s3://${S3_BUCKET_NAME}" --delete
+run_aws cloudfront create-invalidation \
   --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" \
   --paths "/*"
 

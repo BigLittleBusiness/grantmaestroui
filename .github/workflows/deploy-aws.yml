@@ -65,13 +65,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Verify AWS deploy identity
+        run: |
+          aws sts get-caller-identity
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
       - name: Deploy frontend assets
-        run: ./scripts/deploy.sh "$TARGET_ENV"
+        run: ./scripts/deploy.sh "$TARGET_ENV" --region "$AWS_REGION"
 
       - name: Verify frontend
         run: curl -fsS -I "$APP_URL"
