@@ -1,3 +1,29 @@
-# https://www.robotstxt.org/robotstxt.html
+# Grant Maestro — robots.txt
 User-agent: *
-Disallow:
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /tasks
+Disallow: /add-task
+Disallow: /edit-task/
+Disallow: /view-task/
+Disallow: /team-members
+Disallow: /add-team-member
+Disallow: /edit-team-member/
+Disallow: /grant/
+Disallow: /reports
+Disallow: /settings
+Disallow: /manage-payment
+Disallow: /admin/
+Disallow: /payment/
+Disallow: /tickets
+Disallow: /submit-ticket
+Disallow: /update-ticket/
+Disallow: /privacy-setting
+Disallow: /seat-usage
+Disallow: /change-password
+Disallow: /success
+Disallow: /cancel
+Disallow: /reset-password
+Disallow: /forgot-password
+
+Sitemap: https://www.grantmaestro.com/sitemap.xml

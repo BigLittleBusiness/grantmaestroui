@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "GrantMaestro",
+  "name": "Grant Maestro — Grant Management Platform",
+  "description": "The all-in-one grant lifecycle management platform for Australian and New Zealand councils, non-profits, and universities.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +19,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#1a3c5e",
   "background_color": "#ffffff"
 }
