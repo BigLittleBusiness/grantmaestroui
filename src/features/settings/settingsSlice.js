@@ -17,6 +17,10 @@ const initialState = {
   // Promo Codes admin
   promoCodes: [],
   promoCodesLoading: false,
+  // Email Settings admin
+  emailSettings: {},
+  emailSettingsLoading: false,
+  emailTestResult: null,
 }
 
 export const fetchtickets = createAsyncThunk(
@@ -249,6 +253,50 @@ export const createPinCharge = createAsyncThunk(
 )
 
 // ---------------------------------------------------------------------------
+// Email Settings – Admin thunks
+// ---------------------------------------------------------------------------
+
+export const fetchEmailSettings = createAsyncThunk(
+  'settings/fetchEmailSettings',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('admin/email-settings/fetch')
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+export const saveEmailSettings = createAsyncThunk(
+  'settings/saveEmailSettings',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('admin/email-settings/save', formData)
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      toast.success('Email settings saved.', { duration: 3000 })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+export const testEmailSettings = createAsyncThunk(
+  'settings/testEmailSettings',
+  async ({ to }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('admin/email-settings/test', { to })
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
 // Slice
 // ---------------------------------------------------------------------------
 
@@ -376,9 +424,28 @@ const settingsSlice = createSlice({
       .addCase(deletePromoCode.fulfilled, (state, action) => {
         state.promoCodes = state.promoCodes.filter(p => p.promo_id !== action.payload.promo_id)
       })
+      // Email Settings admin
+      .addCase(fetchEmailSettings.pending, (state) => { state.emailSettingsLoading = true })
+      .addCase(fetchEmailSettings.fulfilled, (state, action) => {
+        state.emailSettingsLoading = false
+        state.emailSettings = action.payload?.data || {}
+      })
+      .addCase(fetchEmailSettings.rejected, (state) => { state.emailSettingsLoading = false })
+      .addCase(saveEmailSettings.pending, (state) => { state.emailSettingsLoading = true })
+      .addCase(saveEmailSettings.fulfilled, (state, action) => {
+        state.emailSettingsLoading = false
+        if (action.payload?.data) state.emailSettings = action.payload.data
+      })
+      .addCase(saveEmailSettings.rejected, (state) => { state.emailSettingsLoading = false })
+      .addCase(testEmailSettings.fulfilled, (state, action) => {
+        state.emailTestResult = action.payload || { success: true }
+      })
+      .addCase(testEmailSettings.rejected, (state, action) => {
+        state.emailTestResult = { success: false, message: action.payload?.message || 'Test failed.' }
+      })
   },
 })
 
-export const { crearSupportTicket, clearPinTestResult } = settingsSlice.actions
+export const { crearSupportTicket, clearPinTestResult, clearEmailTestResult } = settingsSlice.actions
 
 export default settingsSlice.reducer

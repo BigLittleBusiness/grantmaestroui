@@ -167,6 +167,15 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
                     <span className='menu-arrow'></span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to='/admin/email-settings'
+                    className={`${activeTab === '/admin/email-settings' ? 'active' : ''}`}
+                  >
+                    <i className='fa fa-envelope'></i> <span>Email Settings</span>{' '}
+                    <span className='menu-arrow'></span>
+                  </Link>
+                </li>
               </>
             )}
 

@@ -35,13 +35,13 @@ import PaymentCheckoutPage from 'pages/Settings/PaymentCheckoutPage'
 import ChangePassword from 'features/auth/ChangePassword'
 import ForcePasswordReset from 'pages/Auth/ForcePasswordReset'
 import SysAdminDashboard from 'pages/SysAdminDashboard'
+import EmailSettingsPage from 'pages/Settings/EmailSettingsPage'
 
 const ProtectedRoutes = () => {
   const { authenticated, loading } = useAuth()
-  const user = useSelector ? undefined : undefined // placeholder — gating done in PrivateRoute
 
   if (loading) {
-    return <div>Loading...</div> // or a spinner
+    return <div>Loading...</div>
   }
 
   if (!authenticated) {
@@ -284,6 +284,14 @@ const ProtectedRoutes = () => {
         element={
           <AdminAuthenticatedLayout>
             <SysAdminDashboard />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/admin/email-settings'
+        element={
+          <AdminAuthenticatedLayout>
+            <EmailSettingsPage />
           </AdminAuthenticatedLayout>
         }
       />
