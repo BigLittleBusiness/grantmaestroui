@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { registerUser, verifyOtp } from './authSlice'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { validateAuthToken } from '../../utils/auth'
+import api from '../../api'
 import logo from 'assets/img/logos/logo.png'
 
 const registrationSchema = yup.object({
@@ -56,6 +57,12 @@ const Register = () => {
   const [registeredEmail, setRegisteredEmail] = useState('')
   const [otpError, setOtpError] = useState('')
 
+  // Promo code state
+  const [promoCode, setPromoCode] = useState('')
+  const [promoStatus, setPromoStatus] = useState(null) // null | 'checking' | 'valid' | 'invalid'
+  const [promoDetails, setPromoDetails] = useState(null)
+  const promoDebounce = useRef(null)
+
   useEffect(() => {
     if (isLoggedIn) {
       navigate('/dashboard')
@@ -65,6 +72,30 @@ const Register = () => {
       })
     }
   }, [isLoggedIn, navigate, dispatch])
+
+  // Live promo code validation with debounce
+  const handlePromoChange = (e) => {
+    const val = e.target.value.toUpperCase()
+    setPromoCode(val)
+    setPromoStatus(null)
+    setPromoDetails(null)
+    if (promoDebounce.current) clearTimeout(promoDebounce.current)
+    if (!val.trim()) return
+    setPromoStatus('checking')
+    promoDebounce.current = setTimeout(async () => {
+      try {
+        const res = await api.post('subscription/validate-promo', { code: val.trim() })
+        if (res.data?.status !== false && res.data?.data) {
+          setPromoStatus('valid')
+          setPromoDetails(res.data.data)
+        } else {
+          setPromoStatus('invalid')
+        }
+      } catch {
+        setPromoStatus('invalid')
+      }
+    }, 600)
+  }
 
   const registrationFormik = useFormik({
     initialValues: {
@@ -83,6 +114,9 @@ const Register = () => {
         email: values.email,
         password: btoa(values.password),
         preferred_subscription_plan_id: planIds[membership] || 1,
+      }
+      if (promoStatus === 'valid' && promoCode.trim()) {
+        user.promo_code = promoCode.trim()
       }
       dispatch(registerUser(user))
         .unwrap()
@@ -297,6 +331,59 @@ const Register = () => {
               <div className='text-danger small'>{registrationFormik.errors.password}</div>
             ) : null}
           </div>
+
+          {/* Promo Code Field */}
+          <div className='form-group'>
+            <label htmlFor='promo_code' className='form-label float-start'>
+              Promo Code <span className='text-muted fw-normal'>(optional)</span>
+            </label>
+            <div className='input-group'>
+              <input
+                name='promo_code'
+                type='text'
+                className={`form-control text-uppercase font-monospace${
+                  promoStatus === 'valid' ? ' is-valid' : promoStatus === 'invalid' ? ' is-invalid' : ''
+                }`}
+                id='promo_code'
+                placeholder='e.g. EARLYBIRD25'
+                value={promoCode}
+                onChange={handlePromoChange}
+                autoComplete='off'
+                maxLength={50}
+              />
+              {promoStatus === 'checking' && (
+                <span className='input-group-text'>
+                  <span className='spinner-border spinner-border-sm text-primary' />
+                </span>
+              )}
+              {promoStatus === 'valid' && (
+                <span className='input-group-text text-success'>
+                  <i className='fa fa-check-circle' />
+                </span>
+              )}
+              {promoStatus === 'invalid' && (
+                <span className='input-group-text text-danger'>
+                  <i className='fa fa-times-circle' />
+                </span>
+              )}
+            </div>
+            {promoStatus === 'valid' && promoDetails && (
+              <div className='valid-feedback d-block text-success small mt-1'>
+                <i className='fa fa-tag me-1' />
+                <strong>{promoDetails.code}</strong> applied —{' '}
+                {promoDetails.discount_type === 'percentage'
+                  ? `${promoDetails.discount_value}% off`
+                  : `$${promoDetails.discount_value} off`}{' '}
+                for {promoDetails.duration_months} month{promoDetails.duration_months !== 1 ? 's' : ''}.
+              </div>
+            )}
+            {promoStatus === 'invalid' && (
+              <div className='invalid-feedback d-block small mt-1'>
+                This promo code is not valid or has expired.
+              </div>
+            )}
+          </div>
+
           <div className='form-group clearfix mt-3'>
             <button
               type='submit'

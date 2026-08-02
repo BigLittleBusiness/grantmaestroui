@@ -115,26 +115,6 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
                 <span className='menu-arrow'></span>
               </Link>
             </li>
-            {/* <li>
-              <Link
-                to='/privacy-setting'
-                className={`${
-                  activeTab === '/privacy-setting' ? 'active' : ''
-                }`}
-              >
-                <i className='fe fe-settings'></i> <span>Privacy Setting</span>{' '}
-                <span className='menu-arrow'></span>
-              </Link>
-            </li> */}
-            {/* <li>
-              <Link
-                to='/submit-ticket'
-                className={`${activeTab === '/submit-ticket' ? 'active' : ''}`}
-              >
-                <i className='fe fe-settings'></i> <span>Submit Ticket</span>{' '}
-                <span className='menu-arrow'></span>
-              </Link>
-            </li> */}
             <li>
               <Link
                 to='/manage-payment'
@@ -144,26 +124,43 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
                 <span className='menu-arrow'></span>
               </Link>
             </li>
+
+            {/* Super Admin only section */}
             {loggedInUser?.user_role_id === 2 && (
-              <li>
-                <Link
-                  to='/admin/pin-settings'
-                  className={`${activeTab === '/admin/pin-settings' ? 'active' : ''}`}
-                >
-                  <i className='fe fe-credit-card'></i> <span>Pin Payments Setup</span>{' '}
-                  <span className='menu-arrow'></span>
-                </Link>
-              </li>
+              <>
+                <li className='menu-title'>
+                  <span>SUPER ADMIN</span>
+                </li>
+                <li>
+                  <Link
+                    to='/admin/pin-settings'
+                    className={`${activeTab === '/admin/pin-settings' ? 'active' : ''}`}
+                  >
+                    <i className='fe fe-credit-card'></i> <span>Pin Payments Setup</span>{' '}
+                    <span className='menu-arrow'></span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/admin/subscription-plans'
+                    className={`${activeTab === '/admin/subscription-plans' ? 'active' : ''}`}
+                  >
+                    <i className='fa fa-tags'></i> <span>Subscription Plans</span>{' '}
+                    <span className='menu-arrow'></span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/admin/promo-codes'
+                    className={`${activeTab === '/admin/promo-codes' ? 'active' : ''}`}
+                  >
+                    <i className='fa fa-ticket'></i> <span>Promo Codes</span>{' '}
+                    <span className='menu-arrow'></span>
+                  </Link>
+                </li>
+              </>
             )}
-            {/* <li>
-              <Link
-                to='/seat-usage'
-                className={`${activeTab === '/seat-usage' ? 'active' : ''}`}
-              >
-                <i className='fe fe-settings'></i> <span>Seat Usage</span>{' '}
-                <span className='menu-arrow'></span>
-              </Link>
-            </li> */}
+
             <li>
               <Link
                 onClick={handleLogout}

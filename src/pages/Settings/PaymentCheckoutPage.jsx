@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createPinCharge } from '../../features/settings/settingsSlice'
+import api from '../../api'
 import './settings.css'
 
 /**
@@ -26,17 +27,49 @@ export default function PaymentCheckoutPage() {
   const [cardToken, setCardToken] = useState('')
   const [paymentSuccess, setPaymentSuccess] = useState(false)
 
+  // Promo code state
+  const [promoCode, setPromoCode] = useState('')
+  const [promoStatus, setPromoStatus] = useState(null) // null | 'checking' | 'valid' | 'invalid'
+  const [promoDetails, setPromoDetails] = useState(null)
+  const promoDebounce = useRef(null)
+
+  const handlePromoChange = (e) => {
+    const val = e.target.value.toUpperCase()
+    setPromoCode(val)
+    setPromoStatus(null)
+    setPromoDetails(null)
+    if (promoDebounce.current) clearTimeout(promoDebounce.current)
+    if (!val.trim()) return
+    setPromoStatus('checking')
+    promoDebounce.current = setTimeout(async () => {
+      try {
+        const res = await api.post('subscription/validate-promo', { code: val.trim() })
+        if (res.data?.status !== false && res.data?.data) {
+          setPromoStatus('valid')
+          setPromoDetails(res.data.data)
+        } else {
+          setPromoStatus('invalid')
+        }
+      } catch {
+        setPromoStatus('invalid')
+      }
+    }, 600)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!cardToken || !selectedPlan) return
 
-    const result = await dispatch(
-      createPinCharge({
-        card_token:       cardToken,
-        preferred_plan_id: parseInt(selectedPlan, 10),
-        payment_made_for:  loggedInUser?.user_id,
-      })
-    )
+    const payload = {
+      card_token:        cardToken,
+      preferred_plan_id: parseInt(selectedPlan, 10),
+      payment_made_for:  loggedInUser?.user_id,
+    }
+    if (promoStatus === 'valid' && promoCode.trim()) {
+      payload.promo_code = promoCode.trim()
+    }
+
+    const result = await dispatch(createPinCharge(payload))
 
     if (createPinCharge.fulfilled.match(result)) {
       setPaymentSuccess(true)
@@ -109,6 +142,61 @@ export default function PaymentCheckoutPage() {
                     </option>
                   ))}
                 </select>
+              </div>
+            </div>
+
+            {/* Promo Code */}
+            <div className="card mb-4">
+              <div className="card-header">
+                <h6 className="mb-0">
+                  <i className="fa fa-ticket me-2" />
+                  Promo Code <span className="text-muted fw-normal">(optional)</span>
+                </h6>
+              </div>
+              <div className="card-body">
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className={`form-control text-uppercase font-monospace${
+                      promoStatus === 'valid' ? ' is-valid' : promoStatus === 'invalid' ? ' is-invalid' : ''
+                    }`}
+                    placeholder="Enter promo code (e.g. EARLYBIRD25)"
+                    value={promoCode}
+                    onChange={handlePromoChange}
+                    autoComplete="off"
+                    maxLength={50}
+                  />
+                  {promoStatus === 'checking' && (
+                    <span className="input-group-text">
+                      <span className="spinner-border spinner-border-sm text-primary" />
+                    </span>
+                  )}
+                  {promoStatus === 'valid' && (
+                    <span className="input-group-text text-success">
+                      <i className="fa fa-check-circle" />
+                    </span>
+                  )}
+                  {promoStatus === 'invalid' && (
+                    <span className="input-group-text text-danger">
+                      <i className="fa fa-times-circle" />
+                    </span>
+                  )}
+                </div>
+                {promoStatus === 'valid' && promoDetails && (
+                  <div className="alert alert-success mt-2 mb-0 py-2">
+                    <i className="fa fa-tag me-1" />
+                    <strong>{promoDetails.code}</strong> applied —{' '}
+                    {promoDetails.discount_type === 'percentage'
+                      ? `${promoDetails.discount_value}% off`
+                      : `$${promoDetails.discount_value} off`}{' '}
+                    for {promoDetails.duration_months} month{promoDetails.duration_months !== 1 ? 's' : ''}.
+                  </div>
+                )}
+                {promoStatus === 'invalid' && (
+                  <div className="text-danger small mt-1">
+                    This promo code is not valid or has expired.
+                  </div>
+                )}
               </div>
             </div>
 

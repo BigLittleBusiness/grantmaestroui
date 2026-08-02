@@ -21,6 +21,8 @@ import ReportPage from 'pages/ReportPage'
 import SettingsPage from 'pages/Settings/SettingsPage'
 import ManagePaymentPage from 'pages/Settings/ManagePaymentPage'
 import PinPaymentsSettingsPage from 'pages/Settings/PinPaymentsSettingsPage'
+import SubscriptionPlansPage from 'pages/Settings/SubscriptionPlansPage'
+import PromoCodesPage from 'pages/Settings/PromoCodesPage'
 import SubmitTicketPage from 'pages/Settings/SubmitTicketPage'
 import UpdateTicketPage from 'pages/Settings/UpdateTicketPage'
 import TicketListPage from 'pages/Settings/TicketListPage'
@@ -179,6 +181,22 @@ const ProtectedRoutes = () => {
         element={
           <AdminAuthenticatedLayout>
             <PinPaymentsSettingsPage />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/admin/subscription-plans'
+        element={
+          <AdminAuthenticatedLayout>
+            <SubscriptionPlansPage />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/admin/promo-codes'
+        element={
+          <AdminAuthenticatedLayout>
+            <PromoCodesPage />
           </AdminAuthenticatedLayout>
         }
       />

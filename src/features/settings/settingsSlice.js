@@ -11,6 +11,12 @@ const initialState = {
   pinSettings: {},
   pinSettingsLoading: false,
   pinTestResult: null,
+  // Subscription Plans admin
+  adminPlans: [],
+  adminPlansLoading: false,
+  // Promo Codes admin
+  promoCodes: [],
+  promoCodesLoading: false,
 }
 
 export const fetchtickets = createAsyncThunk(
@@ -28,7 +34,6 @@ export const fetchtickets = createAsyncThunk(
   }
 )
 
-// Async thunk to fetch a single ticket by ID
 export const getTicketInfo = createAsyncThunk(
   'settings/getTicketInfo',
   async (ticketId, { rejectWithValue }) => {
@@ -140,6 +145,84 @@ export const testPinConnection = createAsyncThunk(
     } catch (error) {
       const msg = error.response?.data?.message || 'Connection test failed.'
       toast.error(msg, { duration: 4000 })
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// Subscription Plans – Admin thunks
+// ---------------------------------------------------------------------------
+
+export const fetchAdminPlans = createAsyncThunk(
+  'settings/fetchAdminPlans',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('admin/plans')
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+export const updateAdminPlan = createAsyncThunk(
+  'settings/updateAdminPlan',
+  async ({ plan_id, ...data }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`admin/plans/${plan_id}`, data)
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      toast.success('Plan updated successfully.', { duration: 3000 })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
+// Promo Codes – Admin thunks
+// ---------------------------------------------------------------------------
+
+export const fetchPromoCodes = createAsyncThunk(
+  'settings/fetchPromoCodes',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('admin/promo-codes')
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+export const createPromoCode = createAsyncThunk(
+  'settings/createPromoCode',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('admin/promo-codes', formData)
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      toast.success('Promo code created.', { duration: 3000 })
+      return response.data
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Failed to create promo code.'
+      toast.error(msg, { duration: 4000 })
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+export const deletePromoCode = createAsyncThunk(
+  'settings/deletePromoCode',
+  async (promo_id, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`admin/promo-codes/${promo_id}`)
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      toast.success('Promo code deleted.', { duration: 3000 })
+      return { promo_id }
+    } catch (error) {
       return rejectWithValue(error.response?.data)
     }
   }
@@ -265,6 +348,33 @@ const settingsSlice = createSlice({
       .addCase(testPinConnection.rejected, (state, action) => {
         state.pinSettingsLoading = false
         state.pinTestResult = { success: false, message: action.payload?.message }
+      })
+      // Subscription Plans admin
+      .addCase(fetchAdminPlans.pending, (state) => { state.adminPlansLoading = true })
+      .addCase(fetchAdminPlans.fulfilled, (state, action) => {
+        state.adminPlansLoading = false
+        state.adminPlans = action.payload?.data || []
+      })
+      .addCase(fetchAdminPlans.rejected, (state) => { state.adminPlansLoading = false })
+      .addCase(updateAdminPlan.fulfilled, (state, action) => {
+        const updated = action.payload?.data
+        if (updated) {
+          const idx = state.adminPlans.findIndex(p => p.plan_id === updated.plan_id)
+          if (idx !== -1) state.adminPlans[idx] = updated
+        }
+      })
+      // Promo Codes admin
+      .addCase(fetchPromoCodes.pending, (state) => { state.promoCodesLoading = true })
+      .addCase(fetchPromoCodes.fulfilled, (state, action) => {
+        state.promoCodesLoading = false
+        state.promoCodes = action.payload?.data || []
+      })
+      .addCase(fetchPromoCodes.rejected, (state) => { state.promoCodesLoading = false })
+      .addCase(createPromoCode.fulfilled, (state, action) => {
+        if (action.payload?.data) state.promoCodes.unshift(action.payload.data)
+      })
+      .addCase(deletePromoCode.fulfilled, (state, action) => {
+        state.promoCodes = state.promoCodes.filter(p => p.promo_id !== action.payload.promo_id)
       })
   },
 })
