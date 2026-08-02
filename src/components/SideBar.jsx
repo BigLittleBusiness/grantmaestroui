@@ -133,6 +133,15 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
                 </li>
                 <li>
                   <Link
+                    to='/admin/dashboard'
+                    className={`${activeTab === '/admin/dashboard' ? 'active' : ''}`}
+                  >
+                    <i className='fe fe-bar-chart-2'></i> <span>Platform Overview</span>{' '}
+                    <span className='menu-arrow'></span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to='/admin/pin-settings'
                     className={`${activeTab === '/admin/pin-settings' ? 'active' : ''}`}
                   >

@@ -18,11 +18,15 @@ const validationSchema = yup.object({
 const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { loading, error, isLoggedIn } = useSelector((state) => state.auth)
+  const { loading, error, isLoggedIn, user } = useSelector((state) => state.auth)
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/dashboard')
+      if (user?.requires_password_reset) {
+        navigate('/force-password-reset')
+      } else {
+        navigate('/dashboard')
+      }
     } else {
       validateAuthToken(dispatch).then((isValid) => {
         if (isValid) {
@@ -30,7 +34,7 @@ const Login = () => {
         }
       })
     }
-  }, [isLoggedIn, navigate, dispatch])
+  }, [isLoggedIn, navigate, dispatch, user])
 
   const formik = useFormik({
     initialValues: {
@@ -45,8 +49,13 @@ const Login = () => {
       }
       dispatch(loginUser(user))
         .unwrap()
-        .then(() => {
-          navigate('/dashboard')
+        .then((result) => {
+          const userDetails = result?.data?.userDetails
+          if (userDetails?.requires_password_reset) {
+            navigate('/force-password-reset')
+          } else {
+            navigate('/dashboard')
+          }
         })
         .catch((err) => {
           console.error('Failed to login: ', err)

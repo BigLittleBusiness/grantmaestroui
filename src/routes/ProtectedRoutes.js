@@ -33,9 +33,12 @@ import PaymentSuccess from 'pages/Settings/PaymentSuccess'
 import PaymentCancel from 'pages/Settings/PaymentCancel'
 import PaymentCheckoutPage from 'pages/Settings/PaymentCheckoutPage'
 import ChangePassword from 'features/auth/ChangePassword'
+import ForcePasswordReset from 'pages/Auth/ForcePasswordReset'
+import SysAdminDashboard from 'pages/SysAdminDashboard'
 
 const ProtectedRoutes = () => {
   const { authenticated, loading } = useAuth()
+  const user = useSelector ? undefined : undefined // placeholder — gating done in PrivateRoute
 
   if (loading) {
     return <div>Loading...</div> // or a spinner
@@ -269,6 +272,18 @@ const ProtectedRoutes = () => {
         element={
           <AdminAuthenticatedLayout>
             <ChangePassword />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/force-password-reset'
+        element={<ForcePasswordReset />}
+      />
+      <Route
+        path='/admin/dashboard'
+        element={
+          <AdminAuthenticatedLayout>
+            <SysAdminDashboard />
           </AdminAuthenticatedLayout>
         }
       />
