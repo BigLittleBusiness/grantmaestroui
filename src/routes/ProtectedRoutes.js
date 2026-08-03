@@ -36,6 +36,7 @@ import ChangePassword from 'features/auth/ChangePassword'
 import ForcePasswordReset from 'pages/Auth/ForcePasswordReset'
 import SysAdminDashboard from 'pages/SysAdminDashboard'
 import EmailSettingsPage from 'pages/Settings/EmailSettingsPage'
+import PaymentSettingsPage from 'pages/Settings/PaymentSettingsPage'
 
 const ProtectedRoutes = () => {
   const { authenticated, loading } = useAuth()
@@ -292,6 +293,14 @@ const ProtectedRoutes = () => {
         element={
           <AdminAuthenticatedLayout>
             <EmailSettingsPage />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/admin/payment-settings'
+        element={
+          <AdminAuthenticatedLayout>
+            <PaymentSettingsPage />
           </AdminAuthenticatedLayout>
         }
       />

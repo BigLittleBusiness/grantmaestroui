@@ -21,6 +21,10 @@ const initialState = {
   emailSettings: {},
   emailSettingsLoading: false,
   emailTestResult: null,
+  // Stripe Settings admin
+  stripeSettings: {},
+  stripeSettingsLoading: false,
+  stripeTestResult: null,
 }
 
 export const fetchtickets = createAsyncThunk(
@@ -297,6 +301,53 @@ export const testEmailSettings = createAsyncThunk(
 )
 
 // ---------------------------------------------------------------------------
+// Stripe Settings – Admin thunks
+// ---------------------------------------------------------------------------
+
+export const fetchStripeSettings = createAsyncThunk(
+  'settings/fetchStripeSettings',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('admin/stripe-settings/fetch')
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+export const saveStripeSettings = createAsyncThunk(
+  'settings/saveStripeSettings',
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('admin/stripe-settings/save', formData)
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      toast.success('Stripe settings saved.', { duration: 3000 })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+export const testStripeConnection = createAsyncThunk(
+  'settings/testStripeConnection',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('admin/stripe-settings/test-connection')
+      if (response?.data?.status === false) return rejectWithValue(response.data)
+      toast.success('Stripe connection successful!', { duration: 3000 })
+      return response.data
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Stripe connection failed.'
+      toast.error(msg, { duration: 3000 })
+      return rejectWithValue(error.response?.data)
+    }
+  }
+)
+
+// ---------------------------------------------------------------------------
 // Slice
 // ---------------------------------------------------------------------------
 
@@ -442,6 +493,31 @@ const settingsSlice = createSlice({
       })
       .addCase(testEmailSettings.rejected, (state, action) => {
         state.emailTestResult = { success: false, message: action.payload?.message || 'Test failed.' }
+      })
+      // Stripe Settings admin
+      .addCase(fetchStripeSettings.pending, (state) => { state.stripeSettingsLoading = true })
+      .addCase(fetchStripeSettings.fulfilled, (state, action) => {
+        state.stripeSettingsLoading = false
+        state.stripeSettings = action.payload?.data || {}
+      })
+      .addCase(fetchStripeSettings.rejected, (state) => { state.stripeSettingsLoading = false })
+      .addCase(saveStripeSettings.pending, (state) => { state.stripeSettingsLoading = true })
+      .addCase(saveStripeSettings.fulfilled, (state, action) => {
+        state.stripeSettingsLoading = false
+        if (action.payload?.data) state.stripeSettings = action.payload.data
+      })
+      .addCase(saveStripeSettings.rejected, (state) => { state.stripeSettingsLoading = false })
+      .addCase(testStripeConnection.pending, (state) => {
+        state.stripeSettingsLoading = true
+        state.stripeTestResult = null
+      })
+      .addCase(testStripeConnection.fulfilled, (state, action) => {
+        state.stripeSettingsLoading = false
+        state.stripeTestResult = { success: true, data: action.payload?.data }
+      })
+      .addCase(testStripeConnection.rejected, (state, action) => {
+        state.stripeSettingsLoading = false
+        state.stripeTestResult = { success: false, message: action.payload?.message }
       })
   },
 })
