@@ -185,6 +185,14 @@ const TeamMemberList = () => {
               >
                 Team Member
               </button>
+              <button
+                className={`tablinks ${
+                  activeTab === 'Acquittal Contributor' ? 'active' : ''
+                }`}
+                onClick={() => handleTeamRoleClick('acquittal_contributor')}
+              >
+                Acquittal Contributor
+              </button>
             </div>
             <div id='1' className='tabcontent'>
               <table

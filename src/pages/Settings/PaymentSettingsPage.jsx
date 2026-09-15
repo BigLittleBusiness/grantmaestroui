@@ -226,6 +226,7 @@ function StripeTab() {
     stripe_environment: 'test',
     stripe_currency: 'AUD',
     stripe_webhook_secret: '',
+    stripe_enabled: false,
   })
   const [secretChanged, setSecretChanged] = useState(false)
   const [webhookChanged, setWebhookChanged] = useState(false)
@@ -243,13 +244,14 @@ function StripeTab() {
         stripe_environment:     stripeSettings.stripe_environment || 'test',
         stripe_currency:        stripeSettings.stripe_currency || 'AUD',
         stripe_webhook_secret:  stripeSettings.stripe_webhook_secret || '',
+        stripe_enabled:         Boolean(stripeSettings.stripe_enabled),
       }))
     }
   }, [stripeSettings])
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    const { name, value, type, checked } = e.target
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
     if (name === 'stripe_secret_key')     setSecretChanged(true)
     if (name === 'stripe_webhook_secret') setWebhookChanged(true)
   }
@@ -260,6 +262,7 @@ function StripeTab() {
       stripe_publishable_key: form.stripe_publishable_key,
       stripe_environment:     form.stripe_environment,
       stripe_currency:        form.stripe_currency,
+      stripe_enabled:         form.stripe_enabled,
     }
     if (secretChanged && !form.stripe_secret_key.startsWith('•'))
       payload.stripe_secret_key = form.stripe_secret_key
@@ -327,13 +330,20 @@ function StripeTab() {
                 <input type="password" className="form-control font-monospace" name="stripe_secret_key"
                   placeholder={stripeSettings?.stripe_secret_key ? 'Leave blank to keep existing key' : (form.stripe_environment === 'live' ? 'sk_live_...' : 'sk_test_...')}
                   value={form.stripe_secret_key} onChange={handleChange} autoComplete="new-password" />
-                <div className="form-text text-warning"><i className="fa fa-lock me-1" />Never share this key. Encrypted before storage.
+                                <div className="form-text text-warning"><i className="fa fa-lock me-1" />Never share this key. Encrypted before storage.
                   {stripeSettings?.stripe_secret_key && <span className="ms-2 text-success"><i className="fa fa-check-circle me-1" />A key is saved.</span>}
                 </div>
               </div>
             </div>
           </div>
-
+          {/* Checkout activation */}
+          <div className={`alert ${form.stripe_enabled ? 'alert-success' : 'alert-secondary'} d-flex align-items-start mb-4`}>
+            <input className="form-check-input me-3 mt-1" type="checkbox" id="stripe_enabled" name="stripe_enabled" checked={form.stripe_enabled} onChange={handleChange} />
+            <div>
+              <label className="form-check-label fw-semibold" htmlFor="stripe_enabled">Use Stripe for customer checkout</label>
+              <p className="mb-0 small">Enable this only after saving and testing valid Stripe credentials. When enabled, GrantMaestro sends organisation administrators to Stripe’s hosted checkout and does not handle card details.</p>
+            </div>
+          </div>
           {/* Webhook */}
           <div className="card mb-4">
             <div className="card-header"><h6 className="mb-0"><i className="fa fa-bolt me-2" />Webhook</h6></div>
@@ -402,8 +412,10 @@ function StripeTab() {
                   <td>{form.stripe_publishable_key ? <span className="text-success"><i className="fa fa-check-circle me-1" />Set</span> : <span className="text-danger"><i className="fa fa-times-circle me-1" />Not set</span>}</td></tr>
                 <tr><td className="text-muted">Secret Key</td>
                   <td>{stripeSettings?.stripe_secret_key ? <span className="text-success"><i className="fa fa-check-circle me-1" />Saved (encrypted)</span> : <span className="text-danger"><i className="fa fa-times-circle me-1" />Not set</span>}</td></tr>
+                <tr><td className="text-muted">Checkout Provider</td>
+                  <td>{form.stripe_enabled ? <span className="text-success"><i className="fa fa-check-circle me-1" />Stripe enabled</span> : <span className="text-muted"><i className="fa fa-minus-circle me-1" />Not enabled</span>}</td></tr>
                 <tr><td className="text-muted">Webhook Secret</td>
-                  <td>{stripeSettings?.stripe_webhook_secret ? <span className="text-success"><i className="fa fa-check-circle me-1" />Saved (encrypted)</span> : <span className="text-muted"><i className="fa fa-minus-circle me-1" />Optional</span>}</td></tr>
+                  <td>{stripeSettings?.stripe_webhook_secret ? <span className="text-success"><i className="fa fa-check-circle me-1" />Saved (encrypted)</span> : <span className="text-muted"><i className="fa fa-minus-circle me-1" />Required for live activation</span>}</td></tr>
               </tbody>
             </table>
           </div>

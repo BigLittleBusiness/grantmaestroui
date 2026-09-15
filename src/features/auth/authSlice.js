@@ -72,6 +72,22 @@ export const updateProfile = createAsyncThunk(
   }
 )
 
+export const forcePasswordReset = createAsyncThunk(
+  'auth/forcePasswordReset',
+  async (inputData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('auth/force-password-reset', inputData)
+      if (response?.data?.status === false) {
+        return rejectWithValue(response.data)
+      }
+      toast.success(response?.data?.message, { duration: 3000 })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error?.response?.data || { message: 'Unable to set password.' })
+    }
+  }
+)
+
 export const updatePassword = createAsyncThunk(
   'auth/updatePassword',
   async (inputData, { rejectWithValue }) => {
@@ -227,6 +243,21 @@ const authSlice = createSlice({
       .addCase(viewProfile.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
+      })
+      .addCase(forcePasswordReset.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(forcePasswordReset.fulfilled, (state) => {
+        state.user = null
+        state.loading = false
+        state.authToken = undefined
+        state.isLoggedIn = false
+        localStorage.removeItem('authToken')
+      })
+      .addCase(forcePasswordReset.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload?.message || 'Unable to set password.'
       })
       .addCase(updatePassword.pending, (state) => {
         state.loading = true

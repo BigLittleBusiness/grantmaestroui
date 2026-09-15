@@ -9,7 +9,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { updatePassword } from 'features/auth/authSlice'
+import { forcePasswordReset } from 'features/auth/authSlice'
 
 const ForcePasswordReset = () => {
   const dispatch = useDispatch()
@@ -42,13 +42,8 @@ const ForcePasswordReset = () => {
       return
     }
     try {
-      // The changePassword endpoint requires old_password — for a forced reset
-      // we send the temporary password stored in the auth state (not ideal but
-      // avoids a separate endpoint).  A dedicated /force-reset endpoint would
-      // be cleaner; this is flagged for a future sprint.
       await dispatch(
-        updatePassword({
-          old_password: btoa('__force_reset__'),
+        forcePasswordReset({
           new_password: btoa(form.new_password),
         })
       ).unwrap()

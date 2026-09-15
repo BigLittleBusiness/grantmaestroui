@@ -2,6 +2,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import api from '../../api'
 import toast from 'react-hot-toast'
 
+const roleToMemberType = {
+  admin: 1,
+  team_member: 3,
+  acquittal_contributor: 4,
+}
+
 // Fetch team members (list)
 export const fetchTeamMembers = createAsyncThunk(
   'teamMember/fetchTeamMembers',
@@ -22,18 +28,11 @@ export const fetchTeamMembers = createAsyncThunk(
 export const addTeamMember = createAsyncThunk(
   'teamMember/addTeamMember',
   async (teamMember, { rejectWithValue }) => {
-    let payload = teamMember
-    if (teamMember.role !== 'team_member') {
-      payload = {
-        ...teamMember,
-        member_type: 3,
-      }
-    } else {
-      payload = {
-        ...teamMember,
-        member_type: 4,
-      }
+    const member_type = roleToMemberType[teamMember.role]
+    if (!member_type) {
+      return rejectWithValue({ message: 'Please select a valid team role.' })
     }
+    const payload = { ...teamMember, member_type }
     try {
       const response = await api.post(`team-member/member-add`, payload)
       if (response?.data?.status === false) {
@@ -52,19 +51,13 @@ export const updateTeamMember = createAsyncThunk(
   async (teamMember, { rejectWithValue }) => {
     let payload = teamMember
     try {
-      if (teamMember.role !== 'team_member') {
-        payload = {
-          ...teamMember,
-          member_type: 3,
-        }
-      } else {
-        payload = {
-          ...teamMember,
-          member_type: 4,
-        }
+      const member_type = roleToMemberType[teamMember.role]
+      if (!member_type) {
+        return rejectWithValue({ message: 'Please select a valid team role.' })
       }
+      payload = { ...teamMember, member_type }
       const response = await api.post(
-        `team-member/member-update${teamMember.user_id}`,
+        `team-member/member-update/${teamMember.user_id}`,
         payload
       )
       if (response?.data?.status === false) {
@@ -105,7 +98,7 @@ export const filterTeamMembers = createAsyncThunk(
       if (role === 'all') {
         filteredMembers = state.originalTeamMembers
       } else {
-        const roleId = role === 'admin' ? 3 : 4
+        const roleId = roleToMemberType[role]
         filteredMembers = state.originalTeamMembers.filter(
           (member) => member.user_role_id === roleId
         )
@@ -170,11 +163,12 @@ const teamMemberSlice = createSlice({
       .addCase(updateTeamMember.fulfilled, (state, action) => {
         // console.log('updateTeamMember', action.payload)
 
+        const updatedId = action.meta.arg.user_id
         const index = state.teamMembers.findIndex(
-          (teamMember) => teamMember.id === action.payload.id
+          (teamMember) => teamMember.user_id === Number(updatedId)
         )
         if (index !== -1) {
-          state.teamMembers[index] = action.payload
+          state.teamMembers[index] = { ...state.teamMembers[index], ...action.meta.arg }
         }
       })
       .addCase(fetchTeamMember.fulfilled, (state, action) => {
