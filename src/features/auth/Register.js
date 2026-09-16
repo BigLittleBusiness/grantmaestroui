@@ -51,7 +51,8 @@ const Register = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const query = new URLSearchParams(useLocation().search)
-  const membership = query.get('membership-preference') || 'starter'
+  const initialMembership = query.get('membership-preference') || 'starter'
+  const [membership, setMembership] = useState(initialMembership)
   const { loading, error, isLoggedIn } = useSelector((state) => state.auth)
   const [step, setStep] = useState('register') // 'register' | 'verify'
   const [registeredEmail, setRegisteredEmail] = useState('')
@@ -155,7 +156,8 @@ const Register = () => {
               <img src={logo} alt='Grant Maestro' style={{ width: '200px' }} />
             </a>
           </div>
-          <h1 className='mb-2'>Verify Your Account</h1>
+          <p className='gm-register-step'>Step 2 of 3 · Secure email verification</p>
+          <h1 className='mb-2'>Verify your account</h1>
           <p className='text-muted mb-4' style={{ fontSize: '0.9rem' }}>
             We have sent a 4-digit verification code to{' '}
             <strong>{registeredEmail}</strong>. Please enter it below to
@@ -220,16 +222,17 @@ const Register = () => {
             <img src={logo} alt='Grant Maestro' style={{ width: '200px' }} />
           </a>
         </div>
-        <h1 className='mb-1'>Start Your Free Trial</h1>
-        {membership && planLabels[membership] && (
-          <div
-            className='alert alert-info py-2 px-3 mb-3'
-            style={{ fontSize: '0.82rem' }}
-          >
-            <strong>Selected plan:</strong> {planLabels[membership]}
+          <p className='gm-register-step'>Step 1 of 3 · Create your council workspace</p>
+          <h1 className='mb-1'>Start your free trial</h1>
+          <p className='gm-register-intro'>You can adjust your plan now. Your trial starts after secure email verification; no credit card is required today.</p>
+          <div className='form-group'>
+            <label htmlFor='membership_plan' className='form-label float-start'>Selected plan</label>
+            <select id='membership_plan' className='form-select' value={membership} onChange={(event) => setMembership(event.target.value)}>
+              {Object.entries(planLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            </select>
+            <small className='text-muted d-block mt-1'>You can review plan options and inclusions at any time.</small>
           </div>
-        )}
-        <p className='text-muted mb-3' style={{ fontSize: '0.85rem' }}>
+          <p className='text-muted mb-3' style={{ fontSize: '0.85rem' }}>
           14-day free trial · No credit card required
         </p>
         <form onSubmit={registrationFormik.handleSubmit} noValidate>
@@ -399,11 +402,10 @@ const Register = () => {
         )}
         <p className='text-muted mt-3' style={{ fontSize: '0.82rem' }}>
           Already have an account?{' '}
-          <a href='/login'>Log in here</a>
+          <a href='/login'>Log in</a>
         </p>
         <p className='text-muted' style={{ fontSize: '0.78rem' }}>
-          <i className='fa fa-lock'></i> Your data is encrypted and stored
-          securely on Australian servers. We never share your information.
+          <i className='fa fa-shield'></i> We use an email-verification step before activating your workspace. Review our <a href='/privacy-policy'>Privacy Policy</a> for data-handling details.
         </p>
       </div>
     </div>

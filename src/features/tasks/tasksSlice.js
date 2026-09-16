@@ -65,6 +65,19 @@ export const updateTask = createAsyncThunk(
   }
 )
 
+export const updateTaskChecklistItem = createAsyncThunk(
+  'tasks/updateTaskChecklistItem',
+  async ({ itemId, isComplete }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`task/task-checklist-item/${itemId}`, { is_complete: isComplete })
+      if (!response?.data?.status) return rejectWithValue(response?.data || { message: 'Unable to update checklist item.' })
+      return { itemId, isComplete }
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: 'Unable to update checklist item.' })
+    }
+  }
+)
+
 export const deleteTask = createAsyncThunk(
   'tasks/deleteTask',
   async (taskId, { rejectWithValue }) => {
@@ -125,9 +138,18 @@ const tasksSlice = createSlice({
           duration: 4000,
         })
       })
+      .addCase(updateTaskChecklistItem.fulfilled, (state, action) => {
+        if (state.selectedTask?.checklist_items) {
+          const item = state.selectedTask.checklist_items.find((entry) => String(entry.id || entry.task_checklist_item_id) === String(action.payload.itemId))
+          if (item) {
+            item.is_complete = action.payload.isComplete
+            item.completed_at = action.payload.isComplete ? new Date().toISOString() : null
+          }
+        }
+      })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.tasks = state.tasks.filter(
-          (task) => task.id !== action.payload.data.taskId
+          (task) => task.id !== action.payload.taskId
         )
         toast.success('Task deleted successfully', {
           duration: 4000,

@@ -158,8 +158,10 @@ const GlobalSearch = () => {
         value={query}
         onChange={handleInput}
         onFocus={() => q && setOpen(true)}
+        role='combobox'
         aria-label='Global search'
         aria-haspopup='listbox'
+        aria-controls='gm-search-results'
         aria-expanded={open}
         autoComplete='off'
       />
@@ -178,7 +180,7 @@ const GlobalSearch = () => {
       )}
 
       {open && q && (
-        <div className='gm-search-results' role='listbox'>
+        <div id='gm-search-results' className='gm-search-results' role='listbox'>
           {!hasResults && (
             <div className='gm-search-no-results'>
               No results found for "<strong>{query}</strong>"
@@ -194,9 +196,10 @@ const GlobalSearch = () => {
                   key={grant.organization_grant_id}
                   className='gm-search-result-item'
                   role='option'
+                  aria-selected='false'
                   tabIndex={0}
                   onClick={() => handleGrantClick(grant)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleGrantClick(grant)}
+                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleGrantClick(grant)}
                 >
                   <span className='gm-search-result-icon'>🏆</span>
                   <div>
@@ -223,9 +226,10 @@ const GlobalSearch = () => {
                   key={task.id}
                   className='gm-search-result-item'
                   role='option'
+                  aria-selected='false'
                   tabIndex={0}
                   onClick={() => handleTaskClick(task)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleTaskClick(task)}
+                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleTaskClick(task)}
                 >
                   <span className='gm-search-result-icon'>✅</span>
                   <div>
@@ -256,9 +260,10 @@ const GlobalSearch = () => {
                     key={memberId}
                     className='gm-search-result-item'
                     role='option'
+                    aria-selected='false'
                     tabIndex={0}
                     onClick={() => handleMemberClick(member)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleMemberClick(member)}
+                    onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleMemberClick(member)}
                   >
                     <span className='gm-search-result-icon'>👤</span>
                     <div>

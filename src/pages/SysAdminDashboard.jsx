@@ -1,149 +1,37 @@
-/**
- * SysAdminDashboard.jsx
- *
- * Platform-wide metrics dashboard for Super Admin (user_type = 1).
- * Shows total organisations, active/expired subscriptions, users, grants,
- * tasks, new sign-ups in the last 30 days, and a recent organisations table.
- */
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import api from 'api'
+import './sys-admin-dashboard.css'
 
-const StatCard = ({ label, value, colour, icon }) => (
-  <div style={{ ...styles.statCard, borderTop: `4px solid ${colour}` }}>
-    <div style={styles.statIcon}>{icon}</div>
-    <div style={styles.statValue}>{value ?? '—'}</div>
-    <div style={styles.statLabel}>{label}</div>
-  </div>
-)
+const STATUS_META = {
+  configured: ['Configured', 'good'],
+  stripe_active: ['Stripe active', 'good'],
+  pin_configured: ['Pin configured', 'good'],
+  ready_when_data_due: ['Ready', 'good'],
+  needs_setup: ['Needs setup', 'attention'],
+  blocked_by_email: ['Blocked by email setup', 'risk'],
+}
+const formatDate = (value) => value ? new Date(`${String(value).slice(0, 10)}T12:00:00`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Not recorded'
+const StatCard = ({ label, value, tone = 'blue', detail }) => <article className={`gm-platform-stat gm-platform-stat--${tone}`}><span>{label}</span><strong>{value ?? '—'}</strong>{detail && <small>{detail}</small>}</article>
+const StatusCard = ({ label, value, link, linkLabel }) => { const [text, tone] = STATUS_META[value] || ['Not configured', 'attention']; return <article className='gm-platform-status'><div><span>{label}</span><strong className={`gm-platform-status__state gm-platform-status__state--${tone}`}>{text}</strong></div>{link && <Link to={link}>{linkLabel || 'Configure'}</Link>}</article> }
 
 export default function SysAdminDashboard() {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const load = () => { setLoading(true); setError(''); api.get('/admin/platform-stats', { withCredentials: true }).then((response) => { if (response.data?.success) setStats(response.data.data); else setError('Platform statistics are unavailable.') }).catch((requestError) => setError(requestError?.response?.data?.message || 'Unable to reach the platform services.')).finally(() => setLoading(false)) }
+  useEffect(() => { load() }, [])
+  if (loading) return <section className='gm-platform-state' aria-live='polite'><div className='spinner-border text-primary' aria-hidden='true' /><h2>Loading platform overview</h2><p>Preparing subscription, customer and configuration status.</p></section>
+  if (error) return <section className='gm-platform-state gm-platform-state--error' role='alert'><h2>Platform overview is unavailable</h2><p>{error}</p><button className='btn btn-primary' onClick={load}>Try again</button></section>
+  const readyCount = Object.values(stats.integrationStatus || {}).filter((value) => ['configured', 'stripe_active', 'pin_configured', 'ready_when_data_due'].includes(value)).length
 
-  useEffect(() => {
-    api
-      .get('/admin/platform-stats', { withCredentials: true })
-      .then((res) => {
-        if (res.data?.success) setStats(res.data.data)
-        else setError('Failed to load platform statistics.')
-      })
-      .catch(() => setError('Unable to reach the server. Please try again.'))
-      .finally(() => setLoading(false))
-  }, [])
-
-  if (loading) {
-    return (
-      <div style={styles.centred}>
-        <div style={styles.spinner} />
-        <p style={{ color: '#6b7280', marginTop: '16px' }}>Loading platform statistics…</p>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div style={styles.centred}>
-        <p style={{ color: '#ef4444' }}>{error}</p>
-      </div>
-    )
-  }
-
-  const formatDate = (d) =>
-    d ? new Date(d).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
-
-  return (
-    <div className="content container-fluid">
-      {/* Page header */}
-      <div className="page-header">
-        <div className="content-page-header">
-          <h5>Platform Overview</h5>
-          <p style={{ color: '#6b7280', fontSize: '14px', margin: '4px 0 0' }}>
-            System-wide metrics — visible to Super Admins only
-          </p>
-        </div>
-      </div>
-
-      {/* Stat cards */}
-      <div style={styles.grid}>
-        <StatCard label="Total Organisations" value={stats.totalOrganisations} colour="#2563eb" icon="🏛️" />
-        <StatCard label="Active Subscriptions" value={stats.activeSubscriptions} colour="#22c55e" icon="✅" />
-        <StatCard label="Expired Subscriptions" value={stats.expiredSubscriptions} colour="#ef4444" icon="⚠️" />
-        <StatCard label="Total Users" value={stats.totalUsers} colour="#8b5cf6" icon="👥" />
-        <StatCard label="Total Grants" value={stats.totalGrants} colour="#f59e0b" icon="📋" />
-        <StatCard label="Total Tasks" value={stats.totalTasks} colour="#06b6d4" icon="✔️" />
-        <StatCard label="New Orgs (Last 30 Days)" value={stats.newOrgsLast30Days} colour="#1a3c5e" icon="🆕" />
-      </div>
-
-      {/* Recent organisations */}
-      <div className="card shadow-sm mt-4">
-        <div className="card-header d-flex justify-content-between align-items-center">
-          <h5 style={{ margin: 0 }}>Recently Registered Organisations</h5>
-          <span style={{ fontSize: '13px', color: '#6b7280' }}>Latest 10</span>
-        </div>
-        <div className="card-body p-0">
-          {stats.recentOrgs && stats.recentOrgs.length > 0 ? (
-            <table className="table table-hover mb-0">
-              <thead style={{ background: '#f9fafb' }}>
-                <tr>
-                  <th style={styles.th}>#</th>
-                  <th style={styles.th}>Organisation Name</th>
-                  <th style={styles.th}>Registered</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.recentOrgs.map((org, idx) => (
-                  <tr key={org.organization_id}>
-                    <td style={styles.td}>{idx + 1}</td>
-                    <td style={styles.td}>{org.organization_name}</td>
-                    <td style={styles.td}>{formatDate(org.created_at)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p style={{ padding: '20px', color: '#9ca3af', textAlign: 'center' }}>
-              No organisations registered yet.
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const styles = {
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-    gap: '16px',
-    marginBottom: '8px',
-  },
-  statCard: {
-    background: '#ffffff',
-    borderRadius: '8px',
-    padding: '20px 16px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-    textAlign: 'center',
-  },
-  statIcon: { fontSize: '28px', marginBottom: '8px' },
-  statValue: { fontSize: '32px', fontWeight: 700, color: '#1a3c5e', lineHeight: 1 },
-  statLabel: { fontSize: '13px', color: '#6b7280', marginTop: '6px' },
-  centred: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '300px',
-  },
-  spinner: {
-    width: '40px',
-    height: '40px',
-    border: '4px solid #e5e7eb',
-    borderTop: '4px solid #1a3c5e',
-    borderRadius: '50%',
-    animation: 'spin 0.8s linear infinite',
-  },
-  th: { padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: '#374151' },
-  td: { padding: '12px 16px', fontSize: '14px', color: '#374151', verticalAlign: 'middle' },
+  return <main className='gm-platform-overview content container-fluid'>
+    <header className='gm-platform-overview__header'><div><p>System administration</p><h1>Platform overview</h1><span>Monitor customer growth and complete the configuration needed for reliable service delivery.</span></div><div className='gm-platform-overview__actions'><Link to='/admin/subscription-plans' className='btn btn-outline-primary'>Manage plans</Link><Link to='/admin/email-settings' className='btn btn-primary'>Configure services</Link></div></header>
+    <section className='gm-platform-alert' aria-label='Platform configuration status'><div><strong>{readyCount} of 5 operational services ready</strong><span>Complete outstanding configuration before enabling affected customer functions.</span></div><Link to='/admin/email-settings'>Review settings</Link></section>
+    <section className='gm-platform-stats' aria-label='Platform customer metrics'><StatCard label='Customer organisations' value={stats.totalOrganisations} detail='Excludes GrantMaestro internal workspace' /><StatCard label='Active subscriptions' value={stats.activeSubscriptions} tone='green' /><StatCard label='Subscriptions requiring attention' value={stats.expiredSubscriptions} tone={stats.expiredSubscriptions ? 'red' : 'green'} /><StatCard label='Registered users' value={stats.totalUsers} tone='purple' /><StatCard label='Grants managed' value={stats.totalGrants} tone='amber' /><StatCard label='New organisations, 30 days' value={stats.newOrgsLast30Days} tone='teal' /></section>
+    <section className='gm-platform-overview__grid'>
+      <article className='gm-platform-panel'><header><div><p>Service readiness</p><h2>Platform integrations</h2></div><span>Non-secret status</span></header><div className='gm-platform-status-list'><StatusCard label='Email delivery (AWS SES)' value={stats.integrationStatus?.email} link='/admin/email-settings' /><StatusCard label='Document storage (AWS S3)' value={stats.integrationStatus?.storage} link='/admin/email-settings' linkLabel='View setup guidance' /><StatusCard label='Customer payments' value={stats.integrationStatus?.payment} link='/admin/payment-settings' /><StatusCard label='AI assistance' value={stats.integrationStatus?.ai} link='/admin/email-settings' linkLabel='View settings' /><StatusCard label='Scheduled notifications' value={stats.integrationStatus?.scheduled_notifications} link='/admin/email-settings' linkLabel='Resolve email setup' /></div></article>
+      <article className='gm-platform-panel'><header><div><p>Customer onboarding</p><h2>Recently registered organisations</h2></div><Link to='/admin/subscription-plans'>Subscription plans</Link></header>{stats.recentOrgs?.length ? <div className='gm-platform-org-list'>{stats.recentOrgs.map((org) => <div key={org.organization_id}><strong>{org.organization_name}</strong><span>Registered {formatDate(org.created_at)}</span></div>)}</div> : <div className='gm-platform-empty'><h3>No customer organisations yet</h3><p>New trial organisations will appear here once registration is active.</p></div>}</article>
+    </section>
+  </main>
 }

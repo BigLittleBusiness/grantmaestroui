@@ -15,8 +15,7 @@ export default function Footer() {
               <div className='footer-brand'>
                 <img src={ColorLogo} alt='Grant Maestro' className='footer-logo' />
                 <p className='footer-tagline'>
-                  The all-in-one grant management platform built for Australian
-                  and New Zealand local governments.
+                  The practical grant management workspace for councils and Australian and New Zealand organisations managing inward funding.
                 </p>
                 <div className='footer-security-badges'>
                   <span className='footer-badge'>
@@ -26,7 +25,7 @@ export default function Footer() {
                     <i className='fa fa-map-marker'></i> Australian Hosted
                   </span>
                   <span className='footer-badge'>
-                    <i className='fa fa-shield'></i> Data Privacy Compliant
+                    <i className='fa fa-shield'></i> Privacy-first platform
                   </span>
                 </div>
               </div>
@@ -36,8 +35,8 @@ export default function Footer() {
             <div className='col-lg-2 col-md-6 mb-4'>
               <h6 className='footer-heading'>Product</h6>
               <ul className='footer-links'>
-                <li><a href='#service-features'>Features</a></li>
-                <li><a href='#pricing_section'>Pricing</a></li>
+                <li><a href='/#service-features'>Features</a></li>
+                <li><a href='/#pricing_section'>Pricing</a></li>
                 <li><a href='/councils'>For Councils</a></li>
                 <li><a href='/register'>Start Free Trial</a></li>
                 <li><a href='/login'>Login</a></li>
@@ -48,9 +47,9 @@ export default function Footer() {
             <div className='col-lg-2 col-md-6 mb-4'>
               <h6 className='footer-heading'>Company</h6>
               <ul className='footer-links'>
-                <li><a href='#fun-facts'>About Us</a></li>
-                <li><a href='#clients-testmonials'>Our Clients</a></li>
-                <li><a href='mailto:hello@grantmaestro.com.au'>Contact Us</a></li>
+                <li><a href='/councils'>Why GrantMaestro for councils</a></li>
+                <li><a href='/support'>Support centre</a></li>
+                <li><a href='mailto:hello@grantmaestro.com.au'>Contact us</a></li>
               </ul>
             </div>
 
@@ -68,12 +67,12 @@ export default function Footer() {
               <h6 className='footer-heading'>Support</h6>
               <ul className='footer-links'>
                 <li>
-                  <a href='mailto:support@grantmaestro.com.au'>
-                    <i className='fa fa-envelope'></i> Email Support
+                  <a href='/support'>
+                    <i className='fa fa-life-ring'></i> Support centre
                   </a>
                 </li>
                 <li className='footer-support-note'>
-                  We respond within 24–48 hours on business days.
+                  Find onboarding guidance, account help and contact options in one place.
                 </li>
               </ul>
             </div>
@@ -95,7 +94,7 @@ export default function Footer() {
             </div>
             <div className='col-md-4 text-md-end'>
               <p className='footer-privacy-note'>
-                <i className='fa fa-lock'></i> Your data is never shared with third parties.
+                <i className='fa fa-lock'></i> Privacy and handling details are available in our Privacy Policy.
               </p>
             </div>
           </div>

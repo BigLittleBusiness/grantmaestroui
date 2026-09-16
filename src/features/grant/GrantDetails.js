@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchGrant } from './grantSlice'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import GeneralInformation from 'features/grant/grantDetailsFeature/GeneralInformation'
 import WonLost from 'features/grant/grantDetailsFeature/WonLost'
 import Internal from 'features/grant/grantDetailsFeature/Internal'
@@ -9,6 +9,8 @@ import TeamTask from 'features/grant/grantDetailsFeature/TeamTask'
 import GrantNote from 'features/grant/GrantNote'
 import GrantFileVault from 'features/grant/GrantFileVault'
 import GrantTabs from 'features/grant/GrantTabs'
+import GrantControlPanel from 'features/grant/GrantControlPanel'
+import './grant-workspace.css'
 
 const GrantDetails = () => {
   const { id } = useParams()
@@ -22,18 +24,17 @@ const GrantDetails = () => {
   }, [dispatch, id])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <section className='gm-workspace-state' aria-live='polite'><div className='spinner-border text-primary' aria-hidden='true' /><h2>Loading grant workspace</h2><p>Preparing the grant record, tasks, evidence and reporting details.</p></section>
   }
 
-  if (error) {
-    return <div>Error: {error}</div>
+  if (error || !grant) {
+    return <section className='gm-workspace-state gm-workspace-state--error' role='alert'><h2>We could not open this grant</h2><p>{error || 'The grant may have been removed or you may not have access to it.'}</p><Link to='/grant' className='btn btn-primary'>Return to portfolio</Link></section>
   }
 
-  if (!grant) {
-    return <div>No grant found</div>
-  }
   return (
-    <div>
+    <div className='gm-grant-workspace'>
+      <div className='gm-grant-workspace__breadcrumb'><Link to='/grant'>Grant portfolio</Link><span aria-hidden='true'>/</span><span>{grant.grant_title}</span></div>
+      <GrantControlPanel grantId={id} fallbackGrant={grant} />
       <div className='row'>
         <GeneralInformation grant={grant} />
         <WonLost grant={grant} />
@@ -41,10 +42,7 @@ const GrantDetails = () => {
       </div>
       <div className='row'>
         <div className='col-xl-8 col-md-8'>
-          <div
-            className='card super-admin-dash-card p-2 pt-3'
-            style={{ overflowY: 'auto', overflowX: 'hidden' }}
-          >
+          <div className='card super-admin-dash-card p-2 pt-3'>
             <GrantTabs viewOnly={true} />
           </div>
         </div>

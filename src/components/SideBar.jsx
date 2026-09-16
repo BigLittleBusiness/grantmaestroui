@@ -120,7 +120,7 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
             <li className='menu-title'><span>MANAGEMENT</span></li>
             <li>
               <Link to='/grant' className={`${activeTab === '/grant' ? 'active' : ''}`}>
-                <i className='fe fe-list'></i> <span>Grant List</span>
+                <i className='fe fe-list'></i> <span>Grant portfolio</span>
                 <span className='menu-arrow'></span>
               </Link>
             </li>
@@ -139,31 +139,38 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
               </li>
             )}
             <li>
+              <Link to='/acquittals' className={`${activeTab === '/acquittals' ? 'active' : ''}`}>
+                <i className='fe fe-check-square'></i> <span>Acquittal centre</span>
+                <span className='menu-arrow'></span>
+              </Link>
+            </li>
+            <li>
               <Link to='/tasks' className={`${activeTab === '/tasks' ? 'active' : ''}`}>
                 <i className='fa fa-tasks'></i> <span>Tasks</span>
                 <span className='menu-arrow'></span>
               </Link>
             </li>
-            <li>
-              <Link to='/reports' className={`${activeTab === '/reports' ? 'active' : ''}`}>
-                <i className='fe fe-box'></i> <span>Reports</span>
-                <span className='menu-arrow'></span>
-              </Link>
-            </li>
-
-            <li className='menu-title'><span>SETTINGS</span></li>
-            <li>
-              <Link to='/settings' className={`${activeTab === '/settings' ? 'active' : ''}`}>
-                <i className='fe fe-settings'></i> <span>Settings</span>
-                <span className='menu-arrow'></span>
-              </Link>
-            </li>
-            <li>
-              <Link to='/manage-payment' className={`${activeTab === '/manage-payment' ? 'active' : ''}`}>
-                <i className='fe fe-dollar-sign'></i> <span>Payment</span>
-                <span className='menu-arrow'></span>
-              </Link>
-            </li>
+            {isOrgAdmin && <>
+              <li>
+                <Link to='/reports' className={`${activeTab === '/reports' ? 'active' : ''}`}>
+                  <i className='fe fe-box'></i> <span>Reports</span>
+                  <span className='menu-arrow'></span>
+                </Link>
+              </li>
+              <li className='menu-title'><span>SETTINGS</span></li>
+              <li>
+                <Link to='/settings' className={`${activeTab === '/settings' ? 'active' : ''}`}>
+                  <i className='fe fe-settings'></i> <span>Settings</span>
+                  <span className='menu-arrow'></span>
+                </Link>
+              </li>
+              <li>
+                <Link to='/manage-payment' className={`${activeTab === '/manage-payment' ? 'active' : ''}`}>
+                  <i className='fe fe-dollar-sign'></i> <span>Payment</span>
+                  <span className='menu-arrow'></span>
+                </Link>
+              </li>
+            </>}
 
             <li>
               <Link

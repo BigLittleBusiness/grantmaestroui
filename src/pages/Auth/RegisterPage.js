@@ -17,35 +17,35 @@ const RegisterPage = () => {
 
               <div className='register-panel-benefits'>
                 <div className='register-benefit-item'>
-                  <span className='register-benefit-icon'>✅</span>
+                  <span className='register-benefit-icon' aria-hidden='true'><i className='fa fa-check-circle'></i></span>
                   <div>
                     <strong>14-day free trial</strong>
                     <p>Full access from day one. No credit card required.</p>
                   </div>
                 </div>
                 <div className='register-benefit-item'>
-                  <span className='register-benefit-icon'>🔒</span>
+                  <span className='register-benefit-icon' aria-hidden='true'><i className='fa fa-map-marker'></i></span>
                   <div>
-                    <strong>Secure &amp; Australian Hosted</strong>
-                    <p>Your data is encrypted and stored on AWS Australian servers, never shared with third parties.</p>
+                    <strong>Australian-hosted infrastructure</strong>
+                    <p>Designed for Australian organisations that need clear grant records, shared work and practical governance.</p>
                   </div>
                 </div>
                 <div className='register-benefit-item'>
-                  <span className='register-benefit-icon'>📋</span>
+                  <span className='register-benefit-icon' aria-hidden='true'><i className='fa fa-clipboard'></i></span>
                   <div>
                     <strong>Built for public sector accountability</strong>
-                    <p>Full audit trail and document management meets local government transparency requirements.</p>
+                    <p>Keep grant decisions, supporting notes and documents together for clearer internal accountability.</p>
                   </div>
                 </div>
                 <div className='register-benefit-item'>
-                  <span className='register-benefit-icon'>🗓️</span>
+                  <span className='register-benefit-icon' aria-hidden='true'><i className='fa fa-calendar'></i></span>
                   <div>
-                    <strong>Never miss a deadline</strong>
-                    <p>Automated reminders for closing dates, milestone reports, and acquittals.</p>
+                    <strong>Keep deadlines visible</strong>
+                    <p>Track closing dates, milestone reporting and acquittal commitments in a shared work queue.</p>
                   </div>
                 </div>
                 <div className='register-benefit-item'>
-                  <span className='register-benefit-icon'>👥</span>
+                  <span className='register-benefit-icon' aria-hidden='true'><i className='fa fa-users'></i></span>
                   <div>
                     <strong>Your whole team, in sync</strong>
                     <p>Assign tasks across departments and track progress in real time.</p>
@@ -54,9 +54,9 @@ const RegisterPage = () => {
               </div>
 
               <div className='register-panel-security'>
-                <span className='register-security-badge'>🔐 2FA Account Verification</span>
-                <span className='register-security-badge'>🇦🇺 Australian Hosted</span>
-                <span className='register-security-badge'>🔒 Data Encrypted</span>
+                <span className='register-security-badge'><i className='fa fa-shield' aria-hidden='true'></i> Email verification</span>
+                <span className='register-security-badge'><i className='fa fa-map-marker' aria-hidden='true'></i> Australian-hosted infrastructure</span>
+                <span className='register-security-badge'><i className='fa fa-file-text' aria-hidden='true'></i> Privacy Policy available</span>
               </div>
             </div>
           </div>

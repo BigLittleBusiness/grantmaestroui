@@ -228,6 +228,21 @@ export const removeGrantReport = createAsyncThunk(
   }
 )
 
+export const saveGrantNote = createAsyncThunk(
+  'grants/saveGrantNote',
+  async (values, { rejectWithValue }) => {
+    try {
+      const response = await api.post('grant/grant-notes-manage', values)
+      if (response?.data?.status === false || !response?.data?.data?.note) {
+        return rejectWithValue({ message: response?.data?.message || 'Grant note could not be saved.' })
+      }
+      return response.data.data.note
+    } catch (error) {
+      return rejectWithValue(error?.response?.data || { message: 'Grant note could not be saved.' })
+    }
+  }
+)
+
 // Async thunk to fetch a single grant by ID
 export const fetchEvents = createAsyncThunk(
   'grants/fetchEvents',
@@ -428,6 +443,15 @@ const grantSlice = createSlice({
       .addCase(deleteGrant.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message
+      })
+      .addCase(saveGrantNote.fulfilled, (state, action) => {
+        const note = action.payload
+        state.grant.notes = state.grant.notes || []
+        const index = state.grant.notes.findIndex((item) => Number(item.note_id) === Number(note.note_id))
+        if (index >= 0) state.grant.notes[index] = note
+        else state.grant.notes.unshift(note)
+        state.notes = state.grant.notes
+        toast.success('Grant note saved', { duration: 3000 })
       })
       .addCase(fetchEvents.fulfilled, (state, action) => {
         state.events = action.payload.data.events

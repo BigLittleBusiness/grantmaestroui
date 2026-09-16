@@ -47,26 +47,17 @@ export default function Header({ noButtons = false }) {
               </a>
               {!noButtons && (
                 <div className='header-menu-and-meta'>
-                  <ul id='main-menu' className='main-menu'>
+                  <ul id='main-menu' className='main-menu' aria-label='Primary navigation'>
                     <li>
-                      <a data-scroll-nav='0' href='#header'>
-                        Home
+                      <a href='/'>Home</a>
+                    </li>
+                    <li>
+                      <a data-scroll-nav='2' href='/#service-features'>
+                        How it works
                       </a>
                     </li>
                     <li>
-                      <a data-scroll-nav='1' href='#fun-facts'>
-                        About Us
-                      </a>
-                    </li>
-                    <li>
-                      <a data-scroll-nav='2' href='#service-features'>
-                        Our Services
-                      </a>
-                    </li>
-                    <li>
-                      <a data-scroll-nav='3' href='#clients-testmonials'>
-                        Our Clients
-                      </a>
+                      <a href='/councils'>For councils</a>
                     </li>
                     <li>
                       <a data-scroll-nav='4' href='#pricing_section' onClick={scrollToPricing}>
@@ -89,14 +80,18 @@ export default function Header({ noButtons = false }) {
                       Login
                     </a>
                   </div>
-                  <div
+                  <button
+                    type='button'
                     className='mobile-menu-btn hamburger hamburger--slider'
                     onClick={toggleMenu}
+                    aria-controls='mobile-menu-wrap'
+                    aria-expanded={isMenuOpen}
+                    aria-label='Toggle main menu'
                   >
                     <span className='hamburger-box'>
                       <span className='hamburger-inner'></span>
                     </span>
-                  </div>
+                  </button>
                 </div>
               )}
             </div>
@@ -108,42 +103,15 @@ export default function Header({ noButtons = false }) {
             <div className='row'>
               <div className='col-md-12'>
                 <div id='mobile-menu'>
-                  <ul className='mobile-menu'>
+                  <ul className='mobile-menu' aria-label='Mobile primary navigation'>
                     <li>
-                      <a
-                        data-scroll-nav='0'
-                        href='#header'
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Home
-                      </a>
+                      <a href='/' onClick={() => setIsMenuOpen(false)}>Home</a>
                     </li>
                     <li>
-                      <a
-                        data-scroll-nav='1'
-                        href='#fun-facts'
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        About Us
-                      </a>
+                      <a href='/#service-features' onClick={() => setIsMenuOpen(false)}>How it works</a>
                     </li>
                     <li>
-                      <a
-                        data-scroll-nav='2'
-                        href='#service-features'
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Our Services
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        data-scroll-nav='3'
-                        href='#clients-testmonials'
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Our Clients
-                      </a>
+                      <a href='/councils' onClick={() => setIsMenuOpen(false)}>For councils</a>
                     </li>
                     <li>
                       <a

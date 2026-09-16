@@ -1,416 +1,112 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useTable, useSortBy, usePagination, useFilters } from 'react-table'
-import { fetchTasks, setSelectedTask, deleteTask } from './tasksSlice'
-import ErrorBoundary from '../../components/ErrorBoundary'
+import { Link, useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { fetchTasks, deleteTask } from './tasksSlice'
+import { fetchTeamMembers } from 'features/teamMember/teamMemberSlice'
 import './task.css'
-import { useNavigate } from 'react-router-dom'
 
-// ---------------------------------------------------------------------------
-// Priority helpers — stored in localStorage (no priority col in DB)
-// ---------------------------------------------------------------------------
-const PRIORITY_KEY = 'gm_task_priorities'
-
-const loadPriorities = () => {
-  try {
-    return JSON.parse(localStorage.getItem(PRIORITY_KEY) || '{}')
-  } catch {
-    return {}
-  }
+const priorityRank = { high: 0, medium: 1, low: 2 }
+const formatDate = (value) => value ? new Date(`${String(value).slice(0, 10)}T12:00:00`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : 'No due date'
+const dueDays = (value) => {
+  if (!value) return null
+  const due = new Date(`${String(value).slice(0, 10)}T12:00:00`)
+  const today = new Date(); today.setHours(12, 0, 0, 0)
+  return Math.round((due - today) / 86400000)
 }
-
-const savePriorities = (map) => {
-  localStorage.setItem(PRIORITY_KEY, JSON.stringify(map))
+const dueLabel = (task) => {
+  const days = dueDays(task.targeted_completion_date)
+  if (days === null) return 'No due date'
+  if (String(task.status || task.task_status).toLowerCase() === 'completed') return formatDate(task.targeted_completion_date)
+  if (days < 0) return `${Math.abs(days)}d overdue`
+  if (days === 0) return 'Due today'
+  if (days === 1) return 'Due tomorrow'
+  return `${days}d remaining`
 }
+const labelise = (value) => value ? String(value).replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()) : 'Not set'
+const taskTitle = (task) => task.description || task.task_description || 'Untitled task'
 
-const PRIORITY_OPTIONS = ['High', 'Medium', 'Low']
-
-const PRIORITY_BADGE = {
-  High:   { cls: 'gm-priority--high',   label: 'High' },
-  Medium: { cls: 'gm-priority--medium', label: 'Med'  },
-  Low:    { cls: 'gm-priority--low',    label: 'Low'  },
-}
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-const TaskList = ({ filterData }) => {
-  const tasks = useSelector((state) => state.tasks.tasks)
-
+export default function TaskList({ filterData = {} }) {
+  const tasks = useSelector((state) => state.tasks.tasks || [])
+  const status = useSelector((state) => state.tasks.status)
+  const user = useSelector((state) => state.auth?.user)
+  const teamMembers = useSelector((state) => state.teamMember?.teamMembers || [])
+  const isOrganisationAdmin = Number(user?.user_type) === 1
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState(filterData.status || '')
+  const [priorityFilter, setPriorityFilter] = useState('')
+  const [ownerFilter, setOwnerFilter] = useState('')
+  const [deleteCandidate, setDeleteCandidate] = useState(null)
+  const [removing, setRemoving] = useState(false)
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [taskToDelete, setTaskToDelete] = useState(null)
+  useEffect(() => { dispatch(fetchTasks()); dispatch(fetchTeamMembers()) }, [dispatch])
 
-  // Priority map: { [taskId]: 'High' | 'Medium' | 'Low' }
-  const [priorities, setPriorities] = useState(loadPriorities)
+  const filtered = useMemo(() => tasks.filter((task) => {
+    const text = search.trim().toLowerCase()
+    const matchesText = !text || [taskTitle(task), task.grant, task.assignedTo, task.task_assigned_to_name, task.task_type].filter(Boolean).some((value) => String(value).toLowerCase().includes(text))
+    const matchesStatus = !statusFilter || String(task.status || task.task_status) === statusFilter
+    const matchesPriority = !priorityFilter || String(task.priority || '').toLowerCase() === priorityFilter
+    const matchesOwner = !ownerFilter || String(task.task_assigned_to_id) === String(ownerFilter)
+    const matchesGrant = !filterData.grant_id || String(task.grant_id) === String(filterData.grant_id)
+    const matchesMember = !filterData.teamMember_id || String(task.task_assigned_to_id) === String(filterData.teamMember_id)
+    return matchesText && matchesStatus && matchesPriority && matchesOwner && matchesGrant && matchesMember
+  }).sort((a, b) => {
+    const aOpen = String(a.status || a.task_status) === 'completed' ? 1 : 0
+    const bOpen = String(b.status || b.task_status) === 'completed' ? 1 : 0
+    return (aOpen - bOpen) || ((priorityRank[String(a.priority || '').toLowerCase()] ?? 3) - (priorityRank[String(b.priority || '').toLowerCase()] ?? 3)) || ((dueDays(a.targeted_completion_date) ?? 9999) - (dueDays(b.targeted_completion_date) ?? 9999))
+  }), [tasks, search, statusFilter, priorityFilter, ownerFilter, filterData])
 
-  const handlePriorityChange = useCallback((taskId, value) => {
-    setPriorities((prev) => {
-      const next = { ...prev, [taskId]: value }
-      savePriorities(next)
-      return next
-    })
-  }, [])
+  const needsAttention = filtered.filter((task) => {
+    const days = dueDays(task.targeted_completion_date)
+    return String(task.status || task.task_status).toLowerCase() !== 'completed' && days !== null && days <= 7
+  }).length
 
-  useEffect(() => {
-    if (!tasks.length) {
-      dispatch(fetchTasks())
-    }
-  }, [dispatch, tasks.length])
-
-  // Filtered data — computed before the early-return empty state so hooks are
-  // always called in the same order regardless of whether tasks exist.
-  const filteredData = useMemo(() => {
-    if (!tasks.length) return []
-
-    return tasks.filter((task) => {
-      let matchesGrant = true
-      let matchedTeamMember = true
-      let matchesStatus = true
-      if (filterData.grant_id) {
-        matchesGrant =
-          task.grant_id.toString() === filterData.grant_id.toString()
-      }
-      if (filterData.teamMember_id) {
-        matchedTeamMember =
-          task.task_assigned_to_id.toString() ===
-          filterData.teamMember_id.toString()
-      }
-      if (filterData.status) {
-        matchesStatus = task.status.toString() === filterData.status.toString()
-      }
-
-      return matchesGrant && matchedTeamMember && matchesStatus
-    })
-  }, [tasks, filterData])
-
-  const data = useMemo(
-    () => (filteredData.length > 0 ? filteredData : [{ id: '' }]),
-    [filteredData]
-  )
-
-  const columns = useMemo(
-    () => [
-      // Priority flag column
-      {
-        Header: 'Priority',
-        id: 'priority',
-        accessor: (row) => priorities[row.id] || '',
-        Cell: ({ row }) => {
-          const taskId  = row.original.id
-          const current = priorities[taskId] || ''
-          const badge   = PRIORITY_BADGE[current]
-          return (
-            <div className='gm-priority-cell' onClick={(e) => e.stopPropagation()}>
-              {badge && (
-                <span className={`gm-priority-badge ${badge.cls}`}>
-                  {badge.label}
-                </span>
-              )}
-              <select
-                className='gm-priority-select'
-                value={current}
-                onChange={(e) => handlePriorityChange(taskId, e.target.value)}
-                title='Set priority'
-              >
-                <option value=''>—</option>
-                {PRIORITY_OPTIONS.map((p) => (
-                  <option key={p} value={p}>{p}</option>
-                ))}
-              </select>
-            </div>
-          )
-        },
-      },
-      {
-        Header: 'Grant',
-        accessor: 'grant',
-        Cell: ({ value }) => (
-          <span
-            className='grant-link'
-            onClick={() => navigate(`/grant/${value}`, { replace: true })}
-          >
-            {value}
-          </span>
-        ),
-      },
-      {
-        Header: 'Assigned To',
-        accessor: 'assignedTo',
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-        Cell: ({ value }) => {
-          const lower = (value || '').toLowerCase()
-          const cls =
-            lower === 'completed'  ? 'bg-success' :
-            lower === 'inprogress' ? 'bg-primary'  :
-            lower === 'pending'    ? 'bg-warning text-dark' :
-            lower === 'assigned'   ? 'bg-info text-dark'    :
-            'bg-secondary'
-          return <span className={`badge ${cls}`}>{value}</span>
-        },
-      },
-      {
-        Header: 'Description',
-        accessor: 'description',
-      },
-      // Due date column with overdue indicator
-      {
-        Header: 'Due Date',
-        accessor: 'targeted_completion_date',
-        Cell: ({ value, row }) => {
-          if (!value) return <span className='text-muted'>—</span>
-          const isOverdue =
-            new Date(value) < new Date() &&
-            (row.original.status || '').toLowerCase() !== 'completed'
-          return (
-            <span className={isOverdue ? 'gm-due-date--overdue' : 'gm-due-date'}>
-              {isOverdue && <span className='gm-overdue-icon' title='Overdue'>⚠ </span>}
-              {value}
-            </span>
-          )
-        },
-      },
-      {
-        Header: 'Actions',
-        accessor: 'actions',
-        Cell: ({ row }) => (
-          <div>
-            <button
-              onClick={() => navigate(`/edit-task/${row.original.id}`)}
-              className='btn btn-sm btn-primary me-2'
-            >
-              <i className='fa fa-edit'></i>
-            </button>
-            <button
-              onClick={() => handleDeleteClick(row.original.id)}
-              className='btn btn-sm btn-danger me-2'
-            >
-              <i className='fa fa-trash'></i>
-            </button>
-            <button
-              onClick={() => navigate(`/view-task/${row.original.id}`)}
-              className='btn btn-sm btn-info'
-            >
-              <i className='fa fa-eye'></i>
-            </button>
-          </div>
-        ),
-      },
-    ],
-    [navigate, priorities, handlePriorityChange]
-  )
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    nextPage,
-    previousPage,
-    setPageSize,
-    gotoPage,
-    state: { pageIndex, pageSize },
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0 },
-    },
-    useFilters,
-    useSortBy,
-    usePagination
-  )
-
-  const handleTaskClick = (task) => {
-    dispatch(setSelectedTask(task))
-  }
-
-  const handleDeleteClick = (taskId) => {
-    dispatch(deleteTask(taskId))
-    // setTaskToDelete(taskId)
-    // setShowDeleteModal(true)
-  }
-
-  // const confirmDelete = () => {
-  //   if (taskToDelete) {
-  //     dispatch(deleteTask(taskToDelete))
-  //     setShowDeleteModal(false)
-  //     setTaskToDelete(null)
-  //   }
-  // }
-
-  // const cancelDelete = () => {
-  //   setShowDeleteModal(false)
-  //   setTaskToDelete(null)
-  // }
-
-  const getPageRange = (current, total) => {
-    const range = []
-    const maxPagesToShow = 4
-    const start = Math.max(0, current - Math.floor(maxPagesToShow / 2))
-    const end = Math.min(total, start + maxPagesToShow)
-
-    for (let i = start; i < end; i++) {
-      range.push(i)
-    }
-
-    return range
-  }
-  if (!tasks.length) {
-    return (
-      <div className='gm-empty-state'>
-        <div className='gm-empty-state__icon'>✅</div>
-        <div className='gm-empty-state__title'>No tasks yet</div>
-        <p className='gm-empty-state__body'>
-          Tasks assigned to grants will appear here. Add a task from any grant record to get started.
-        </p>
-      </div>
-    )
+  const confirmDelete = async () => {
+    if (!deleteCandidate) return
+    setRemoving(true)
+    try {
+      await dispatch(deleteTask(deleteCandidate.id)).unwrap()
+      toast.success('Task deleted.')
+      setDeleteCandidate(null)
+    } catch (error) {
+      toast.error(error?.message || 'The task could not be deleted.')
+    } finally { setRemoving(false) }
   }
 
   return (
-    <ErrorBoundary>
-      {/* {showDeleteModal && (
-        <>
-          <div className='modal fade show'></div>
-          <div className='modal-content'>
-            <p>Are you sure you want to delete this task?</p>
-            <button onClick={confirmDelete} className='btn btn-danger'>
-              Confirm
-            </button>
-            <button onClick={cancelDelete} className='btn btn-secondary'>
-              Cancel
-            </button>
-          </div>
-        </>
-      )} */}
-      <div className='col-sm-12'>
-        <div className='card-table'>
-          <div className='card-body'>
-            <div className='table-responsive'>
-              <table
-                {...getTableProps()}
-                className='table task-table table-striped table-hover datatable task-table'
-              >
-                <thead>
-                  {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                      {headerGroup.headers.map((column, index) => (
-                        <th
-                          {...column.getHeaderProps(
-                            column.getSortByToggleProps()
-                          )}
-                          key={index}
-                        >
-                          {column.render('Header')}
-                          <span>
-                            {column.isSorted
-                              ? column.isSortedDesc
-                                ? ' 🔽'
-                                : ' 🔼'
-                              : ' ⬍'}
-                          </span>
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                  {page.map((row) => {
-                    prepareRow(row)
-                    return (
-                      <tr
-                        {...row.getRowProps()}
-                        onClick={() => handleTaskClick(row.original)}
-                        className={
-                          row.original.targeted_completion_date &&
-                          new Date(row.original.targeted_completion_date) < new Date() &&
-                          (row.original.status || '').toLowerCase() !== 'completed'
-                            ? 'gm-task-row--overdue'
-                            : ''
-                        }
-                      >
-                        {row.cells.map((cell, index) => (
-                          <td key={index} {...cell.getCellProps()}>
-                            {cell.render('Cell')}
-                          </td>
-                        ))}
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-              <nav aria-label='Page navigation example'>
-                <ul className='pagination justify-content-end'>
-                  <li
-                    className={`page-item ${
-                      !canPreviousPage ? 'disabled' : ''
-                    }`}
-                  >
-                    <button
-                      className='page-link'
-                      onClick={() => previousPage()}
-                      disabled={!canPreviousPage}
-                    >
-                      Previous
-                    </button>
-                  </li>
-                  {getPageRange(pageIndex, pageOptions.length).map(
-                    (pageNumber) => (
-                      <li
-                        key={pageNumber}
-                        className={`page-item ${
-                          pageNumber === pageIndex ? 'active' : ''
-                        }`}
-                      >
-                        <button
-                          className='page-link'
-                          onClick={() => gotoPage(pageNumber)}
-                        >
-                          {pageNumber + 1}
-                        </button>
-                      </li>
-                    )
-                  )}
-                  <li className={`page-item ${!canNextPage ? 'disabled' : ''}`}>
-                    <button
-                      className='page-link'
-                      onClick={() => nextPage()}
-                      disabled={!canNextPage}
-                    >
-                      Next
-                    </button>
-                  </li>
-                  <li className='page-item'>
-                    <select
-                      className='form-select'
-                      value={pageSize}
-                      onChange={(e) => setPageSize(Number(e.target.value))}
-                    >
-                      {[10, 20, 30, 40, 50].map((pageSize) => (
-                        <option key={pageSize} value={pageSize}>
-                          Show {pageSize}
-                        </option>
-                      ))}
-                    </select>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ErrorBoundary>
+    <section className='gm-task-list'>
+      <header className='gm-task-list__header'>
+        <div><p>Shared work queue</p><h1>Grant tasks</h1><span>Prioritise the work that protects funding, evidence and compliance.</span></div>
+        <Link className='btn btn-primary' to='/add-task'>Assign task</Link>
+      </header>
+      <section className='gm-task-list__filters' aria-label='Task filters'>
+        <label className='gm-task-list__search'><span className='visually-hidden'>Search tasks</span><input value={search} onChange={(event) => setSearch(event.target.value)} type='search' placeholder='Search tasks, grants or people' /></label>
+        <label><span>Status</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value=''>All statuses</option><option value='assigned'>Assigned</option><option value='pending'>Waiting / pending</option><option value='inprogress'>In progress</option><option value='completed'>Completed</option></select></label>
+        <label><span>Priority</span><select value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)}><option value=''>All priorities</option><option value='high'>High</option><option value='medium'>Medium</option><option value='low'>Low</option></select></label>
+        <label><span>Accountable person</span><select value={ownerFilter} onChange={(event) => setOwnerFilter(event.target.value)}><option value=''>All people</option>{teamMembers.map((member) => <option key={member.user_id} value={member.user_id}>{member.full_name || `${member.first_name || ''} ${member.last_name || ''}`.trim() || member.email}</option>)}</select></label>
+        <button type='button' className='btn btn-link' onClick={() => { setSearch(''); setStatusFilter(''); setPriorityFilter(''); setOwnerFilter('') }}>Clear filters</button>
+      </section>
+      <div className='gm-task-list__summary' aria-live='polite'><strong>{filtered.length}</strong> task{filtered.length === 1 ? '' : 's'} shown{needsAttention ? <span className='gm-task-list__attention'>{needsAttention} need attention in the next 7 days</span> : null}</div>
+
+      {status === 'loading' && !tasks.length ? <section className='gm-workspace-state' aria-live='polite'><div className='spinner-border text-primary' aria-hidden='true' /><h2>Loading tasks</h2><p>Preparing your shared grant work queue.</p></section> : filtered.length ? <section className='gm-task-list__records' aria-label='Grant task results'>
+        <div className='gm-task-list__columns' aria-hidden='true'><span>Task</span><span>Grant and stage</span><span>Owner</span><span>Priority</span><span>Due</span><span>Actions</span></div>
+        {filtered.map((task) => {
+          const overdue = dueDays(task.targeted_completion_date) < 0 && String(task.status || task.task_status).toLowerCase() !== 'completed'
+          const taskStatus = task.status || task.task_status
+          return <article key={task.id} className={`gm-task-record ${overdue ? 'gm-task-record--overdue' : ''}`}>
+            <div className='gm-task-record__primary'><Link to={`/view-task/${task.id}`}>{taskTitle(task)}</Link><span>{labelise(task.task_type)}{task.estimated_effort_hours ? ` · ${task.estimated_effort_hours}h estimated` : ''}</span>{task.dependency_note && <small>Blocked by: {task.dependency_note}</small>}</div>
+            <div className='gm-task-record__grant'><strong>{task.grant || 'Grant not recorded'}</strong><span>{labelise(task.grant_stage)}</span></div>
+            <div className='gm-task-record__owner'><strong>{task.assignedTo || task.task_assigned_to_name || 'Unassigned'}</strong><span>{labelise(taskStatus)}</span></div>
+            <div className='gm-task-record__priority'><span className={`gm-priority-badge gm-priority--${String(task.priority || 'medium').toLowerCase()}`}>{labelise(task.priority || 'medium')}</span></div>
+            <div className='gm-task-record__due'><strong className={overdue ? 'text-danger' : ''}>{dueLabel(task)}</strong><span>{formatDate(task.targeted_completion_date)}</span></div>
+            <div className='gm-task-record__actions'><Link to={`/view-task/${task.id}`} className='btn btn-outline-primary btn-sm'>Open</Link><button type='button' className='btn btn-outline-secondary btn-sm' onClick={() => navigate(`/edit-task/${task.id}`)}>Update</button>{isOrganisationAdmin && <button type='button' className='btn btn-link btn-sm text-danger' onClick={() => setDeleteCandidate(task)}>Delete</button>}</div>
+          </article>
+        })}
+      </section> : <section className='gm-task-list__empty'><h2>{tasks.length ? 'No tasks match this view' : 'No tasks have been assigned'}</h2><p>{tasks.length ? 'Clear a filter or choose another work view.' : 'Assign a clear task from a grant record to share ownership and keep deadlines visible.'}</p>{tasks.length ? <button type='button' className='btn btn-outline-primary' onClick={() => { setSearch(''); setStatusFilter(''); setPriorityFilter(''); setOwnerFilter('') }}>Clear filters</button> : <Link className='btn btn-primary' to='/add-task'>Assign first task</Link>}</section>}
+
+      {deleteCandidate && <div className='gm-confirm-backdrop' role='presentation'><section className='gm-confirm-dialog' role='alertdialog' aria-modal='true' aria-labelledby='delete-task-title' aria-describedby='delete-task-description'><h2 id='delete-task-title'>Delete this task?</h2><p id='delete-task-description'>“{taskTitle(deleteCandidate)}” will be removed from your organisation’s work queue. This action can be recovered only by an administrator through system support.</p><div><button type='button' className='btn btn-outline-secondary' onClick={() => setDeleteCandidate(null)} disabled={removing}>Keep task</button><button type='button' className='btn btn-danger' onClick={confirmDelete} disabled={removing}>{removing ? 'Deleting…' : 'Delete task'}</button></div></section></div>}
+    </section>
   )
 }
-
-export default TaskList

@@ -17,6 +17,7 @@ import GrantListPage from 'pages/Grant/GrantListPage'
 import GrantCreatePage from 'pages/Grant/GrantCreatePage'
 import GrantEditPage from 'pages/Grant/GrantEditPage'
 import GrantDetailPage from 'pages/Grant/GrantDetailPage'
+import AcquittalCentrePage from 'pages/Grant/AcquittalCentrePage'
 import ReportPage from 'pages/ReportPage'
 import SettingsPage from 'pages/Settings/SettingsPage'
 import ManagePaymentPage from 'pages/Settings/ManagePaymentPage'
@@ -129,6 +130,14 @@ const ProtectedRoutes = () => {
         element={
           <AuthenticatedLayout>
             <GrantListPage />
+          </AuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/acquittals'
+        element={
+          <AuthenticatedLayout>
+            <AcquittalCentrePage />
           </AuthenticatedLayout>
         }
       />

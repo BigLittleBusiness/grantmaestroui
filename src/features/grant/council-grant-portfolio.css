@@ -1,0 +1,86 @@
+.gm-portfolio {
+  --gm-navy: #163b5c;
+  --gm-blue: #1769aa;
+  --gm-ink: #172b3a;
+  --gm-muted: #627585;
+  --gm-border: #dce5ea;
+  --gm-surface: #fff;
+  --gm-risk: #b42318;
+  --gm-risk-bg: #fff1f0;
+  --gm-amber: #935f00;
+  --gm-amber-bg: #fff7df;
+  --gm-green: #147a49;
+  padding-bottom: 32px;
+}
+
+.gm-portfolio-header { align-items: flex-end; display: flex; gap: 22px; justify-content: space-between; margin: 6px 0 22px; }
+.gm-portfolio-header__eyebrow { color: var(--gm-blue); font-size: .72rem; font-weight: 800; letter-spacing: .08em; margin: 0 0 5px; text-transform: uppercase; }
+.gm-portfolio-header h1 { color: var(--gm-navy); font-size: clamp(1.65rem, 2.4vw, 2.2rem); font-weight: 750; letter-spacing: -.025em; margin: 0; }
+.gm-portfolio-header p:not(.gm-portfolio-header__eyebrow) { color: var(--gm-muted); margin: 6px 0 0; }
+.gm-portfolio-header__actions { display: flex; gap: 10px; }
+
+.gm-portfolio-views { border-bottom: 1px solid var(--gm-border); display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 8px; }
+.gm-portfolio-views button { background: transparent; border: 0; border-radius: 7px; color: #496176; flex: 0 0 auto; font-size: .84rem; font-weight: 700; padding: 8px 12px; }
+.gm-portfolio-views button:hover { background: #edf5fa; color: var(--gm-navy); }
+.gm-portfolio-views button.is-active { background: var(--gm-navy); color: #fff; }
+
+.gm-portfolio-filterbar { align-items: flex-end; background: var(--gm-surface); border: 1px solid var(--gm-border); border-radius: 12px; display: grid; gap: 12px; grid-template-columns: minmax(260px, 1fr) minmax(150px, .35fr) minmax(150px, .35fr) auto; margin-bottom: 12px; padding: 13px; }
+.gm-portfolio-filterbar label { display: grid; gap: 4px; margin: 0; }
+.gm-portfolio-filterbar label > span { color: var(--gm-muted); font-size: .72rem; font-weight: 800; text-transform: uppercase; }
+.gm-portfolio-filterbar input, .gm-portfolio-filterbar select { border: 1px solid #b8c8d2; border-radius: 7px; color: var(--gm-ink); font-size: .88rem; min-height: 39px; padding: 7px 10px; width: 100%; }
+.gm-portfolio-filterbar .btn-link { color: var(--gm-blue); font-size: .82rem; font-weight: 700; padding: 8px 0; text-decoration: none; white-space: nowrap; }
+.gm-portfolio-summary { color: var(--gm-muted); font-size: .8rem; margin: 13px 2px; }
+.gm-portfolio-summary strong { color: var(--gm-navy); }
+
+.gm-portfolio-list { background: var(--gm-surface); border: 1px solid var(--gm-border); border-radius: 12px; overflow: hidden; }
+.gm-portfolio-list__heading, .gm-portfolio-row { align-items: center; display: grid; gap: 14px; grid-template-columns: minmax(190px, 2.1fr) minmax(90px, .8fr) minmax(125px, .9fr) minmax(120px, 1.05fr) minmax(130px, .95fr) minmax(115px, .9fr) minmax(124px, 1fr); }
+.gm-portfolio-list__heading { background: #f6f9fb; color: #536b7d; font-size: .7rem; font-weight: 800; letter-spacing: .04em; padding: 11px 18px; text-transform: uppercase; }
+.gm-portfolio-row { border-top: 1px solid #e8eef2; min-height: 78px; padding: 12px 18px; }
+.gm-portfolio-row:hover { background: #f9fbfc; }
+.gm-portfolio-row__primary, .gm-portfolio-row__owner, .gm-portfolio-row__deadline, .gm-portfolio-row__value { display: grid; gap: 3px; min-width: 0; }
+.gm-portfolio-row__title { color: var(--gm-navy); font-size: .9rem; font-weight: 800; overflow: hidden; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
+.gm-portfolio-row__title:hover { color: var(--gm-blue); text-decoration: underline; }
+.gm-portfolio-row__sub, .gm-portfolio-row__owner span, .gm-portfolio-row__deadline span, .gm-portfolio-row__value span { color: var(--gm-muted); font-size: .73rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-portfolio-row__owner strong, .gm-portfolio-row__deadline strong, .gm-portfolio-row__value strong { color: var(--gm-ink); font-size: .8rem; }
+.gm-portfolio-row__deadline strong.is-urgent { color: var(--gm-risk); }
+.gm-stage-pill, .gm-health-pill { border-radius: 999px; display: inline-flex; font-size: .7rem; font-weight: 800; padding: 5px 8px; white-space: nowrap; }
+.gm-stage-pill { background: #eaf2f8; color: #245a85; }
+.gm-health-pill--good { background: #e8f7ef; color: var(--gm-green); }
+.gm-health-pill--attention { background: var(--gm-amber-bg); color: var(--gm-amber); }
+.gm-health-pill--risk { background: var(--gm-risk-bg); color: var(--gm-risk); }
+.gm-health-pill--neutral { background: #eef2f5; color: #536b7d; }
+.gm-portfolio-row__actions { display: flex; gap: 6px; justify-content: flex-end; }
+.gm-portfolio-row__actions .btn { font-size: .75rem; font-weight: 700; padding: 5px 8px; }
+
+.gm-portfolio-empty { background: var(--gm-surface); border: 1px dashed #b7c8d2; border-radius: 12px; padding: 52px 24px; text-align: center; }
+.gm-portfolio-empty h2 { color: var(--gm-navy); font-size: 1.15rem; margin: 0 0 8px; }
+.gm-portfolio-empty p { color: var(--gm-muted); margin: 0 auto 18px; max-width: 520px; }
+.gm-portfolio button:focus-visible, .gm-portfolio a:focus-visible, .gm-portfolio input:focus-visible, .gm-portfolio select:focus-visible { box-shadow: 0 0 0 3px rgba(23,105,170,.28); outline: 2px solid transparent; }
+
+@media (max-width: 1199px) {
+  .gm-portfolio-list { overflow-x: auto; }
+  .gm-portfolio-list__heading, .gm-portfolio-row { min-width: 1080px; }
+}
+@media (max-width: 767px) {
+  .gm-portfolio-header { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .gm-portfolio-header__actions { width: 100%; }
+  .gm-portfolio-header__actions .btn { flex: 1; }
+  .gm-portfolio-filterbar { grid-template-columns: 1fr 1fr; }
+  .gm-filter-search { grid-column: 1 / -1; }
+  .gm-portfolio-filterbar .btn-link { justify-self: start; }
+  .gm-portfolio-list { background: transparent; border: 0; border-radius: 0; overflow: visible; }
+  .gm-portfolio-list__heading { display: none; }
+  .gm-portfolio-row { background: var(--gm-surface); border: 1px solid var(--gm-border); border-radius: 10px; display: grid; gap: 11px; grid-template-columns: 1fr 1fr; margin-bottom: 10px; min-width: 0; padding: 15px; }
+  .gm-portfolio-row__primary { grid-column: 1 / -1; }
+  .gm-portfolio-row__stage::before, .gm-portfolio-row__health::before, .gm-portfolio-row__owner::before, .gm-portfolio-row__deadline::before, .gm-portfolio-row__value::before { color: var(--gm-muted); content: attr(data-label); font-size: .67rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+  .gm-portfolio-row__stage::before { content: 'Stage'; }
+  .gm-portfolio-row__health::before { content: 'Health'; }
+  .gm-portfolio-row__owner::before { content: 'Owner'; }
+  .gm-portfolio-row__deadline::before { content: 'Deadline'; }
+  .gm-portfolio-row__value::before { content: 'Value'; }
+  .gm-portfolio-row__actions { grid-column: 1 / -1; justify-content: flex-start; padding-top: 2px; }
+}
+@media (max-width: 420px) {
+  .gm-portfolio-filterbar, .gm-portfolio-row { grid-template-columns: 1fr; }
+  .gm-portfolio-row__primary, .gm-portfolio-row__actions { grid-column: auto; }
+}

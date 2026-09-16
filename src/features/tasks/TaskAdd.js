@@ -1,167 +1,93 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import toast from 'react-hot-toast'
 import { addNewTask } from './tasksSlice'
 import { fetchTeamMembers } from '../teamMember/teamMemberSlice'
 import { fetchGrants } from '../grant/grantSlice'
+import './task-work-form.css'
+import AIDraftPanel from 'components/AIDraftPanel'
+
+const TASK_TYPES = ['research', 'application', 'evidence', 'finance', 'review', 'approval', 'communication', 'other']
+const STAGES = ['opportunity', 'suitability', 'submitted', 'outcome', 'acquittal']
+const labelise = (value) => value.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())
 
 const validationSchema = yup.object({
-  grant_id: yup.number().required('Please select grant'),
-  task_assigned_to: yup.number().required('Please select grant'),
-  task_description: yup.string().required('Please enter description'),
-  task_status: yup.string().required('Status is required'),
-  targeted_completion_date: yup.date().required('Submission date is required'),
+  grant_id: yup.number().required('Select the related grant.'),
+  task_assigned_to: yup.number().required('Select the person accountable for this work.'),
+  task_description: yup.string().trim().max(5000).required('Describe the work to be completed.'),
+  task_status: yup.string().required('Select a task status.'),
+  task_priority: yup.string().required('Select a priority.'),
+  targeted_completion_date: yup.date().required('Select a due date.'),
+  estimated_effort_hours: yup.number().min(0, 'Enter zero or more hours.').max(9999, 'Enter a realistic effort estimate.').nullable(),
 })
 
-const TaskAdd = () => {
-  const teamMembers = useSelector((state) => state.teamMember.teamMembers)
-  const grants = useSelector((state) => state.grant.grants)
+const FieldError = ({ id, error }) => error ? <div id={id} className='invalid-feedback d-block' role='alert'>{error}</div> : null
+
+export default function TaskAdd() {
+  const teamMembers = useSelector((state) => state.teamMember.teamMembers || [])
+  const grants = useSelector((state) => state.grant.grants || [])
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(fetchTeamMembers())
-    dispatch(fetchGrants({ searchText: '' }))
-  }, [])
+    dispatch(fetchGrants({}))
+  }, [dispatch])
 
   const formik = useFormik({
     initialValues: {
-      grant_id: '',
-      task_assigned_to: '',
-      task_description: '',
-      task_status: '',
-      targeted_completion_date: '',
+      grant_id: '', task_assigned_to: '', task_description: '', task_status: 'assigned', task_priority: 'medium', task_type: 'application', grant_stage: '', targeted_completion_date: '', estimated_effort_hours: '', dependency_note: '', checklist_text: '', completion_evidence: '',
     },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      dispatch(addNewTask({ values }))
-        .unwrap()
-        .then(() => {
-          navigate('/tasks')
-        })
-        .catch((err) => {
-          console.error('Failed to login: ', err)
-        })
+    validationSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const { checklist_text, estimated_effort_hours, ...rest } = values
+        await dispatch(addNewTask({ values: {
+          ...rest,
+          estimated_effort_hours: estimated_effort_hours === '' ? null : Number(estimated_effort_hours),
+          checklist_items: checklist_text.split('\n').map((line) => line.trim()).filter(Boolean),
+        } })).unwrap()
+        navigate('/tasks')
+      } catch (error) {
+        toast.error(error?.message || 'The task could not be assigned. Please review the details and try again.')
+      } finally {
+        setSubmitting(false)
+      }
     },
   })
 
+  const selectedGrant = grants.find((grant) => String(grant.organization_grant_id || grant.id) === String(formik.values.grant_id))
+  const selectedAssignee = teamMembers.find((member) => String(member.user_id) === String(formik.values.task_assigned_to))
+
   return (
-    <div className='content container-fluid pb-0 p-0'>
-      <form onSubmit={formik.handleSubmit}>
-        <div className='card'>
-          <div className='card-body'>
-            <div className='mb-3'>
-              <label className='form-label'>Grant:</label>
-              <select
-                name='grant_id'
-                className='form-select'
-                value={formik.values.grant_id}
-                onChange={formik.handleChange}
-              >
-                <option value=''>Select grant</option>
-                {grants.map((el, index) => (
-                  <>
-                    <option value={el.organization_grant_id} key={index}>
-                      {el.grant_title}
-                    </option>
-                  </>
-                ))}
-              </select>
-              {formik.errors.grant_id && (
-                <div className='text-danger'>{formik.errors.grant_id}</div>
-              )}
-            </div>
-            <div className='mb-3'>
-              <label className='form-label'>Task Assigned To:</label>
-              <select
-                name='task_assigned_to'
-                className='form-select'
-                value={formik.values.task_assigned_to}
-                onChange={formik.handleChange}
-              >
-                <option value=''>Select member</option>
-                {teamMembers.map((el, index) => (
-                  <>
-                    <option value={el.user_id} key={index}>
-                      {el.full_name}
-                    </option>
-                  </>
-                ))}
-              </select>
-              {formik.errors.task_assigned_to && (
-                <div className='text-danger'>
-                  {formik.errors.task_assigned_to}
-                </div>
-              )}
-            </div>
-            <div className='mb-3'>
-              <label className='form-label'>Task Description:</label>
-              <input
-                name='task_description'
-                type='text'
-                className='form-control'
-                placeholder='Enter desctiption'
-                value={formik.values.task_description}
-                onChange={formik.handleChange}
-              />
-              {formik.errors.task_description && (
-                <div className='text-danger'>
-                  {formik.errors.task_description}
-                </div>
-              )}
-            </div>
-            <div className='mb-3'>
-              <label className='form-label'>Task Due Date:</label>
-              <input
-                type='date'
-                name='targeted_completion_date'
-                className='form-control'
-                onChange={formik.handleChange}
-                value={formik.values.targeted_completion_date}
-              />
-              {formik.errors.targeted_completion_date && (
-                <div className='text-danger'>
-                  {formik.errors.targeted_completion_date}
-                </div>
-              )}
-            </div>
-            <div className='mb-3'>
-              <label className='form-label'>Task Status:</label>
-              <select
-                name='task_status'
-                className='form-select'
-                value={formik.values.task_status}
-                onChange={formik.handleChange}
-              >
-                <option value=''>Select status</option>
-                <option value='assigned'>Assigned</option>
-                <option value='pending'>Pending</option>
-                <option value='inprogress'>Inprogress</option>
-                <option value='completed'>Completed</option>
-              </select>
-              {formik.errors.task_status && (
-                <div className='text-danger'>{formik.errors.task_status}</div>
-              )}
-            </div>
-            <div className='d-flex gap-3'>
-              <button
-                type='button'
-                className='btn btn-secondary'
-                onClick={() => navigate('/tasks')}
-              >
-                Cancel
-              </button>
-              <button type='submit' className='btn btn-primary'>
-                Assign Task
-              </button>
-            </div>
+    <main className='gm-task-work-form content container-fluid pb-0 p-0'>
+      <header className='gm-task-work-form__header'>
+        <div><p>Team work planning</p><h1>Assign a grant task</h1><span>Give one person a clear action, due date and definition of done.</span></div>
+      </header>
+      <form onSubmit={formik.handleSubmit} noValidate>
+        <section className='gm-task-work-form__card'>
+          <div className='gm-task-work-form__section'><h2>Context and ownership</h2><p>Connect this work to the grant and the person responsible for completing it.</p></div>
+          <div className='gm-task-work-form__grid'>
+            <label className='gm-task-field gm-task-field--wide' htmlFor='task-grant'><span>Related grant <b aria-hidden='true'>*</b></span><select id='task-grant' name='grant_id' value={formik.values.grant_id} onChange={formik.handleChange} onBlur={formik.handleBlur} aria-describedby='task-grant-error'><option value=''>Select a grant</option>{grants.map((grant) => <option value={grant.organization_grant_id || grant.id} key={grant.organization_grant_id || grant.id}>{grant.grant_title}</option>)}</select><FieldError id='task-grant-error' error={formik.touched.grant_id && formik.errors.grant_id} /></label>
+            <label className='gm-task-field' htmlFor='task-assignee'><span>Accountable person <b aria-hidden='true'>*</b></span><select id='task-assignee' name='task_assigned_to' value={formik.values.task_assigned_to} onChange={formik.handleChange} onBlur={formik.handleBlur} aria-describedby='task-assignee-error'><option value=''>Select a team member</option>{teamMembers.map((member) => <option value={member.user_id} key={member.user_id}>{member.full_name || `${member.first_name || ''} ${member.last_name || ''}`.trim() || member.email}</option>)}</select><FieldError id='task-assignee-error' error={formik.touched.task_assigned_to && formik.errors.task_assigned_to} /></label>
+            <label className='gm-task-field' htmlFor='task-stage'><span>Related grant stage</span><select id='task-stage' name='grant_stage' value={formik.values.grant_stage} onChange={formik.handleChange}><option value=''>Not stage-specific</option>{STAGES.map((stage) => <option value={stage} key={stage}>{labelise(stage)}</option>)}</select></label>
           </div>
-        </div>
+          <div className='gm-task-work-form__section'><h2>Work to complete</h2><p>Use a specific, outcome-focused description. The checklist is optional and will be shared with the assigned person.</p></div>
+          <div className='gm-task-work-form__grid'>
+            <div className='gm-task-field gm-task-field--full'><label htmlFor='task-description'><span>Task description <b aria-hidden='true'>*</b></span></label><textarea id='task-description' name='task_description' value={formik.values.task_description} onChange={formik.handleChange} onBlur={formik.handleBlur} aria-describedby='task-description-help task-description-error' placeholder='e.g. Confirm finance co-contribution and attach approved budget.' rows='3' /><small id='task-description-help'>Describe the deliverable, not just the topic.</small><AIDraftPanel type='task' disabled={!selectedGrant?.grant_title} payload={{ grant_title: selectedGrant?.grant_title, task_type: formik.values.task_type, assignee_role: selectedAssignee?.user_role || 'Grant team member', due_date: formik.values.targeted_completion_date }} onInsert={(description) => formik.setFieldValue('task_description', description)} /><FieldError id='task-description-error' error={formik.touched.task_description && formik.errors.task_description} /></div>
+            <label className='gm-task-field' htmlFor='task-type'><span>Work type</span><select id='task-type' name='task_type' value={formik.values.task_type} onChange={formik.handleChange}>{TASK_TYPES.map((type) => <option key={type} value={type}>{labelise(type)}</option>)}</select></label>
+            <label className='gm-task-field' htmlFor='task-priority'><span>Priority <b aria-hidden='true'>*</b></span><select id='task-priority' name='task_priority' value={formik.values.task_priority} onChange={formik.handleChange} onBlur={formik.handleBlur}><option value='high'>High — time critical or material risk</option><option value='medium'>Medium — planned work</option><option value='low'>Low — useful, not urgent</option></select></label>
+            <label className='gm-task-field' htmlFor='task-due-date'><span>Due date <b aria-hidden='true'>*</b></span><input id='task-due-date' type='date' name='targeted_completion_date' value={formik.values.targeted_completion_date} onChange={formik.handleChange} onBlur={formik.handleBlur} aria-describedby='task-date-error' /><FieldError id='task-date-error' error={formik.touched.targeted_completion_date && formik.errors.targeted_completion_date} /></label>
+            <label className='gm-task-field' htmlFor='task-effort'><span>Estimated effort (hours)</span><input id='task-effort' type='number' min='0' step='0.5' name='estimated_effort_hours' value={formik.values.estimated_effort_hours} onChange={formik.handleChange} onBlur={formik.handleBlur} placeholder='e.g. 2.5' /><FieldError id='task-effort-error' error={formik.touched.estimated_effort_hours && formik.errors.estimated_effort_hours} /></label>
+            <label className='gm-task-field gm-task-field--wide' htmlFor='task-dependency'><span>Dependency or blocker</span><input id='task-dependency' type='text' name='dependency_note' value={formik.values.dependency_note} onChange={formik.handleChange} placeholder='e.g. Awaiting budget approval from Finance.' maxLength='5000' /></label>
+            <label className='gm-task-field gm-task-field--full' htmlFor='task-checklist'><span>Checklist items</span><textarea id='task-checklist' name='checklist_text' value={formik.values.checklist_text} onChange={formik.handleChange} placeholder={'One item per line\nE.g. Obtain approval email\nAttach approved budget'} rows='4' /><small>Use one concise action per line. These items are shared, not browser-only.</small></label>
+          </div>
+          <div className='gm-task-work-form__actions'><button type='button' className='btn btn-outline-secondary' onClick={() => navigate('/tasks')}>Cancel</button><button type='submit' className='btn btn-primary' disabled={formik.isSubmitting}>{formik.isSubmitting ? 'Assigning…' : 'Assign task'}</button></div>
+        </section>
       </form>
-    </div>
+    </main>
   )
 }
-
-export default TaskAdd

@@ -1,0 +1,5 @@
+.gm-grant-workspace { padding-bottom: 26px; }
+.gm-grant-workspace__breadcrumb { align-items:center; color:#687f91; display:flex; font-size:.8rem; gap:8px; margin:2px 0 12px; }
+.gm-grant-workspace__breadcrumb a { color:#1769aa; font-weight:700; text-decoration:none; }.gm-grant-workspace__breadcrumb a:hover { text-decoration:underline; }
+.gm-workspace-state { align-items:center; background:#fff; border:1px solid #dce5ea; border-radius:12px; display:flex; flex-direction:column; justify-content:center; min-height:280px; padding:32px; text-align:center; }.gm-workspace-state h2 { color:#163b5c; font-size:1.15rem; margin:16px 0 6px; }.gm-workspace-state p { color:#627585; margin:0; max-width:480px; }.gm-workspace-state--error { border-color:#f0c9c6; }.gm-workspace-state--error h2 { color:#9f241c; }.gm-workspace-state--error .btn { margin-top:18px; }
+.gm-grant-workspace a:focus-visible { box-shadow:0 0 0 3px rgba(23,105,170,.28); outline:2px solid transparent; }

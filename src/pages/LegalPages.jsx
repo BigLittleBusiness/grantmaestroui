@@ -49,8 +49,12 @@ export const SupportPage = () => (
     <p style={{ color: '#64748b', marginBottom: 8 }}>GrantMaestro Support</p>
     <h1 style={{ color: '#163b5c', fontSize: 36, marginTop: 0 }}>How can we help?</h1>
     <p>For account access, billing, subscription, grants workspace or technical support, email <a href='mailto:support@grantmaestro.com.au'>support@grantmaestro.com.au</a>. Please include your organisation name, the email address associated with your account and a brief description of the issue.</p>
+    <Heading>Get started in your first week</Heading>
+    <p>Begin by adding one live or target funding opportunity, confirming its deadline and assigning an accountable officer. Next, invite the grants, finance and project staff who need to contribute. Use the task work queue to assign the first actions, and use the Acquittal Centre when an awarded grant has evidence, financial reconciliation or submission requirements.</p>
     <Heading>Account access</Heading>
     <p>If you cannot sign in, use the password reset option on the login page first. Invited team members may be asked to set a new password before accessing their workspace.</p>
+    <Heading>Before contacting support</Heading>
+    <p>For a faster response, include the relevant grant name, the page or action you were using, any displayed error text, and the approximate time the issue occurred. Do not include passwords, payment-card details, secret keys or other credentials.</p>
     <Heading>Response times</Heading>
     <p>We aim to respond to support requests within one to two business days. Enterprise customers may have separate support arrangements documented in their agreement.</p>
     <Heading>Security</Heading>

@@ -1,17 +1,15 @@
-export const UniverSitiesBannerH1Text =
-  'From ARC to Horizon Europe-Manage Every Grant in One Place'
-export const UniverSitiesBannerPText =
-  'Track applications, streamline reporting, and keep your PIs on schedule without the spreadsheet chaos.'
-export const defaultH1Text =
-  'The All-in-One Grant Management Platform Built for Local Government'
-export const defaultPText =
-  'Stop losing funding to missed deadlines and spreadsheet chaos. Grant Maestro gives your team a single, secure platform to manage every grant from application to acquittal — so you can focus on delivering outcomes for your community.'
-export const councilH1Text =
-  'The Grant Management Platform Built for Australian and New Zealand Councils'
-export const councilPText =
-  'Centralise every grant, align your team across departments, and never miss a deadline again. Grant Maestro is purpose-built for local government — secure, accountable, and audit-ready from day one.'
-export const nonprofitH1Text = 'More Grants, Less Paperwork'
-export const nonprofitPText =
-  'Grant Maestro helps nonprofits track deadlines, collaborate on applications, and report on wins—so you can focus on your mission.'
-export const religiousH1Text = 'Steward Your Resources Wisely'
-export const religiousPText = `Grant Maestro helps churches and religious nonprofits manage grants, track donor-funded projects, and report with integrity—so you can focus on service.`
+export const UniverSitiesH1Text = 'Coordinate Research Funding From Opportunity to Final Report'
+export const UniverSitiesBannerPText = 'Give research offices, investigators and finance teams one shared record for applications, deadlines, evidence and reporting.'
+export const UniverSitiesBannerH1Text = UniverSitiesH1Text
+
+export const defaultH1Text = 'A Clear, Accountable Way to Manage Every Grant'
+export const defaultPText = 'GrantMaestro brings grant opportunities, deadlines, team tasks, evidence and acquittals into one practical workspace—so your organisation can focus on stronger funding outcomes.'
+
+export const councilH1Text = 'One Accountable View of Every Council Grant'
+export const councilPText = 'Bring grants, finance and delivery teams together around each opportunity, deadline and acquittal. GrantMaestro helps councils keep inward funding work visible, owned and ready for review.'
+
+export const nonprofitH1Text = 'Turn Grant Work Into Clear, Shared Action'
+export const nonprofitPText = 'GrantMaestro helps NFP teams organise opportunities, share application work, retain evidence and prepare acquittals—so more time goes to your mission.'
+
+export const religiousH1Text = 'Confident Stewardship of Grant-Funded Programs'
+export const religiousPText = 'GrantMaestro helps religious organisations coordinate grant opportunities, keep records together and show clear progress from application through reporting.'

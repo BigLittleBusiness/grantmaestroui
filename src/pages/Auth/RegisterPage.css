@@ -84,3 +84,5 @@
   min-height: 100vh;
   padding: 40px 20px;
 }
+
+.gm-register-step { color:#1769aa; font-size:.72rem; font-weight:800; letter-spacing:.07em; margin:0 0 7px; text-transform:uppercase; }.gm-register-intro { color:#526c80; font-size:.84rem; line-height:1.45; margin:0 0 15px; }.register-form-col .login-inner-form { max-width:500px; width:100%; }.register-form-col select:focus-visible,.register-form-col input:focus-visible,.register-form-col button:focus-visible,.register-form-col a:focus-visible { box-shadow:0 0 0 3px rgba(23,105,170,.28); outline:2px solid transparent; }.register-form-col .form-group>small { font-size:.73rem; line-height:1.35; }@media(max-width:991px){.register-form-col{align-items:flex-start;padding:30px 17px}.register-form-col .login-inner-form{max-width:520px;margin:auto}}@media(max-width:480px){.register-form-col{padding:25px 13px}.register-form-col .col-6{width:100%}}
