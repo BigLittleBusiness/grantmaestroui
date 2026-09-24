@@ -64,6 +64,9 @@ export default function Header({ noButtons = false }) {
                         Pricing
                       </a>
                     </li>
+                    <li>
+                      <a href='/contact'>Contact</a>
+                    </li>
                   </ul>
                   <div className='header-meta'>
                     <a
@@ -121,6 +124,9 @@ export default function Header({ noButtons = false }) {
                       >
                         Pricing
                       </a>
+                    </li>
+                    <li>
+                      <a href='/contact' onClick={() => setIsMenuOpen(false)}>Contact</a>
                     </li>
                     <li>
                       <div className='hm-content'>

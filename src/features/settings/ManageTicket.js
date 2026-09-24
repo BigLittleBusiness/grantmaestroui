@@ -1,8 +1,10 @@
-import React, {useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { manageTicket } from 'features/settings/settingsSlice'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import api from 'api'
+import TurnstileWidget from 'components/contact/TurnstileWidget'
 
 const validationSchema = yup.object({
   ticket_title: yup.string().required('Subject is required'),
@@ -15,6 +17,24 @@ const ManageTicket = () => {
     const ticketInfo = useSelector((state) => state.settings.ticketInfo)
     // console.log(ticketInfo)
     const [supportFile, setSupportFile] = useState(null)
+    const [captchaToken, setCaptchaToken] = useState('')
+    const [captchaSiteKey, setCaptchaSiteKey] = useState('')
+    const [captchaError, setCaptchaError] = useState('')
+
+    useEffect(() => {
+      let mounted = true
+      api.get('public/contact/config')
+        .then((response) => {
+          if (!mounted) return
+          const siteKey = response.data?.data?.turnstileSiteKey
+          if (siteKey) setCaptchaSiteKey(siteKey)
+          else setCaptchaError('The security check is temporarily unavailable. Please try again later.')
+        })
+        .catch(() => {
+          if (mounted) setCaptchaError('The security check is temporarily unavailable. Please try again later.')
+        })
+      return () => { mounted = false }
+    }, [])
     
     const formik = useFormik({
         initialValues: {
@@ -24,12 +44,16 @@ const ManageTicket = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-        //   console.log(values)
+          if (!captchaToken) {
+            setCaptchaError('Please complete the security check before submitting your ticket.')
+            return
+          }
           const formData = new FormData()
           formData.append('ticket_id', values.ticket_id)
           formData.append('ticket_title', values.ticket_title)
           formData.append('ticket_description', values.ticket_description)
           formData.append('support_ticket_file', supportFile)
+          formData.append('captchaToken', captchaToken)
           
           dispatch(manageTicket(formData))
           formik.resetForm()
@@ -109,6 +133,18 @@ const ManageTicket = () => {
                     </div>
 
                     {/* Buttons */}
+                    <div className='mb-3'>
+                      <label className='form-label'>Security check</label>
+                      {captchaSiteKey && (
+                        <TurnstileWidget
+                          siteKey={captchaSiteKey}
+                          onVerify={(token) => { setCaptchaToken(token); setCaptchaError('') }}
+                          onExpire={() => { setCaptchaToken(''); setCaptchaError('The security check expired. Please complete it again.') }}
+                          onError={() => { setCaptchaToken(''); setCaptchaError('The security check could not be completed. Please refresh and try again.') }}
+                        />
+                      )}
+                      {captchaError && <div className='text-danger mt-2' role='alert'>{captchaError}</div>}
+                    </div>
                     <div className='text-end'>
                         <button type='submit' className='btn btn-primary'>
                             Submit

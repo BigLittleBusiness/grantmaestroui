@@ -122,7 +122,7 @@ const ForcePasswordReset = () => {
         <div style={styles.footer}>
           <p style={styles.footerText}>
             Need help?{' '}
-            <a href="mailto:support@grantmaestro.com.au" style={styles.link}>
+            <a href="/contact?topic=support" style={styles.link}>
               Contact Support
             </a>
           </p>

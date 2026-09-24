@@ -49,7 +49,7 @@ export default function Footer() {
               <ul className='footer-links'>
                 <li><a href='/councils'>Why GrantMaestro for councils</a></li>
                 <li><a href='/support'>Support centre</a></li>
-                <li><a href='mailto:hello@grantmaestro.com.au'>Contact us</a></li>
+                <li><a href='/contact'>Contact us</a></li>
               </ul>
             </div>
 

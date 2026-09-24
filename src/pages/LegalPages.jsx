@@ -38,7 +38,7 @@ export const PrivacyPolicyPage = () => (
     <Heading>Your organisation’s responsibilities</Heading>
     <p>Customer organisations remain responsible for deciding which users receive access, ensuring their grant data is accurate and lawful to process, and responding to requests from their staff, applicants or other data subjects where applicable.</p>
     <Heading>Access, correction and contact</Heading>
-    <p>You may request access to or correction of personal information held about you by contacting <a href='mailto:privacy@grantmaestro.com.au'>privacy@grantmaestro.com.au</a>. We may need to verify your identity before responding.</p>
+    <p>You may request access to or correction of personal information held about you through our <a href='/contact?topic=privacy'>privacy enquiry form</a>. We may need to verify your identity before responding.</p>
     <Heading>Updates</Heading>
     <p>We may update this policy as GrantMaestro evolves. Material changes will be published on this page with an updated date.</p>
   </PageFrame>
@@ -48,7 +48,7 @@ export const SupportPage = () => (
   <PageFrame title='Support' description='GrantMaestro support and account assistance.'>
     <p style={{ color: '#64748b', marginBottom: 8 }}>GrantMaestro Support</p>
     <h1 style={{ color: '#163b5c', fontSize: 36, marginTop: 0 }}>How can we help?</h1>
-    <p>For account access, billing, subscription, grants workspace or technical support, email <a href='mailto:support@grantmaestro.com.au'>support@grantmaestro.com.au</a>. Please include your organisation name, the email address associated with your account and a brief description of the issue.</p>
+    <p>For account access, billing, subscription, grants workspace or technical support, use the secure <a href='/contact?topic=support'>support enquiry form</a>. Include your organisation name, the email address associated with your account and a brief description of the issue.</p>
     <Heading>Get started in your first week</Heading>
     <p>Begin by adding one live or target funding opportunity, confirming its deadline and assigning an accountable officer. Next, invite the grants, finance and project staff who need to contribute. Use the task work queue to assign the first actions, and use the Acquittal Centre when an awarded grant has evidence, financial reconciliation or submission requirements.</p>
     <Heading>Account access</Heading>
@@ -58,7 +58,7 @@ export const SupportPage = () => (
     <Heading>Response times</Heading>
     <p>We aim to respond to support requests within one to two business days. Enterprise customers may have separate support arrangements documented in their agreement.</p>
     <Heading>Security</Heading>
-    <p>Do not send passwords, payment-card details, secret keys or other credentials by email. We will never ask you to provide your password.</p>
+    <p>Do not submit passwords, payment-card details, secret keys or other credentials. We will never ask you to provide your password.</p>
   </PageFrame>
 )
 
@@ -80,6 +80,6 @@ export const TermsOfServicePage = () => (
     <Heading>Availability and liability</Heading>
     <p>We aim to provide a reliable service but cannot guarantee uninterrupted availability. To the extent permitted by law, GrantMaestro’s liability is limited to the fees paid for the affected service during the relevant period. Nothing in these terms excludes rights that cannot be excluded under applicable law.</p>
     <Heading>Changes and contact</Heading>
-    <p>We may update these terms as the service evolves. Continued use after an updated version takes effect constitutes acceptance of the updated terms. Questions can be sent to <a href='mailto:support@grantmaestro.com.au'>support@grantmaestro.com.au</a>.</p>
+    <p>We may update these terms as the service evolves. Continued use after an updated version takes effect constitutes acceptance of the updated terms. Questions can be sent through our <a href='/contact'>contact form</a>.</p>
   </PageFrame>
 )
