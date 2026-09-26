@@ -10,6 +10,11 @@ const formatAud = (amount) => new Intl.NumberFormat('en-AU', {
   minimumFractionDigits: 0,
 }).format(Number(amount || 0))
 
+const validPrice = (value) => {
+  const price = Number(value)
+  return Number.isFinite(price) && price > 0 ? price : null
+}
+
 /**
  * Customer checkout. Annual billing is a single yearly charge equal to ten
  * monthly payments, giving the organisation two months free.
@@ -73,9 +78,11 @@ export default function PaymentCheckoutPage() {
     () => plans.find((plan) => String(plan.plan_id) === String(selectedPlan)),
     [plans, selectedPlan]
   )
+  const monthlyPrice = validPrice(chosenPlan?.plan_price)
+  const annualPrice = validPrice(chosenPlan?.annual_price)
   const chosenPrice = billingInterval === 'year'
-    ? Number(chosenPlan?.annual_price || 0)
-    : Number(chosenPlan?.plan_price || 0)
+    ? (annualPrice || (monthlyPrice ? monthlyPrice * 10 : 0))
+    : (monthlyPrice || 0)
 
   const handlePromoChange = (event) => {
     const value = event.target.value.toUpperCase()
@@ -220,7 +227,7 @@ export default function PaymentCheckoutPage() {
                   <label className='form-check-label w-100' htmlFor='annual-billing'>
                     <strong>Annual — two months free</strong>
                     <span className='d-block small text-muted'>
-                      {chosenPlan ? `${formatAud(chosenPlan.annual_price)} billed once per year; pay for 10 months and receive 12 months of access.` : 'Pay for 10 months and receive 12 months of access.'}
+                      {chosenPlan ? `${formatAud(annualPrice || (monthlyPrice ? monthlyPrice * 10 : 0))} billed once per year; pay for 10 months and receive 12 months of access.` : 'Pay for 10 months and receive 12 months of access.'}
                     </span>
                   </label>
                 </div>
@@ -235,8 +242,8 @@ export default function PaymentCheckoutPage() {
                     onChange={(event) => setBillingInterval(event.target.value)}
                   />
                   <label className='form-check-label w-100' htmlFor='monthly-billing'>
-                    <strong>Monthly</strong>
-                    <span className='d-block small text-muted'>{chosenPlan ? `${formatAud(chosenPlan.plan_price)} billed each month.` : 'Billed each month.'}</span>
+                <strong>Monthly</strong>
+                    <span className='d-block small text-muted'>{chosenPlan ? `${formatAud(monthlyPrice || 0)} billed each month.` : 'Billed each month.'}</span>
                   </label>
                 </div>
               </div>

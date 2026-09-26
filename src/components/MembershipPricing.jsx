@@ -7,6 +7,11 @@ const formatAud = (amount) => new Intl.NumberFormat('en-AU', {
   minimumFractionDigits: 0,
 }).format(Number(amount || 0))
 
+const validPrice = (value) => {
+  const price = Number(value)
+  return Number.isFinite(price) && price > 0 ? price : null
+}
+
 const plans = [
   {
     id: 'starter',
@@ -102,9 +107,15 @@ const MembershipPricing = () => {
       .then((response) => {
         if (!active) return
         const prices = (response.data?.data?.plans || []).reduce((result, plan) => {
+          const monthlyPrice = validPrice(plan.plan_price)
+          const annualPrice = validPrice(plan.annual_price)
+          // Do not permit an incomplete API response to overwrite the verified
+          // displayed amount with $0. The corresponding static plan amount is
+          // retained until a valid live value is available.
+          if (!monthlyPrice && !annualPrice) return result
           result[String(plan.plan_name || '').toLowerCase()] = {
-            monthlyPrice: Number(plan.plan_price),
-            annualPrice: Number(plan.annual_price),
+            monthlyPrice,
+            annualPrice,
           }
           return result
         }, {})
@@ -143,8 +154,12 @@ const MembershipPricing = () => {
       </p>
       <div className='row'>
         {plans.map((plan) => {
-          const livePrices = livePlanPrices[plan.id] || plan
-          const displayedPrice = isAnnually ? livePrices.annualPrice : livePrices.monthlyPrice
+          const livePrices = livePlanPrices[plan.id]
+          const liveMonthlyPrice = livePrices?.monthlyPrice
+          const liveAnnualPrice = livePrices?.annualPrice
+          const displayedPrice = isAnnually
+            ? (liveAnnualPrice || (liveMonthlyPrice ? liveMonthlyPrice * 10 : plan.annualPrice))
+            : (liveMonthlyPrice || plan.monthlyPrice)
 
           return (
           <div className='col-md-4 mb-4' key={plan.id}>
