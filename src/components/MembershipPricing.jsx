@@ -1,4 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import api from '../api'
+
+const formatAud = (amount) => new Intl.NumberFormat('en-AU', {
+  style: 'currency',
+  currency: 'AUD',
+  minimumFractionDigits: 0,
+}).format(Number(amount || 0))
 
 const plans = [
   {
@@ -6,8 +13,8 @@ const plans = [
     name: 'Starter',
     headerClass: 'bg-primary',
     btnClass: 'btn-primary',
-    monthlyPrice: '$99',
-    annualPrice: '$89',
+    monthlyPrice: 99,
+    annualPrice: 990,
     seats: '1 Admin + 3 Team Members',
     overage: '$20/pm per extra seat',
     tagline: 'Perfect for smaller councils and teams getting started.',
@@ -33,8 +40,8 @@ const plans = [
     name: 'Pro',
     headerClass: 'bg-success',
     btnClass: 'btn-success',
-    monthlyPrice: '$275',
-    annualPrice: '$249',
+    monthlyPrice: 275,
+    annualPrice: 2750,
     seats: '2 Admins + 10 Team Members',
     overage: '$18/pm per extra seat',
     tagline: 'Ideal for mid-sized councils and grant consultants.',
@@ -60,8 +67,8 @@ const plans = [
     name: 'Enterprise',
     headerClass: 'bg-dark',
     btnClass: 'btn-dark',
-    monthlyPrice: '$625',
-    annualPrice: '$562',
+    monthlyPrice: 625,
+    annualPrice: 6250,
     seats: '5 Admins + 20 Team Members',
     overage: '$15/pm per extra seat',
     tagline: 'Built for larger councils with multi-department grant operations.',
@@ -87,6 +94,27 @@ const plans = [
 
 const MembershipPricing = () => {
   const [isAnnually, setIsAnnually] = useState(true)
+  const [livePlanPrices, setLivePlanPrices] = useState({})
+
+  useEffect(() => {
+    let active = true
+    api.get('subscription/fetch-subscription-plans')
+      .then((response) => {
+        if (!active) return
+        const prices = (response.data?.data?.plans || []).reduce((result, plan) => {
+          result[String(plan.plan_name || '').toLowerCase()] = {
+            monthlyPrice: Number(plan.plan_price),
+            annualPrice: Number(plan.annual_price),
+          }
+          return result
+        }, {})
+        setLivePlanPrices(prices)
+      })
+      // The current verified plan values remain visible if the public plan API
+      // is unavailable, rather than making the pricing section unusable.
+      .catch(() => {})
+    return () => { active = false }
+  }, [])
 
   return (
     <div className='container my-5' id='pricing_section'>
@@ -98,18 +126,27 @@ const MembershipPricing = () => {
         <button
           className={`btn ${isAnnually ? 'btn-primary' : 'btn-outline-primary'} mx-2`}
           onClick={() => setIsAnnually(true)}
+          aria-pressed={isAnnually}
         >
-          Annual — Save 10%
+          Annual — 2 months free
         </button>
         <button
           className={`btn ${!isAnnually ? 'btn-primary' : 'btn-outline-primary'} mx-2`}
           onClick={() => setIsAnnually(false)}
+          aria-pressed={!isAnnually}
         >
           Monthly
         </button>
       </div>
+      <p className='text-center text-success small fw-semibold mb-4'>
+        Annual plans are billed once per year: pay for 10 months and receive 12 months of access.
+      </p>
       <div className='row'>
-        {plans.map((plan) => (
+        {plans.map((plan) => {
+          const livePrices = livePlanPrices[plan.id] || plan
+          const displayedPrice = isAnnually ? livePrices.annualPrice : livePrices.monthlyPrice
+
+          return (
           <div className='col-md-4 mb-4' key={plan.id}>
             <div
               className='card text-center h-100 plan-card'
@@ -135,11 +172,13 @@ const MembershipPricing = () => {
               <div className='card-body d-flex flex-column'>
                 <div className='mb-1'>
                   <h3 className='card-title mb-0' style={{ color: '#0d6efd', fontWeight: 700 }}>
-                    {isAnnually ? plan.annualPrice : plan.monthlyPrice}
-                    <span style={{ fontSize: '1rem', fontWeight: 400, color: '#555' }}>/pm</span>
+                    {formatAud(displayedPrice)}
+                    <span style={{ fontSize: '1rem', fontWeight: 400, color: '#555' }}>
+                      {isAnnually ? '/year' : '/mo'}
+                    </span>
                   </h3>
                   {isAnnually && (
-                    <small className='text-muted'>Billed annually — 10% saving</small>
+                    <small className='text-success fw-semibold'>Two months free — billed annually</small>
                   )}
                 </div>
                 <p className='text-muted small mb-1'>{plan.seats}</p>
@@ -171,7 +210,7 @@ const MembershipPricing = () => {
 
                 <div className='mt-auto'>
                   <a
-                    href={`/register?membership-preference=${plan.id}`}
+                    href={`/register?membership-preference=${plan.id}&billing=${isAnnually ? 'year' : 'month'}`}
                     className={`btn ${plan.btnClass} w-100`}
                   >
                     Start Free Trial
@@ -183,7 +222,8 @@ const MembershipPricing = () => {
               </div>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

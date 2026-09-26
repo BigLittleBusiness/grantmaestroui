@@ -36,9 +36,15 @@ const otpSchema = yup.object({
 })
 
 const planLabels = {
-  starter: 'Starter — $89/pm (annual) · 1 Admin + 3 Team Members',
-  pro: 'Pro — $249/pm (annual) · 2 Admins + 10 Team Members',
-  enterprise: 'Enterprise — $562/pm (annual) · 5 Admins + 20 Team Members',
+  starter: 'Starter · 1 Admin + 3 Team Members',
+  pro: 'Pro · 2 Admins + 10 Team Members',
+  enterprise: 'Enterprise · 5 Admins + 20 Team Members',
+}
+
+const planPricing = {
+  starter: { monthly: 99, annual: 990 },
+  pro: { monthly: 275, annual: 2750 },
+  enterprise: { monthly: 625, annual: 6250 },
 }
 
 const planIds = {
@@ -52,7 +58,10 @@ const Register = () => {
   const navigate = useNavigate()
   const query = new URLSearchParams(useLocation().search)
   const initialMembership = query.get('membership-preference') || 'starter'
+  const requestedBilling = query.get('billing')
+  const initialBillingInterval = requestedBilling === 'month' ? 'month' : 'year'
   const [membership, setMembership] = useState(initialMembership)
+  const [billingInterval, setBillingInterval] = useState(initialBillingInterval)
   const { loading, error, isLoggedIn } = useSelector((state) => state.auth)
   const [step, setStep] = useState('register') // 'register' | 'verify'
   const [registeredEmail, setRegisteredEmail] = useState('')
@@ -115,6 +124,7 @@ const Register = () => {
         email: values.email,
         password: btoa(values.password),
         preferred_subscription_plan_id: planIds[membership] || 1,
+        preferred_subscription_billing_interval: billingInterval,
       }
       if (promoStatus === 'valid' && promoCode.trim()) {
         user.promo_code = promoCode.trim()
@@ -231,6 +241,39 @@ const Register = () => {
               {Object.entries(planLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
             <small className='text-muted d-block mt-1'>You can review plan options and inclusions at any time.</small>
+          </div>
+          <div className='form-group'>
+            <label className='form-label float-start d-block w-100'>Billing preference</label>
+            <div className='form-check border rounded p-2 mb-2'>
+              <input
+                className='form-check-input'
+                type='radio'
+                name='billing_interval'
+                id='registration-annual-billing'
+                value='year'
+                checked={billingInterval === 'year'}
+                onChange={(event) => setBillingInterval(event.target.value)}
+              />
+              <label className='form-check-label' htmlFor='registration-annual-billing'>
+                <strong>Annual — two months free</strong>
+                <span className='d-block small text-muted'>${planPricing[membership]?.annual.toLocaleString('en-AU')}/year. Pay for 10 months and receive 12 months of access.</span>
+              </label>
+            </div>
+            <div className='form-check border rounded p-2'>
+              <input
+                className='form-check-input'
+                type='radio'
+                name='billing_interval'
+                id='registration-monthly-billing'
+                value='month'
+                checked={billingInterval === 'month'}
+                onChange={(event) => setBillingInterval(event.target.value)}
+              />
+              <label className='form-check-label' htmlFor='registration-monthly-billing'>
+                <strong>Monthly</strong>
+                <span className='d-block small text-muted'>${planPricing[membership]?.monthly.toLocaleString('en-AU')}/month.</span>
+              </label>
+            </div>
           </div>
           <p className='text-muted mb-3' style={{ fontSize: '0.85rem' }}>
           14-day free trial · No credit card required

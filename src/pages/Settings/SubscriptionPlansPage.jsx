@@ -79,8 +79,9 @@ export default function SubscriptionPlansPage() {
           <p className="mb-0 mt-1">
             Changes made here update both the database and the figures shown on the public
             pricing page. Adjust prices, seat allowances, overage rates, and trial days as
-            needed. The plan names (Starter, Pro, Enterprise) are fixed to maintain
-            consistency with payment processing records.
+            needed. Annual totals are automatically set to ten monthly payments, so annual
+            customers receive two months free. The plan names (Starter, Pro, Enterprise) are
+            fixed to maintain consistency with payment processing records.
           </p>
         </div>
       </div>
@@ -160,24 +161,10 @@ export default function SubscriptionPlansPage() {
                       </div>
                       <div className="col-6">
                         <label className="form-label fw-semibold small text-muted text-uppercase">
-                          Annual Price (AUD)
+                          Annual Total (AUD)
                         </label>
-                        {isEditing ? (
-                          <div className="input-group input-group-sm">
-                            <span className="input-group-text">$</span>
-                            <input
-                              type="number"
-                              className="form-control"
-                              name="annual_price"
-                              min="0"
-                              step="0.01"
-                              value={d.annual_price}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        ) : (
-                          <p className="fw-bold fs-5 mb-0 text-success">${plan.annual_price}/mo</p>
-                        )}
+                        <p className="fw-bold fs-5 mb-0 text-success">${(Number(d.plan_price || 0) * 10).toLocaleString('en-AU')}/year</p>
+                        <small className="text-success">Two months free</small>
                       </div>
                     </div>
 
@@ -331,7 +318,7 @@ export default function SubscriptionPlansPage() {
                         </span>
                       </td>
                       <td>${p.plan_price}/mo</td>
-                      <td>${p.annual_price}/mo</td>
+                      <td>${p.annual_price}/year <span className="text-success small">(2 months free)</span></td>
                       <td>{p.admin_seats}</td>
                       <td>{p.team_seats}</td>
                       <td>${p.overage_rate}/seat/mo</td>

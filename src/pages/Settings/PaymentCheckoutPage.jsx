@@ -1,66 +1,97 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createPinCharge } from '../../features/settings/settingsSlice'
 import api from '../../api'
 import './settings.css'
 
+const formatAud = (amount) => new Intl.NumberFormat('en-AU', {
+  style: 'currency',
+  currency: 'AUD',
+  minimumFractionDigits: 0,
+}).format(Number(amount || 0))
+
 /**
- * PaymentCheckoutPage
- *
- * Customer-facing checkout page using Pin Payments.
- *
- * In production, the Pin Payments.js script (loaded via the publishable key)
- * tokenises the card client-side so that raw card data never touches the
- * Grant Maestro server.  The resulting card_token is sent to the backend.
- *
- * For the initial launch, this page uses the Pin Payments hosted fields
- * approach via a simple form.  Upgrade to Pin Payments.js for PCI-DSS
- * SAQ-A compliance.
+ * Customer checkout. Annual billing is a single yearly charge equal to ten
+ * monthly payments, giving the organisation two months free.
  */
 export default function PaymentCheckoutPage() {
   const dispatch = useDispatch()
   const { loading } = useSelector((state) => state.settings)
-  const { subscriptionPlans } = useSelector((state) => state.subscription || { subscriptionPlans: [] })
-  const loggedInUser = useSelector((state) => state.auth?.loggedInUser)
+  const loggedInUser = useSelector((state) => state.auth?.user)
 
+  const [plans, setPlans] = useState([])
+  const [plansLoading, setPlansLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState('')
+  const [billingInterval, setBillingInterval] = useState('year')
   const [cardToken, setCardToken] = useState('')
   const [paymentSuccess, setPaymentSuccess] = useState(false)
   const [paymentProvider, setPaymentProvider] = useState('loading')
   const [checkoutError, setCheckoutError] = useState('')
 
-  // Promo code state
   const [promoCode, setPromoCode] = useState('')
-  const [promoStatus, setPromoStatus] = useState(null) // null | 'checking' | 'valid' | 'invalid'
+  const [promoStatus, setPromoStatus] = useState(null)
   const [promoDetails, setPromoDetails] = useState(null)
   const promoDebounce = useRef(null)
 
   useEffect(() => {
     let active = true
-    api.get('subscription/payment-provider')
-      .then((res) => {
-        if (active) setPaymentProvider(res.data?.data?.provider || 'pin')
+
+    Promise.all([
+      api.get('subscription/payment-provider').catch(() => ({ data: { data: { provider: 'pin' } } })),
+      api.get('subscription/fetch-subscription-plans'),
+    ])
+      .then(([providerResponse, plansResponse]) => {
+        if (!active) return
+        setPaymentProvider(providerResponse.data?.data?.provider || 'pin')
+        const availablePlans = plansResponse.data?.data?.plans || []
+        setPlans(availablePlans)
+        const preferredPlanId = loggedInUser?.preferred_subscription_plan_id
+        if (preferredPlanId && availablePlans.some((plan) => Number(plan.plan_id) === Number(preferredPlanId))) {
+          setSelectedPlan(String(preferredPlanId))
+        }
+        if (['month', 'year'].includes(loggedInUser?.preferred_subscription_billing_interval)) {
+          setBillingInterval(loggedInUser.preferred_subscription_billing_interval)
+        }
       })
       .catch(() => {
-        if (active) setPaymentProvider('pin')
+        if (!active) setCheckoutError('Subscription plans could not be loaded. Please refresh and try again.')
       })
-    return () => { active = false }
-  }, [])
+      .finally(() => {
+        if (active) setPlansLoading(false)
+      })
 
-  const handlePromoChange = (e) => {
-    const val = e.target.value.toUpperCase()
-    setPromoCode(val)
+    return () => {
+      active = false
+      if (promoDebounce.current) clearTimeout(promoDebounce.current)
+    }
+  }, [
+    loggedInUser?.preferred_subscription_plan_id,
+    loggedInUser?.preferred_subscription_billing_interval,
+  ])
+
+  const chosenPlan = useMemo(
+    () => plans.find((plan) => String(plan.plan_id) === String(selectedPlan)),
+    [plans, selectedPlan]
+  )
+  const chosenPrice = billingInterval === 'year'
+    ? Number(chosenPlan?.annual_price || 0)
+    : Number(chosenPlan?.plan_price || 0)
+
+  const handlePromoChange = (event) => {
+    const value = event.target.value.toUpperCase()
+    setPromoCode(value)
     setPromoStatus(null)
     setPromoDetails(null)
     if (promoDebounce.current) clearTimeout(promoDebounce.current)
-    if (!val.trim()) return
+    if (!value.trim()) return
+
     setPromoStatus('checking')
     promoDebounce.current = setTimeout(async () => {
       try {
-        const res = await api.post('subscription/validate-promo', { code: val.trim() })
-        if (res.data?.status !== false && res.data?.data) {
+        const response = await api.post('subscription/validate-promo', { code: value.trim() })
+        if (response.data?.status !== false && response.data?.data) {
           setPromoStatus('valid')
-          setPromoDetails(res.data.data)
+          setPromoDetails(response.data.data)
         } else {
           setPromoStatus('invalid')
         }
@@ -70,13 +101,14 @@ export default function PaymentCheckoutPage() {
     }, 600)
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!selectedPlan) return
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    if (!selectedPlan || !chosenPlan) return
     setCheckoutError('')
 
     const checkoutPayload = {
-      preferred_plan_id: parseInt(selectedPlan, 10),
+      preferred_plan_id: Number(selectedPlan),
+      billing_interval: billingInterval,
     }
     if (promoStatus === 'valid' && promoCode.trim()) {
       checkoutPayload.promo_code = promoCode.trim()
@@ -112,21 +144,18 @@ export default function PaymentCheckoutPage() {
 
   if (paymentSuccess) {
     return (
-      <div className="content container-fluid">
-        <div className="row justify-content-center mt-5">
-          <div className="col-md-6 text-center">
-            <div className="card border-0 shadow-sm p-5">
-              <div className="mb-4">
-                <i className="fa fa-check-circle text-success" style={{ fontSize: '4rem' }} />
+      <div className='content container-fluid'>
+        <div className='row justify-content-center mt-5'>
+          <div className='col-md-6 text-center'>
+            <div className='card border-0 shadow-sm p-5'>
+              <div className='mb-4'>
+                <i className='fa fa-check-circle text-success' style={{ fontSize: '4rem' }} />
               </div>
-              <h4 className="text-success mb-3">Payment Successful!</h4>
-              <p className="text-muted mb-4">
-                Your Grant Maestro subscription is now active. You can start managing
-                your grants immediately.
+              <h4 className='text-success mb-3'>Payment Successful!</h4>
+              <p className='text-muted mb-4'>
+                Your GrantMaestro subscription is now active. You can start managing your grants immediately.
               </p>
-              <a href="/dashboard" className="btn btn-primary px-5">
-                Go to Dashboard
-              </a>
+              <a href='/dashboard' className='btn btn-primary px-5'>Go to Dashboard</a>
             </div>
           </div>
         </div>
@@ -135,174 +164,159 @@ export default function PaymentCheckoutPage() {
   }
 
   return (
-    <div className="content container-fluid">
-      <div className="page-header">
-        <div className="content-page-header">
-          <h5>
-            <i className="fa fa-credit-card me-2 text-primary" />
-            Subscribe to Grant Maestro
-          </h5>
+    <div className='content container-fluid'>
+      <div className='page-header'>
+        <div className='content-page-header'>
+          <h5><i className='fa fa-credit-card me-2 text-primary' />Subscribe to GrantMaestro</h5>
         </div>
       </div>
 
-      <div className="row justify-content-center">
-        <div className="col-lg-7 col-md-10">
-          <div className="alert alert-info mb-4">
-            <i className="fa fa-shield me-2" />
+      <div className='row justify-content-center'>
+        <div className='col-lg-7 col-md-10'>
+          <div className='alert alert-info mb-4'>
+            <i className='fa fa-shield me-2' />
             <strong>Secure Payment</strong> – {paymentProvider === 'stripe'
               ? 'You will be redirected to Stripe’s secure hosted checkout. GrantMaestro never receives or stores your card details.'
               : 'Card details must be tokenised by Pin Payments and are never stored on GrantMaestro servers.'}
           </div>
-          {checkoutError && <div className="alert alert-danger mb-4">{checkoutError}</div>}
+          {checkoutError && <div className='alert alert-danger mb-4'>{checkoutError}</div>}
 
           <form onSubmit={handleSubmit}>
-            {/* Plan Selection */}
-            <div className="card mb-4">
-              <div className="card-header">
-                <h6 className="mb-0">
-                  <i className="fa fa-list me-2" />
-                  Select Your Plan
-                </h6>
+            <div className='card mb-4'>
+              <div className='card-header'>
+                <h6 className='mb-0'><i className='fa fa-list me-2' />Select Your Plan</h6>
               </div>
-              <div className="card-body">
+              <div className='card-body'>
                 <select
-                  className="form-select"
+                  className='form-select'
                   value={selectedPlan}
-                  onChange={(e) => setSelectedPlan(e.target.value)}
+                  onChange={(event) => setSelectedPlan(event.target.value)}
+                  disabled={plansLoading}
                   required
                 >
-                  <option value="">-- Choose a subscription plan --</option>
-                  {subscriptionPlans && subscriptionPlans.map((plan) => (
-                    <option key={plan.plan_id} value={plan.plan_id}>
-                      {plan.plan_name} – ${plan.plan_price}/{plan.plan_duration}
-                    </option>
+                  <option value=''>{plansLoading ? 'Loading subscription plans…' : '-- Choose a subscription plan --'}</option>
+                  {plans.map((plan) => (
+                    <option key={plan.plan_id} value={plan.plan_id}>{plan.plan_name}</option>
                   ))}
                 </select>
               </div>
             </div>
 
-            {/* Promo Code */}
-            <div className="card mb-4">
-              <div className="card-header">
-                <h6 className="mb-0">
-                  <i className="fa fa-ticket me-2" />
-                  Promo Code <span className="text-muted fw-normal">(optional)</span>
-                </h6>
+            <div className='card mb-4'>
+              <div className='card-header'>
+                <h6 className='mb-0'><i className='fa fa-calendar me-2' />Choose Billing</h6>
               </div>
-              <div className="card-body">
-                <div className="input-group">
+              <div className='card-body'>
+                <div className='form-check border rounded p-3 mb-2'>
                   <input
-                    type="text"
-                    className={`form-control text-uppercase font-monospace${
-                      promoStatus === 'valid' ? ' is-valid' : promoStatus === 'invalid' ? ' is-invalid' : ''
-                    }`}
-                    placeholder="Enter promo code (e.g. EARLYBIRD25)"
+                    className='form-check-input'
+                    type='radio'
+                    name='billing_interval'
+                    id='annual-billing'
+                    value='year'
+                    checked={billingInterval === 'year'}
+                    onChange={(event) => setBillingInterval(event.target.value)}
+                  />
+                  <label className='form-check-label w-100' htmlFor='annual-billing'>
+                    <strong>Annual — two months free</strong>
+                    <span className='d-block small text-muted'>
+                      {chosenPlan ? `${formatAud(chosenPlan.annual_price)} billed once per year; pay for 10 months and receive 12 months of access.` : 'Pay for 10 months and receive 12 months of access.'}
+                    </span>
+                  </label>
+                </div>
+                <div className='form-check border rounded p-3'>
+                  <input
+                    className='form-check-input'
+                    type='radio'
+                    name='billing_interval'
+                    id='monthly-billing'
+                    value='month'
+                    checked={billingInterval === 'month'}
+                    onChange={(event) => setBillingInterval(event.target.value)}
+                  />
+                  <label className='form-check-label w-100' htmlFor='monthly-billing'>
+                    <strong>Monthly</strong>
+                    <span className='d-block small text-muted'>{chosenPlan ? `${formatAud(chosenPlan.plan_price)} billed each month.` : 'Billed each month.'}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {chosenPlan && (
+              <div className='alert alert-light border mb-4 d-flex justify-content-between align-items-center'>
+                <span><strong>{chosenPlan.plan_name}</strong> · {billingInterval === 'year' ? 'Annual billing' : 'Monthly billing'}</span>
+                <strong>{formatAud(chosenPrice)}{billingInterval === 'year' ? '/year' : '/mo'}</strong>
+              </div>
+            )}
+
+            <div className='card mb-4'>
+              <div className='card-header'>
+                <h6 className='mb-0'><i className='fa fa-ticket me-2' />Promo Code <span className='text-muted fw-normal'>(optional)</span></h6>
+              </div>
+              <div className='card-body'>
+                <div className='input-group'>
+                  <input
+                    type='text'
+                    className={`form-control text-uppercase font-monospace${promoStatus === 'valid' ? ' is-valid' : promoStatus === 'invalid' ? ' is-invalid' : ''}`}
+                    placeholder='Enter promo code (e.g. EARLYBIRD25)'
                     value={promoCode}
                     onChange={handlePromoChange}
-                    autoComplete="off"
+                    autoComplete='off'
                     maxLength={50}
                   />
-                  {promoStatus === 'checking' && (
-                    <span className="input-group-text">
-                      <span className="spinner-border spinner-border-sm text-primary" />
-                    </span>
-                  )}
-                  {promoStatus === 'valid' && (
-                    <span className="input-group-text text-success">
-                      <i className="fa fa-check-circle" />
-                    </span>
-                  )}
-                  {promoStatus === 'invalid' && (
-                    <span className="input-group-text text-danger">
-                      <i className="fa fa-times-circle" />
-                    </span>
-                  )}
+                  {promoStatus === 'checking' && <span className='input-group-text'><span className='spinner-border spinner-border-sm text-primary' /></span>}
+                  {promoStatus === 'valid' && <span className='input-group-text text-success'><i className='fa fa-check-circle' /></span>}
+                  {promoStatus === 'invalid' && <span className='input-group-text text-danger'><i className='fa fa-times-circle' /></span>}
                 </div>
                 {promoStatus === 'valid' && promoDetails && (
-                  <div className="alert alert-success mt-2 mb-0 py-2">
-                    <i className="fa fa-tag me-1" />
-                    <strong>{promoDetails.code}</strong> applied —{' '}
-                    {promoDetails.discount_type === 'percentage'
-                      ? `${promoDetails.discount_value}% off`
-                      : `$${promoDetails.discount_value} off`}{' '}
-                    for {promoDetails.duration_months} month{promoDetails.duration_months !== 1 ? 's' : ''}.
+                  <div className='alert alert-success mt-2 mb-0 py-2'>
+                    <i className='fa fa-tag me-1' />
+                    <strong>{promoDetails.code}</strong> applied — {promoDetails.discount_type === 'percentage' ? `${promoDetails.discount_value}% off` : `$${promoDetails.discount_value} off`} for {promoDetails.duration_months} month{promoDetails.duration_months !== 1 ? 's' : ''}.
                   </div>
                 )}
-                {promoStatus === 'invalid' && (
-                  <div className="text-danger small mt-1">
-                    This promo code is not valid or has expired.
-                  </div>
-                )}
+                {promoStatus === 'invalid' && <div className='text-danger small mt-1'>This promo code is not valid or has expired.</div>}
               </div>
             </div>
 
-            {paymentProvider === 'pin' && <>
-            {/* Card Token Input */}
-            <div className="card mb-4">
-              <div className="card-header">
-                <h6 className="mb-0">
-                  <i className="fa fa-credit-card me-2" />
-                  Card Details
-                </h6>
-              </div>
-              <div className="card-body">
-                <div className="alert alert-warning mb-3">
-                  <i className="fa fa-info-circle me-2" />
-                  <strong>Developer Note:</strong> In production, integrate{' '}
-                  <a
-                    href="https://pinpayments.com/developers/integration-guides/payment-forms"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Pin Payments.js
-                  </a>{' '}
-                  to tokenise cards client-side. Enter the card token below for testing.
-                </div>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold">Card Token</label>
-                  <input
-                    type="text"
-                    className="form-control font-monospace"
-                    placeholder="card_token from Pin Payments.js (e.g. card_nytGw7koRg23EEp9NTmz9A)"
-                    value={cardToken}
-                    onChange={(e) => setCardToken(e.target.value)}
-                    required
-                  />
-                  <div className="form-text">
-                    For testing, use token <code>card_nytGw7koRg23EEp9NTmz9A</code> in
-                    the test environment.
+            {paymentProvider === 'pin' && (
+              <div className='card mb-4'>
+                <div className='card-header'><h6 className='mb-0'><i className='fa fa-credit-card me-2' />Card Details</h6></div>
+                <div className='card-body'>
+                  <div className='alert alert-warning mb-3'>
+                    <i className='fa fa-info-circle me-2' />
+                    <strong>Developer Note:</strong> In production, integrate <a href='https://pinpayments.com/developers/integration-guides/payment-forms' target='_blank' rel='noreferrer'>Pin Payments.js</a> to tokenise cards client-side. Enter the card token below for testing.
+                  </div>
+                  <div className='mb-3'>
+                    <label className='form-label fw-semibold'>Card Token</label>
+                    <input
+                      type='text'
+                      className='form-control font-monospace'
+                      placeholder='card_token from Pin Payments.js'
+                      value={cardToken}
+                      onChange={(event) => setCardToken(event.target.value)}
+                      required
+                    />
                   </div>
                 </div>
               </div>
-            </div>
-            </>}
+            )}
 
             {paymentProvider === 'stripe' && (
-              <div className="card mb-4 border-primary">
-                <div className="card-body text-center py-4">
-                  <i className="fa fa-lock text-primary me-2" />
+              <div className='card mb-4 border-primary'>
+                <div className='card-body text-center py-4'>
+                  <i className='fa fa-lock text-primary me-2' />
                   <strong>Stripe Hosted Checkout</strong>
-                  <p className="text-muted small mb-0 mt-2">Continue to Stripe to complete payment securely. Your selected plan and any valid GrantMaestro promo code will be applied there.</p>
+                  <p className='text-muted small mb-0 mt-2'>Continue to Stripe to complete payment securely. Your selected billing frequency and any valid GrantMaestro promo code will be applied there.</p>
                 </div>
               </div>
             )}
 
             <button
-              type="submit"
-              className="btn btn-primary btn-lg w-100"
-              disabled={loading || paymentProvider === 'loading' || !selectedPlan || (paymentProvider === 'pin' && !cardToken)}
+              type='submit'
+              className='btn btn-primary btn-lg w-100'
+              disabled={loading || plansLoading || paymentProvider === 'loading' || !selectedPlan || (paymentProvider === 'pin' && !cardToken)}
             >
-              {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" />
-                  Processing Payment...
-                </>
-              ) : (
-                <>
-                  <i className="fa fa-lock me-2" />
-                  {paymentProvider === 'stripe' ? 'Continue to Secure Stripe Checkout' : 'Pay Securely with Pin Payments'}
-                </>
-              )}
+              {loading ? <><span className='spinner-border spinner-border-sm me-2' />Processing Payment...</> : <><i className='fa fa-lock me-2' />{paymentProvider === 'stripe' ? 'Continue to Secure Stripe Checkout' : 'Pay Securely with Pin Payments'}</>}
             </button>
           </form>
         </div>
