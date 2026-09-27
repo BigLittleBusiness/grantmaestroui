@@ -301,18 +301,45 @@ export default function PortfolioReadinessPage() {
     }
 
     let mounted = true
+    let pollTimer
     setInsight({ data: buildImmediateInsight(result), loading: true })
 
     api.post('public/portfolio-readiness/interpretation', { answers: result.answerPattern })
       .then((response) => {
         const data = response.data?.data
-        if (mounted && data?.headline && Array.isArray(data?.paragraphs)) setInsight({ data, loading: false })
+        const analysisId = response.data?.analysisId
+        const analysisStatus = response.data?.analysisStatus
+        if (!mounted || !data?.headline || !Array.isArray(data?.paragraphs)) return
+
+        if (analysisStatus !== 'pending' || !analysisId) {
+          setInsight({ data, loading: false })
+          return
+        }
+
+        setInsight({ data, loading: true })
+        const pollForManusAnalysis = async (attempt = 0) => {
+          try {
+            const analysisResponse = await api.get(`public/portfolio-readiness/interpretation/${analysisId}`)
+            const nextData = analysisResponse.data?.data
+            const nextStatus = analysisResponse.data?.analysisStatus
+            if (!mounted) return
+
+            if (nextData?.headline && Array.isArray(nextData?.paragraphs)) setInsight({ data: nextData, loading: nextStatus === 'pending' })
+            if (nextStatus === 'pending' && attempt < 9) pollTimer = window.setTimeout(() => pollForManusAnalysis(attempt + 1), 2000)
+          } catch {
+            if (mounted) setInsight((current) => current ? { ...current, loading: false } : current)
+          }
+        }
+        pollTimer = window.setTimeout(() => pollForManusAnalysis(), 1800)
       })
       .catch(() => {
         if (mounted) setInsight((current) => current ? { ...current, loading: false } : current)
       })
 
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+      if (pollTimer) window.clearTimeout(pollTimer)
+    }
   }, [result])
 
   const selectAnswer = (option) => {
@@ -510,7 +537,7 @@ export default function PortfolioReadinessPage() {
                       <p className='readiness-eyebrow readiness-eyebrow--ink'>Answer-specific reflection</p>
                       <h3 id='interpretation-title'>{insight.data.headline}</h3>
                     </div>
-                    {insight.loading && <span className='readiness-interpretation__loading'>Refining your reflection…</span>}
+                    {insight.loading && <span className='readiness-interpretation__loading'>Preparing your deeper reflection…</span>}
                   </div>
                   <div className='readiness-interpretation__body'>
                     {insight.data.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}

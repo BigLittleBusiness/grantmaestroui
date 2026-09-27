@@ -5,6 +5,9 @@ const page = await readFile(new URL('../src/pages/PortfolioReadinessPage.jsx', i
 const styles = await readFile(new URL('../src/pages/PortfolioReadinessPage.css', import.meta.url), 'utf8')
 
 assert.match(page, /public\/portfolio-readiness\/interpretation/)
+assert.match(page, /pollForManusAnalysis/)
+assert.match(page, /analysisStatus/)
+assert.match(page, /Preparing your deeper reflection/)
 assert.match(page, /buildImmediateInsight/)
 assert.match(page, /answerPattern/)
 assert.match(page, /What your answers suggest/)
