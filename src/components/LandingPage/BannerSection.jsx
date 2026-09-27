@@ -1,6 +1,6 @@
 import React from 'react'
 import 'components/LandingPage/BannerSection.css'
-import BackGroundImage from 'assets/images/hero-council-bg.jpg'
+import BackGroundImage from 'assets/marketing/grantmaestro-council-operations-hero.jpg'
 import { defaultPText, defaultH1Text } from 'constants/index'
 import { useNavigate } from 'react-router-dom'
 

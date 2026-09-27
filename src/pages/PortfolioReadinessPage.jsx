@@ -4,6 +4,7 @@ import Header from 'components/LandingPage/Header'
 import Footer from 'components/LandingPage/Footer'
 import TurnstileWidget from 'components/contact/TurnstileWidget'
 import api from 'api'
+import readinessPulseVisual from 'assets/marketing/grantmaestro-readiness-pulse.jpg'
 import './PortfolioReadinessPage.css'
 
 const questions = [
@@ -446,6 +447,7 @@ export default function PortfolioReadinessPage() {
               </div>
             </div>
             <aside className='readiness-hero__panel' aria-label='Assessment focus areas'>
+              <img className='readiness-hero__visual' src={readinessPulseVisual} alt='' aria-hidden='true' />
               <p>You will assess</p>
               <ol>
                 <li><span>01</span> Deadline and opportunity visibility</li>

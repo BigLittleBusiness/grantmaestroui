@@ -283,3 +283,27 @@
   .readiness-interpretation__loading { width: 100%; margin-left: 0; text-align: center; }
 }
 /* ── End answer-specific portfolio reflection ────────────────── */
+
+/* ── Readiness visual treatment ────────────────────────────── */
+.readiness-hero__panel {
+  overflow: hidden;
+}
+
+.readiness-hero__visual {
+  display: block;
+  width: calc(100% + 62px);
+  max-width: none;
+  height: 192px;
+  margin: -31px -31px 24px;
+  object-fit: cover;
+  object-position: 74% center;
+  border-bottom: 1px solid rgba(255,255,255,.18);
+}
+
+@media (max-width: 620px) {
+  .readiness-hero__visual {
+    width: calc(100% + 62px);
+    height: 165px;
+  }
+}
+/* ── End readiness visual treatment ─────────────────────────── */
