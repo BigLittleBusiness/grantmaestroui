@@ -8,6 +8,7 @@ import './PortfolioReadinessPage.css'
 
 const questions = [
   {
+    id: 'deadline_visibility',
     category: 'visibility',
     question: 'How reliably can your team see every upcoming grant deadline in one shared place?',
     helper: 'Think about opportunities, submissions, milestone reports and acquittal dates—not individual inboxes.',
@@ -19,6 +20,7 @@ const questions = [
     ],
   },
   {
+    id: 'forward_planning',
     category: 'visibility',
     question: 'How far ahead can you confidently identify grants, reports and acquittals that need action?',
     helper: 'This is about meaningful forward visibility, not only the next urgent deadline.',
@@ -30,6 +32,7 @@ const questions = [
     ],
   },
   {
+    id: 'leadership_reporting',
     category: 'visibility',
     question: 'When leadership asks about the portfolio, how easy is it to produce a current status view?',
     helper: 'Include deadlines, progress, risk and upcoming reporting commitments.',
@@ -41,6 +44,7 @@ const questions = [
     ],
   },
   {
+    id: 'acquittal_checklists',
     category: 'acquittal',
     question: 'How confident are you that every funded grant has a clear acquittal or reporting checklist?',
     helper: 'Consider deliverables, financial evidence, milestone reports, approvals and final submission requirements.',
@@ -52,6 +56,7 @@ const questions = [
     ],
   },
   {
+    id: 'evidence_control',
     category: 'acquittal',
     question: 'Where are the documents and evidence needed for applications and acquittals kept?',
     helper: 'Think about agreements, approvals, invoices, progress evidence, reports and correspondence.',
@@ -63,6 +68,7 @@ const questions = [
     ],
   },
   {
+    id: 'requirements_visibility',
     category: 'acquittal',
     question: 'How often are reporting or evidence requirements discovered later than you would like?',
     helper: 'Choose the closest operational reality, not an ideal future state.',
@@ -74,6 +80,7 @@ const questions = [
     ],
   },
   {
+    id: 'accountable_ownership',
     category: 'ownership',
     question: 'How clear is the accountable owner for each active grant, report and acquittal action?',
     helper: 'An owner is someone who can see the next action and coordinate the necessary contributors.',
@@ -85,6 +92,7 @@ const questions = [
     ],
   },
   {
+    id: 'continuity',
     category: 'ownership',
     question: 'If a key staff member was away unexpectedly, how easily could another person continue their grant work?',
     helper: 'Consider access to context, decisions, documents, contacts and next actions.',
@@ -96,6 +104,7 @@ const questions = [
     ],
   },
   {
+    id: 'shared_tasks',
     category: 'ownership',
     question: 'How consistently are tasks and follow-ups tracked across departments or contributors?',
     helper: 'Include finance, procurement, delivery teams and people providing acquittal evidence.',
@@ -164,6 +173,10 @@ const calculateResult = (answers) => {
   const total = Object.values(totals).reduce((sum, value) => sum + value, 0)
   const maximum = Object.values(maxima).reduce((sum, value) => sum + value, 0)
   const score = Math.round((total / maximum) * 100)
+  const answerPattern = questions.map((question, index) => ({
+    id: question.id,
+    score: answers[index]?.score,
+  }))
   const breakdown = Object.entries(totals)
     .map(([key, value]) => ({
       key,
@@ -180,6 +193,7 @@ const calculateResult = (answers) => {
       note: 'Your snapshot suggests that deadlines, requirements or handover context may be harder to see than they need to be. Start with one shared, manageable view of the work closest to due.',
       tone: 'risk',
       categories: breakdown,
+      answerPattern,
     }
   }
 
@@ -191,6 +205,7 @@ const calculateResult = (answers) => {
       note: 'Useful foundations are in place. Strengthening the lowest-scoring area can make portfolio visibility, acquittal readiness and shared ownership more consistent.',
       tone: 'developing',
       categories: breakdown,
+      answerPattern,
     }
   }
 
@@ -201,6 +216,26 @@ const calculateResult = (answers) => {
     note: 'Your team has useful operating foundations. Keep the rhythm visible and use the priority actions below to strengthen resilience and reporting readiness.',
     tone: 'strong',
     categories: breakdown,
+    answerPattern,
+  }
+}
+
+const buildImmediateInsight = (result) => {
+  const [primary, secondary] = result.categories
+  const primaryStrength = primary.score < 45
+    ? 'is likely creating avoidable pressure because the current position can be harder to see before a date becomes urgent.'
+    : primary.score < 75
+      ? 'has useful foundations, but may still rely on manual checking or individual follow-up to create a complete current picture.'
+      : 'is a sound operating foundation. The next gain is to keep that rhythm reliable as priorities and contributors change.'
+
+  return {
+    headline: 'What your answers suggest',
+    paragraphs: [
+      `Your responses point first to ${primary.title.toLowerCase()}. This area ${primaryStrength}`,
+      `The connection with ${secondary.title.toLowerCase()} matters. When those two areas are not equally visible, teams can spend valuable time reconstructing the current position instead of discussing the decision, contribution or escalation needed next. That is an operating-system opportunity, rather than a judgement about individual commitment.`,
+      `A proportionate first move is to use the next portfolio review to make the three nearest material commitments visible in one place. Include the due date, accountable owner, next action and supporting evidence still needed. The outcome is a calmer shared view of the work, with more time to act before urgency takes over.`,
+    ],
+    discussionPrompt: 'For the next three material commitments, can we see the due date, accountable owner, next action and latest supporting evidence without a separate follow-up?',
   }
 }
 
@@ -232,6 +267,7 @@ export default function PortfolioReadinessPage() {
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
+  const [insight, setInsight] = useState(null)
 
   const currentQuestion = questions[step]
   const progress = ((step + 1) / questions.length) * 100
@@ -257,6 +293,27 @@ export default function PortfolioReadinessPage() {
 
     return () => { mounted = false }
   }, [])
+
+  useEffect(() => {
+    if (!result) {
+      setInsight(null)
+      return undefined
+    }
+
+    let mounted = true
+    setInsight({ data: buildImmediateInsight(result), loading: true })
+
+    api.post('public/portfolio-readiness/interpretation', { answers: result.answerPattern })
+      .then((response) => {
+        const data = response.data?.data
+        if (mounted && data?.headline && Array.isArray(data?.paragraphs)) setInsight({ data, loading: false })
+      })
+      .catch(() => {
+        if (mounted) setInsight((current) => current ? { ...current, loading: false } : current)
+      })
+
+    return () => { mounted = false }
+  }, [result])
 
   const selectAnswer = (option) => {
     setAnswers((current) => ({ ...current, [step]: { title: option[0], score: option[2] } }))
@@ -288,6 +345,7 @@ export default function PortfolioReadinessPage() {
     setCaptchaError('')
     setFormError('')
     setEmailSent(false)
+    setInsight(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -443,6 +501,27 @@ export default function PortfolioReadinessPage() {
                   </article>
                 ))}
               </div>
+
+              {insight?.data && (
+                <section className='readiness-interpretation' aria-labelledby='interpretation-title' aria-live='polite'>
+                  <div className='readiness-interpretation__heading'>
+                    <div className='readiness-interpretation__mark' aria-hidden='true'>↗</div>
+                    <div>
+                      <p className='readiness-eyebrow readiness-eyebrow--ink'>Answer-specific reflection</p>
+                      <h3 id='interpretation-title'>{insight.data.headline}</h3>
+                    </div>
+                    {insight.loading && <span className='readiness-interpretation__loading'>Refining your reflection…</span>}
+                  </div>
+                  <div className='readiness-interpretation__body'>
+                    {insight.data.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+                  </div>
+                  <div className='readiness-discussion-prompt'>
+                    <strong>A useful question for your next portfolio review</strong>
+                    <p>{insight.data.discussionPrompt}</p>
+                  </div>
+                  <p className='readiness-interpretation__note'>This is a practical reflection based on your self-reported answers. It is not an audit, compliance assessment or certification.</p>
+                </section>
+              )}
 
               <section className='readiness-email-card' aria-labelledby='email-plan-title'>
                 {emailSent ? (

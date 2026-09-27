@@ -42,7 +42,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "test:pricing-display": "node scripts/pricingDisplaySmokeTest.mjs"
+    "test:pricing-display": "node scripts/pricingDisplaySmokeTest.mjs",
+    "test:readiness-interpretation": "node scripts/readinessInterpretationDisplaySmokeTest.mjs"
   },
   "eslintConfig": {
     "extends": [
