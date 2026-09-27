@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GrantMaestro Share Card Template</title>
+    <link rel="stylesheet" href="share-card.css" />
+  </head>
+  <body>
+    <main class="template-page">
+      <header>
+        <p class="eyebrow">GrantMaestro social asset</p>
+        <h1>LinkedIn share-card template</h1>
+        <p>Customise the neutral, score-sharing or partner version; then export at 1200 × 627 pixels using your design tool or a browser screenshot.</p>
+      </header>
+
+      <section class="controls" aria-label="Share card controls">
+        <label>Card mode
+          <select id="mode">
+            <option value="neutral">Neutral assessment invitation</option>
+            <option value="score">Score-sharing result</option>
+            <option value="partner">Partner / association invitation</option>
+          </select>
+        </label>
+        <label>Headline <input id="headline" value="How ready is your grant portfolio?" maxlength="70" /></label>
+        <label>Supporting line <input id="supporting" value="A practical 3-minute snapshot for council grant teams." maxlength="92" /></label>
+        <label class="score-control">Readiness score <input id="score" type="number" min="0" max="100" value="72" /></label>
+        <label>CTA <input id="cta" value="Take the free snapshot" maxlength="42" /></label>
+      </section>
+
+      <section class="card-stage" aria-label="Share card preview">
+        <article class="share-card neutral" id="share-card">
+          <div class="card-noise"></div>
+          <div class="share-card__topbar">
+            <img class="share-card__logo" src="../../../src/assets/brand/grantmaestro-logo-white-transparent.png" alt="GrantMaestro" width="212" height="60" decoding="async" />
+            <p class="share-card__topbar-label">Council grant management</p>
+          </div>
+          <div class="share-card__content">
+            <div class="share-card__copy">
+              <p class="share-card__eyebrow">Grant Portfolio Risk &amp; Readiness Snapshot</p>
+              <h2 id="card-headline">How ready is your grant portfolio?</h2>
+              <p id="card-supporting">A practical 3-minute snapshot for council grant teams.</p>
+              <div class="cta-pill" id="card-cta">Take the free snapshot <span aria-hidden="true">→</span></div>
+            </div>
+            <div class="visual-panel" aria-label="Readiness snapshot visual">
+              <div class="orb orb--one"></div><div class="orb orb--two"></div>
+              <div class="score-visual" id="score-visual">
+                <span class="score-visual__eyebrow">READINESS</span>
+                <strong id="card-score">72</strong>
+                <span class="score-visual__suffix">/100</span>
+                <span class="score-visual__label" id="score-label">Developing control</span>
+              </div>
+              <div class="signal signal--one"><span></span> Deadline visibility</div>
+              <div class="signal signal--two"><span></span> Acquittal readiness</div>
+              <div class="signal signal--three"><span></span> Shared ownership</div>
+            </div>
+          </div>
+          <div class="share-card__footer">grantmaestro.com/grant-portfolio-readiness</div>
+        </article>
+      </section>
+
+      <section class="usage-notes">
+        <h2>Recommended use</h2>
+        <ul>
+          <li><strong>Neutral invitation:</strong> best for GrantMaestro’s own posts, paid social and outbound email.</li>
+          <li><strong>Score-sharing result:</strong> use only with a participant’s approval; it makes their score visible.</li>
+          <li><strong>Partner version:</strong> suitable for associations, consultants and council-sector partners distributing the assessment link.</li>
+          <li>Use 1200 × 627 pixels for LinkedIn; retain the URL in the footer and do not imply a formal audit, certification or benchmark.</li>
+        </ul>
+      </section>
+    </main>
+    <script src="share-card.js"></script>
+  </body>
+</html>

@@ -38,6 +38,7 @@ export default function Footer() {
                 <li><a href='/#service-features'>Features</a></li>
                 <li><a href='/#pricing_section'>Pricing</a></li>
                 <li><a href='/councils'>For Councils</a></li>
+                <li><a href='/grant-portfolio-readiness'>Readiness Snapshot</a></li>
                 <li><a href='/register'>Start Free Trial</a></li>
                 <li><a href='/login'>Login</a></li>
               </ul>
@@ -48,6 +49,7 @@ export default function Footer() {
               <h6 className='footer-heading'>Company</h6>
               <ul className='footer-links'>
                 <li><a href='/councils'>Why GrantMaestro for councils</a></li>
+                <li><a href='/grant-portfolio-readiness'>Grant portfolio diagnostic</a></li>
                 <li><a href='/support'>Support centre</a></li>
                 <li><a href='/contact'>Contact us</a></li>
               </ul>

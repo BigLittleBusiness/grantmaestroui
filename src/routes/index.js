@@ -14,6 +14,7 @@ import ForgotPasswordPage from 'pages/Auth/ForgotPasswordPage'
 import ResetPasswordPage from 'pages/Auth/ResetPasswordPage'
 import { PrivacyPolicyPage, SupportPage, TermsOfServicePage } from 'pages/LegalPages'
 import ContactPage from 'pages/ContactPage'
+import PortfolioReadinessPage from 'pages/PortfolioReadinessPage'
 
 const AppRoutes = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
@@ -28,6 +29,7 @@ const AppRoutes = () => {
       <Route path='/terms-of-service' element={<TermsOfServicePage />} />
       <Route path='/support' element={<SupportPage />} />
       <Route path='/contact' element={<ContactPage />} />
+      <Route path='/grant-portfolio-readiness' element={<PortfolioReadinessPage />} />
       <Route
         path='/religious-organisations'
         element={<ReligiousOrganisationsPage />}

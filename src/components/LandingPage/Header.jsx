@@ -57,6 +57,9 @@ export default function Header({ noButtons = false }) {
                       <a href='/councils'>For councils</a>
                     </li>
                     <li>
+                      <a href='/grant-portfolio-readiness'>Readiness snapshot</a>
+                    </li>
+                    <li>
                       <a data-scroll-nav='4' href='#pricing_section' onClick={scrollToPricing}>
                         Pricing
                       </a>
@@ -112,6 +115,9 @@ export default function Header({ noButtons = false }) {
                     </li>
                     <li>
                       <a href='/councils' onClick={() => setIsMenuOpen(false)}>For councils</a>
+                    </li>
+                    <li>
+                      <a href='/grant-portfolio-readiness' onClick={() => setIsMenuOpen(false)}>Readiness snapshot</a>
                     </li>
                     <li>
                       <a
