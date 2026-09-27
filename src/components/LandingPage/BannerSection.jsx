@@ -38,8 +38,8 @@ export default function BannerSection({
         ></div>
         <div
           className='overlay-colored'
-          data-bg-color='#000'
-          data-bg-color-opacity='0.3'
+          data-bg-color='#001A8B'
+          data-bg-color-opacity='0.58'
         ></div>
         <div className='slide-content'>
           <div className='container'>

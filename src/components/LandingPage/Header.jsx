@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import 'components/LandingPage/Header.css'
-import ColorLogo from 'assets/img/color_logo.png'
+import BrandLogoFullColour from 'assets/brand/grantmaestro-logo-full-colour-transparent.png'
 
 export default function Header({ noButtons = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -40,10 +40,7 @@ export default function Header({ noButtons = false }) {
           <div className='row'>
             <div className='col-md-12'>
               <a className='logo logo-header' href='/'>
-                <img src={ColorLogo} data-logo-alt='' alt='Grant Maestro logo' />
-                <h3>
-                  <span className='colored'>Grant Maestro</span>
-                </h3>
+                <img src={BrandLogoFullColour} data-logo-alt='' alt='GrantMaestro' />
               </a>
               {!noButtons && (
                 <div className='header-menu-and-meta'>

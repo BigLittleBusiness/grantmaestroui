@@ -1,6 +1,6 @@
 import React from 'react'
 import 'components/LandingPage/Footer.css'
-import ColorLogo from 'assets/img/color_logo.png'
+import BrandLogoWhite from 'assets/brand/grantmaestro-logo-white-transparent.png'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -13,7 +13,7 @@ export default function Footer() {
             {/* Brand column */}
             <div className='col-lg-4 col-md-6 mb-4'>
               <div className='footer-brand'>
-                <img src={ColorLogo} alt='Grant Maestro' className='footer-logo' />
+                <img src={BrandLogoWhite} alt='GrantMaestro' className='footer-logo' />
                 <p className='footer-tagline'>
                   The practical grant management workspace for councils and Australian and New Zealand organisations managing inward funding.
                 </p>
@@ -85,7 +85,7 @@ export default function Footer() {
           <div className='row align-items-center'>
             <div className='col-md-8'>
               <p className='footer-copyright'>
-                {currentYear} &copy; <strong>Grant Maestro</strong>. All rights reserved.
+                {currentYear} &copy; <strong>GrantMaestro</strong>. All rights reserved.
                 &nbsp;|&nbsp;
                 <a href='/privacy-policy'>Privacy Policy</a>
                 &nbsp;|&nbsp;

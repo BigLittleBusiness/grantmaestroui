@@ -130,7 +130,7 @@
     position: relative;
     padding: 30px;
     text-align: center;
-    border-top: 5px solid #2486ff;
+    border-top: 5px solid #2488FF;
     border-radius: 0 0 10px 10px;
     background: #fff; }
     .box-header-form.bh-form-1 {
@@ -146,7 +146,7 @@
       line-height: 15px; }
       .box-header-form .form-note i {
         font-size: 12px;
-        color: #2486ff;
+        color: #2488FF;
         margin-right: 5px; }
   
   /* Header Form 1 */
@@ -274,7 +274,7 @@
         color: #fff;
         background: rgba(0, 0, 0, 0.5); }
         .banner-slider .owl-nav [class*="owl-"]:hover {
-          background: #2486ff;
+          background: #2488FF;
           color: #fff; }
       .banner-slider .owl-nav .owl-prev {
         left: 0;
@@ -600,7 +600,7 @@
 }
 .pv-bar {
   height: 100%;
-  background: #007bff;
+  background: #2488FF;
   border-radius: 4px;
 }
 .pv-bar-orange { background: #fd7e14; }

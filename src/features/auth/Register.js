@@ -6,7 +6,7 @@ import { registerUser, verifyOtp } from './authSlice'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { validateAuthToken } from '../../utils/auth'
 import api from '../../api'
-import logo from 'assets/img/logos/logo.png'
+import logo from 'assets/brand/grantmaestro-logo-full-colour-transparent.png'
 
 const registrationSchema = yup.object({
   first_name: yup.string().required('First name is required'),
@@ -163,7 +163,7 @@ const Register = () => {
         <div className='details'>
           <div className='logo-2 mb-3'>
             <a href='/'>
-              <img src={logo} alt='Grant Maestro' style={{ width: '200px' }} />
+              <img src={logo} alt='GrantMaestro' style={{ width: '200px' }} />
             </a>
           </div>
           <p className='gm-register-step'>Step 2 of 3 · Secure email verification</p>
@@ -229,7 +229,7 @@ const Register = () => {
       <div className='details'>
         <div className='logo-2 mb-3'>
           <a href='/'>
-            <img src={logo} alt='Grant Maestro' style={{ width: '200px' }} />
+            <img src={logo} alt='GrantMaestro' style={{ width: '200px' }} />
           </a>
         </div>
           <p className='gm-register-step'>Step 1 of 3 · Create your council workspace</p>

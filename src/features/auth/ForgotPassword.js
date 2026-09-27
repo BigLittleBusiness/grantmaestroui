@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { forgotPassword } from './authSlice'
-import logo from 'assets/img/logos/logo.png'
+import logo from 'assets/brand/grantmaestro-logo-full-colour-transparent.png'
 
 const validationSchema = yup.object({
   email: yup
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
             <div className='details'>
                 <div className='logo-2 mb-3'>
                 <a href='index.html'>
-                    <img src={logo} alt='logo' style={{ width: '200px' }} />
+                    <img src={logo} alt='GrantMaestro' style={{ width: '200px' }} />
                 </a>
                 </div>
 

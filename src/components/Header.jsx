@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import logo from 'assets/img/logos/logo.png'
-import logoSmall from 'assets/img/logos/logo-small.jpeg'
+import logo from 'assets/brand/grantmaestro-logo-full-colour-transparent.png'
+import logoWhite from 'assets/brand/grantmaestro-logo-white-transparent.png'
+import logoSmall from 'assets/brand/grantmaestro-icon-blue-on-white.webp'
+import logoSmallWhite from 'assets/brand/grantmaestro-icon-white-on-navy.webp'
 import ProfileImage from 'assets/img/avatar-07.jpg'
 import { logout, viewProfile } from 'features/auth/authSlice'
 import './Header.css'
@@ -58,7 +60,7 @@ const Header = ({ toggleSidebar }) => {
         <img
           src={logo}
           className='img-fluid logo2'
-          alt='Logo'
+          alt='GrantMaestro'
           style={{ width: '150px' }}
         />
       </Link>
@@ -66,14 +68,14 @@ const Header = ({ toggleSidebar }) => {
         <div className='logo-white'>
           <Link to='/'>
             <img
-              src={logo}
+              src={logoWhite}
               className='img-fluid logo-blue'
-              alt='Logo'
+              alt='GrantMaestro'
               style={{ width: '150px' }}
             />
           </Link>
           <Link to='#'>
-            <img src={logo} className='img-fluid logo-small' alt='Logo' />
+            <img src={logoSmallWhite} className='img-fluid logo-small' alt='GrantMaestro' />
           </Link>
         </div>
         <div className='logo-color'>
@@ -81,12 +83,12 @@ const Header = ({ toggleSidebar }) => {
             <img
               src={logo}
               className='img-fluid logo-blue'
-              alt='Logo'
+              alt='GrantMaestro'
               style={{ width: '150px' }}
             />
           </Link>
           <Link to='#'>
-            <img src={logoSmall} className='img-fluid logo-small' alt='Logo' />
+            <img src={logoSmall} className='img-fluid logo-small' alt='GrantMaestro' />
           </Link>
         </div>
       </div>

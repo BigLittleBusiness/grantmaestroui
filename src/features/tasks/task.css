@@ -1,5 +1,5 @@
 .task-table thead th {
-    background: #2e83ff !important;
+    background: #2488FF !important;
     color: #fff !important;
 }
 
@@ -68,7 +68,7 @@
 
 .gm-priority-select:focus {
     outline: none;
-    border-color: #2e83ff;
+    border-color: #2488FF;
     box-shadow: 0 0 0 2px rgba(46,131,255,0.15);
 }
 

@@ -37,7 +37,7 @@
 
 /* ---- Expanded Footer ---- */
 #footer-main {
-  background: #1a1a2e;
+  background: linear-gradient(135deg, #00115d, #001A8B 70%, #0a3dc0);
   color: #ccc;
   font-size: 0.9rem;
 }
@@ -48,9 +48,9 @@
 }
 
 .footer-logo {
-  max-width: 160px;
+  max-width: 184px;
   margin-bottom: 14px;
-  filter: brightness(1.1);
+  filter: none;
 }
 
 .footer-tagline {
@@ -79,7 +79,7 @@
 }
 
 .footer-badge .fa {
-  color: #4fc3f7;
+  color: #8FDAFA;
 }
 
 .footer-heading {
@@ -113,7 +113,7 @@
 
 .footer-links .fa {
   margin-right: 5px;
-  color: #4fc3f7;
+  color: #8FDAFA;
 }
 
 .footer-support-note {
@@ -149,7 +149,7 @@
 }
 
 .footer-privacy-note .fa {
-  color: #4fc3f7;
+  color: #8FDAFA;
   margin-right: 4px;
 }
 

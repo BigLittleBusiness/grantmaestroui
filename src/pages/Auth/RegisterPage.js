@@ -1,5 +1,6 @@
 import React from 'react'
 import Register from '../../features/auth/Register'
+import BrandLogoWhite from 'assets/brand/grantmaestro-logo-white-transparent.png'
 import './RegisterPage.css'
 
 const RegisterPage = () => {
@@ -9,10 +10,10 @@ const RegisterPage = () => {
         <div className='row h-100'>
           {/* Left panel — contextual reassurance */}
           <div className='col-lg-6 col-md-12 register-panel-left d-none d-lg-flex'>
-            <div className='register-panel-content'>
-              <div className='register-panel-logo'>
-                <h2 className='text-white'>Grant Maestro</h2>
-                <p className='text-white-50'>Grant management built for local government.</p>
+              <div className='register-panel-content'>
+                <div className='register-panel-logo'>
+                  <img src={BrandLogoWhite} alt='GrantMaestro' />
+                  <p className='text-white-50'>Grant management built for local government.</p>
               </div>
 
               <div className='register-panel-benefits'>

@@ -11710,7 +11710,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 30px 50px 30px 40px;
-        border-right: 3px solid #2e83ff;
+        border-right: 3px solid #2488FF;
 }
 /*.login-30 .bg-img:before {
     position: absolute;
@@ -11870,13 +11870,13 @@ body {
 }
 
 .login-30 .form-check-input:focus {
-    border-color: #2e83ff!important;
+    border-color: #2488FF!important;
     outline: 0;
     box-shadow: none;
 }
 
 .login-30 .form-check-input:checked {
-    background-color: #2e83ff!important;
+    background-color: #2488FF!important;
 }
 
 .login-30 .login-inner-form button:focus {
@@ -11944,7 +11944,7 @@ body {
     z-index: 20;
     background: #000000ba;
     padding: 20px;
-    border: 5px solid #2e83ff;
+    border: 5px solid #2488FF;
 }
 
 
@@ -11960,7 +11960,7 @@ body {
 
 .login-30 .informeson h2 span:last-child {
 /*    animation: bopB 2s 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards infinite alternate;*/
-    color: #2e83ff;
+    color: #2488FF;
 }
 
 @keyframes bop {
@@ -12071,12 +12071,12 @@ body {
 }
 
 .login-30 .btn-theme-2 {
-    border: 2px solid #2e83ff;
-    color: #2e83ff;
+    border: 2px solid #2488FF;
+    color: #2488FF;
 }
 
 .login-30 .btn-theme-2:before, .btn-theme-2:after {
-    background: #2e83ff;
+    background: #2488FF;
 }
 
 .login-30 .btn-theme-3 {
@@ -12139,20 +12139,20 @@ body {
 }
 
 .login-30 .btn-theme-3 {
-    background: #2e83ff;
+    background: #2488FF;
 }
 
 .login-30 .btn-theme-3:before {
-    background: #2e83ff;
+    background: #2488FF;
 }
 
 .login-30 .btn-theme-3:after {
-    background: #2e83ff;
+    background: #2488FF;
 }
 
 .login-30 .btn-theme-3:hover {
-    color: #2e83ff;
-    border: 2px solid #2e83ff;
+    color: #2488FF;
+    border: 2px solid #2488FF;
 }
 
 .login-30 .btn-lg{
@@ -12170,7 +12170,7 @@ body {
 }
 
 .login-30 .btn-primary {
-    background: #2e83ff;
+    background: #2488FF;
 }
 
 .login-30 .btn-primary:before {

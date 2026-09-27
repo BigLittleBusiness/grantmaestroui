@@ -6,10 +6,13 @@
    ============================================================ */
 
 :root {
-  /* --- Brand Colours --- */
-  --gm-primary:        #2e83ff;
-  --gm-primary-dark:   #1a6de0;
-  --gm-primary-light:  #e8f1ff;
+  /* --- GrantMaestro Corporate Identity --- */
+  --gm-brand-blue:     #2488FF;
+  --gm-brand-navy:     #001A8B;
+  --gm-brand-sky:      #8FDAFA;
+  --gm-primary:        var(--gm-brand-blue);
+  --gm-primary-dark:   #1267D8;
+  --gm-primary-light:  #EAF4FF;
   --gm-secondary:      #6c757d;
   --gm-success:        #28a745;
   --gm-success-light:  #e6f4ea;
@@ -21,7 +24,7 @@
   --gm-info-light:     #e0f7fa;
 
   /* --- Grant Stage Colours (matching existing card-* classes) --- */
-  --gm-stage-found:      #2e83ff;   /* blue   — Grant Found    */
+  --gm-stage-found:      var(--gm-brand-blue); /* blue — Grant Found */
   --gm-stage-suitability:#7c4dff;   /* purple — Suitability    */
   --gm-stage-submission: #00b0ff;   /* cyan   — Submission     */
   --gm-stage-outcome:    #00c853;   /* green  — Outcome        */
@@ -30,12 +33,12 @@
 
   /* --- Neutral Palette --- */
   --gm-white:       #ffffff;
-  --gm-bg:          #f7f8f9;
-  --gm-bg-alt:      #f0f2f5;
-  --gm-border:      #dee2e6;
-  --gm-border-dark: #ced4da;
-  --gm-text:        #212529;
-  --gm-text-muted:  #6c757d;
+  --gm-bg:          #F7FBFF;
+  --gm-bg-alt:      #EAF4FF;
+  --gm-border:      #D9E4F0;
+  --gm-border-dark: #B9D1E9;
+  --gm-text:        #0D0D0D;
+  --gm-text-muted:  #404040;
   --gm-text-light:  #adb5bd;
 
   /* --- Typography --- */
@@ -74,7 +77,7 @@
   --gm-shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
   --gm-shadow-md:  0 4px 12px rgba(0,0,0,0.10);
   --gm-shadow-lg:  0 8px 24px rgba(0,0,0,0.12);
-  --gm-shadow-card: 0 2px 8px rgba(46,131,255,0.08);
+  --gm-shadow-card: 0 2px 8px rgba(36,136,255,0.10);
 
   /* --- Transitions --- */
   --gm-transition-fast:   0.15s ease;
@@ -83,8 +86,8 @@
 
   /* --- Sidebar --- */
   --gm-sidebar-width:       247px;
-  --gm-sidebar-bg:          #1e2a3a;
-  --gm-sidebar-text:        #c8d6e5;
+  --gm-sidebar-bg:          var(--gm-brand-navy);
+  --gm-sidebar-text:        #EAF4FF;
   --gm-sidebar-active-bg:   var(--gm-primary);
   --gm-sidebar-active-text: var(--gm-white);
 
@@ -104,7 +107,7 @@
   --gm-input-bg:          var(--gm-white);
   --gm-input-border:      var(--gm-border-dark);
   --gm-input-focus-border:var(--gm-primary);
-  --gm-input-focus-shadow:0 0 0 3px rgba(46,131,255,0.15);
+  --gm-input-focus-shadow:0 0 0 3px rgba(36,136,255,0.16);
   --gm-label-color:       var(--gm-text);
   --gm-label-weight:      var(--gm-font-weight-medium);
 
@@ -168,7 +171,7 @@ body {
 .btn-primary:focus {
   background-color: var(--gm-primary-dark);
   border-color: var(--gm-primary-dark);
-  box-shadow: 0 2px 8px rgba(46,131,255,0.35);
+  box-shadow: 0 2px 8px rgba(36,136,255,0.35);
 }
 
 /* ============================================================
@@ -415,7 +418,7 @@ body {
 
 .gm-file-icon--pdf   { color: #dc3545; }
 .gm-file-icon--excel { color: #28a745; }
-.gm-file-icon--word  { color: #2e83ff; }
+.gm-file-icon--word  { color: #2488FF; }
 .gm-file-icon--image { color: #ff6d00; }
 .gm-file-icon--other { color: var(--gm-text-muted); }
 

@@ -26,8 +26,8 @@
     .info-header {
         font-weight: 600;
         font-size: 1.4rem;
-        color: #007bff;
-        border-bottom: 2px solid #007bff;
+        color: #2488FF;
+        border-bottom: 2px solid #2488FF;
         padding-bottom: 8px;
         margin-bottom: 15px;
     }
@@ -43,12 +43,12 @@
 
     .info-item span:last-child {
         font-weight: bold;
-        color: #007bff;
+        color: #2488FF;
     }
 
     .alert-custom {
         background: #f1f7ff;
-        border-left: 5px solid #2e83ff;
+        border-left: 5px solid #2488FF;
         padding: 15px;
         border-radius: 8px;
         font-size: 1rem;
@@ -59,7 +59,7 @@
     .alert-custom a {
         font-weight: bold;
         text-decoration: none;
-        color: #2e83ff;
+        color: #2488FF;
     }
 
     .alert-custom a:hover {

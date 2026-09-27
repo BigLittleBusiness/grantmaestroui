@@ -4,7 +4,7 @@
 }
 
 .register-panel-left {
-  background: linear-gradient(145deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+  background: linear-gradient(145deg, #001A8B 0%, #00115D 60%, #00115D 100%);
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -21,10 +21,11 @@
   margin-bottom: 40px;
 }
 
-.register-panel-logo h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 4px;
+.register-panel-logo img {
+  display: block;
+  width: min(280px, 100%);
+  height: auto;
+  margin-bottom: 16px;
 }
 
 .register-panel-benefits {
