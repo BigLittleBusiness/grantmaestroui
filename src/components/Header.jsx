@@ -6,7 +6,7 @@ import logoWhite from 'assets/brand/grantmaestro-logo-white-transparent.png'
 import logoSmall from 'assets/brand/grantmaestro-icon-blue-on-white.webp'
 import logoSmallWhite from 'assets/brand/grantmaestro-icon-white-on-navy.webp'
 import ProfileImage from 'assets/img/avatar-07.jpg'
-import { logout, viewProfile } from 'features/auth/authSlice'
+import { logout } from 'features/auth/authSlice'
 import './Header.css'
 import GlobalSearch from './GlobalSearch'
 
@@ -16,12 +16,6 @@ const Header = ({ toggleSidebar }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const user = useSelector((state) => state.auth.user)
   const hasImage = user?.profile_image
-  useEffect(() => {
-    if (!user) {
-      dispatch(viewProfile())
-    }
-  }, [])
-
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen)
   }

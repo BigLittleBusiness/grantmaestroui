@@ -5,12 +5,20 @@ import SideBar from 'components/SideBar'
 import 'assets/css/authenticate.css'
 import 'assets/css/feather/feather.css'
 import 'layouts/AuthenticatedLayout.css'
+import LoaderComponent from 'components/LoaderComponent'
+import useCurrentUser from 'hooks/useCurrentUser'
 
 const AuthenticatedLayout = ({ children }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
+  // Wait for the user's role after a page refresh so the correct menu renders.
+  const { loading } = useCurrentUser()
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible)
+  }
+
+  if (loading) {
+    return <LoaderComponent />
   }
 
   return (

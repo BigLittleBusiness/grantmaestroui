@@ -46,14 +46,18 @@ export const viewProfile = createAsyncThunk(
   'auth/viewProfile',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.post('auth/profile-view')
+      const response = await api.get('auth/profile-view')
       if (response?.data?.status === false) {
         return rejectWithValue(response.data)
       }
       return response.data
     } catch (error) {
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error.response?.data)
     }
+  },
+  {
+    // Several components may ask for the profile on page load; fetch it once.
+    condition: (_, { getState }) => !getState().auth.profileLoading,
   }
 )
 
@@ -184,6 +188,10 @@ const authSlice = createSlice({
     authToken: null,
     loading: false,
     error: null,
+    // The user is not persisted across page loads, so it is re-fetched from
+    // the session. These track that fetch so pages can wait for the role.
+    profileLoading: false,
+    profileChecked: false,
   },
   reducers: {
     setUser: (state, action) => {},
@@ -211,6 +219,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload.data.userDetails
+        state.profileChecked = true
         state.authToken = action.payload.data.token
         state.isLoggedIn = true
         state.loading = false
@@ -234,14 +243,19 @@ const authSlice = createSlice({
       })
       .addCase(viewProfile.pending, (state) => {
         state.loading = true
+        state.profileLoading = true
         state.error = null
       })
       .addCase(viewProfile.fulfilled, (state, action) => {
         state.user = action.payload?.data?.userDetails
         state.loading = false
+        state.profileLoading = false
+        state.profileChecked = true
       })
       .addCase(viewProfile.rejected, (state, action) => {
         state.loading = false
+        state.profileLoading = false
+        state.profileChecked = true
         state.error = action.payload
       })
       .addCase(forcePasswordReset.pending, (state) => {
@@ -280,6 +294,8 @@ const authSlice = createSlice({
       })
       .addCase(logout.fulfilled, (state, action) => {
         // console.log('logout', action.payload)
+        state.user = null
+        state.profileChecked = false
         state.loading = false
         state.authToken = undefined
         state.isLoggedIn = false
@@ -318,6 +334,7 @@ const authSlice = createSlice({
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.user = action.payload?.data?.userDetails
+        state.profileChecked = true
         state.isLoggedIn = true
         state.loading = false
       })

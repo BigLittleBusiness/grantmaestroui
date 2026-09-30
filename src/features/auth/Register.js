@@ -44,7 +44,7 @@ const planLabels = {
 const planPricing = {
   starter: { monthly: 99, annual: 990 },
   pro: { monthly: 275, annual: 2750 },
-  enterprise: { monthly: 625, annual: 6250 },
+  enterprise: { monthly: 825, annual: 8250 },
 }
 
 const planIds = {
@@ -256,7 +256,7 @@ const Register = () => {
               />
               <label className='form-check-label' htmlFor='registration-annual-billing'>
                 <strong>Annual — two months free</strong>
-                <span className='d-block small text-muted'>${planPricing[membership]?.annual.toLocaleString('en-AU')}/year. Pay for 10 months and receive 12 months of access.</span>
+                <span className='d-block small text-muted'>${planPricing[membership]?.annual.toLocaleString('en-AU')}/year + GST. Pay for 10 months and receive 12 months of access.</span>
               </label>
             </div>
             <div className='form-check border rounded p-2'>
@@ -271,7 +271,7 @@ const Register = () => {
               />
               <label className='form-check-label' htmlFor='registration-monthly-billing'>
                 <strong>Monthly</strong>
-                <span className='d-block small text-muted'>${planPricing[membership]?.monthly.toLocaleString('en-AU')}/month.</span>
+                <span className='d-block small text-muted'>${planPricing[membership]?.monthly.toLocaleString('en-AU')}/month + GST.</span>
               </label>
             </div>
           </div>

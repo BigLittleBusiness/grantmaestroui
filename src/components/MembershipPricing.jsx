@@ -21,7 +21,7 @@ const plans = [
     monthlyPrice: 99,
     annualPrice: 990,
     seats: '1 Admin + 3 Team Members',
-    overage: '$20/pm per extra seat',
+    overage: '$20/pm + GST per extra seat',
     tagline: 'Perfect for smaller councils and teams getting started.',
     idealFor: [
       'Councils managing a small grant portfolio',
@@ -48,7 +48,7 @@ const plans = [
     monthlyPrice: 275,
     annualPrice: 2750,
     seats: '2 Admins + 10 Team Members',
-    overage: '$18/pm per extra seat',
+    overage: '$18/pm + GST per extra seat',
     tagline: 'Ideal for mid-sized councils and grant consultants.',
     idealFor: [
       'Mid-sized councils with multiple active grants',
@@ -72,10 +72,10 @@ const plans = [
     name: 'Enterprise',
     headerClass: 'bg-dark',
     btnClass: 'btn-dark',
-    monthlyPrice: 625,
-    annualPrice: 6250,
+    monthlyPrice: 825,
+    annualPrice: 8250,
     seats: '5 Admins + 20 Team Members',
-    overage: '$15/pm per extra seat',
+    overage: '$15/pm + GST per extra seat',
     tagline: 'Built for larger councils with multi-department grant operations.',
     idealFor: [
       'Larger councils with complex, multi-department grant programmes',
@@ -132,6 +132,9 @@ const MembershipPricing = () => {
       <h2 className='text-center mb-2'>Simple, Transparent Pricing</h2>
       <p className='text-center text-muted mb-4'>
         All plans include a <strong>14-day free trial</strong>. No credit card required.
+      </p>
+      <p className='text-center text-muted small mb-4'>
+        Prices are in AUD and exclude GST. 10% GST is added for Australian organisations.
       </p>
       <div className='text-center mb-4'>
         <button
@@ -191,6 +194,7 @@ const MembershipPricing = () => {
                     <span style={{ fontSize: '1rem', fontWeight: 400, color: '#555' }}>
                       {isAnnually ? '/year' : '/mo'}
                     </span>
+                    <span className='d-block text-muted small fw-normal'>+ GST</span>
                   </h3>
                   {isAnnually && (
                     <small className='text-success fw-semibold'>Two months free — billed annually</small>

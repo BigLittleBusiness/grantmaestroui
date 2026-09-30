@@ -356,7 +356,12 @@ function StripeTab() {
                     <i className="fa fa-copy" />
                   </button>
                 </div>
-                <div className="form-text">Add this to Stripe Dashboard → <strong>Developers → Webhooks → Add endpoint</strong>.</div>
+                <div className="form-text">
+                  Add this to Stripe Dashboard → <strong>Developers → Webhooks → Add endpoint</strong>, listening for:{' '}
+                  <code>checkout.session.completed</code>, <code>checkout.session.async_payment_succeeded</code>, <code>invoice.paid</code>,{' '}
+                  <code>customer.subscription.updated</code> and <code>customer.subscription.deleted</code>.
+                  Renewals and cancellations are only applied when these events are received.
+                </div>
               </div>
               <div className="mb-3">
                 <label className="form-label fw-semibold">Webhook Signing Secret</label>

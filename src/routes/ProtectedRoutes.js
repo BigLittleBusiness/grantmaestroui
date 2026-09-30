@@ -262,7 +262,7 @@ const ProtectedRoutes = () => {
         }
       />
       <Route
-        path='/success'
+        path='/payment/success'
         element={
           <AdminAuthenticatedLayout>
             <PaymentSuccess />
@@ -270,7 +270,7 @@ const ProtectedRoutes = () => {
         }
       />
       <Route
-        path='/cancel'
+        path='/payment/cancel'
         element={
           <AdminAuthenticatedLayout>
             <PaymentCancel />

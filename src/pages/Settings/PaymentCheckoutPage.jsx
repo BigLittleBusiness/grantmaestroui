@@ -10,6 +10,18 @@ const formatAud = (amount) => new Intl.NumberFormat('en-AU', {
   minimumFractionDigits: 0,
 }).format(Number(amount || 0))
 
+const formatAudCents = (amount) => new Intl.NumberFormat('en-AU', {
+  style: 'currency',
+  currency: 'AUD',
+}).format(Number(amount || 0))
+
+const roundCents = (amount) => Math.round(amount * 100) / 100
+
+// Australian GST. The authoritative amount is calculated by Stripe Tax from the
+// billing address entered at checkout; this is only used for the estimate.
+const GST_RATE = 0.1
+const MAX_EXTRA_SEATS = 200
+
 const validPrice = (value) => {
   const price = Number(value)
   return Number.isFinite(price) && price > 0 ? price : null
@@ -17,7 +29,8 @@ const validPrice = (value) => {
 
 /**
  * Customer checkout. Annual billing is a single yearly charge equal to ten
- * monthly payments, giving the organisation two months free.
+ * monthly payments, giving the organisation two months free. Prices exclude
+ * GST; Stripe adds 10% GST for Australian billing addresses.
  */
 export default function PaymentCheckoutPage() {
   const dispatch = useDispatch()
@@ -28,6 +41,7 @@ export default function PaymentCheckoutPage() {
   const [plansLoading, setPlansLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState('')
   const [billingInterval, setBillingInterval] = useState('year')
+  const [extraSeats, setExtraSeats] = useState(0)
   const [cardToken, setCardToken] = useState('')
   const [paymentSuccess, setPaymentSuccess] = useState(false)
   const [paymentProvider, setPaymentProvider] = useState('loading')
@@ -83,6 +97,23 @@ export default function PaymentCheckoutPage() {
   const chosenPrice = billingInterval === 'year'
     ? (annualPrice || (monthlyPrice ? monthlyPrice * 10 : 0))
     : (monthlyPrice || 0)
+  const monthlySeatPrice = validPrice(chosenPlan?.overage_rate)
+  const seatPrice = monthlySeatPrice
+    ? (billingInterval === 'year' ? monthlySeatPrice * 10 : monthlySeatPrice)
+    : 0
+  const includedSeats = chosenPlan
+    ? Number(chosenPlan.admin_seats || 0) + Number(chosenPlan.team_seats || 0)
+    : 0
+  const seatsTotal = roundCents(seatPrice * extraSeats)
+  const subtotal = roundCents(chosenPrice + seatsTotal)
+  const estimatedGst = roundCents(subtotal * GST_RATE)
+  const periodLabel = billingInterval === 'year' ? '/year' : '/mo'
+  const isStripe = paymentProvider === 'stripe'
+
+  const handleExtraSeatsChange = (event) => {
+    const value = Math.floor(Number(event.target.value))
+    setExtraSeats(Number.isFinite(value) ? Math.min(Math.max(value, 0), MAX_EXTRA_SEATS) : 0)
+  }
 
   const handlePromoChange = (event) => {
     const value = event.target.value.toUpperCase()
@@ -116,6 +147,7 @@ export default function PaymentCheckoutPage() {
     const checkoutPayload = {
       preferred_plan_id: Number(selectedPlan),
       billing_interval: billingInterval,
+      extra_seats: extraSeats,
     }
     if (promoStatus === 'valid' && promoCode.trim()) {
       checkoutPayload.promo_code = promoCode.trim()
@@ -249,10 +281,66 @@ export default function PaymentCheckoutPage() {
               </div>
             </div>
 
+            {chosenPlan && isStripe && (
+              <div className='card mb-4'>
+                <div className='card-header'>
+                  <h6 className='mb-0'><i className='fa fa-users me-2' />Extra Seats <span className='text-muted fw-normal'>(optional)</span></h6>
+                </div>
+                <div className='card-body'>
+                  <p className='small text-muted mb-2'>
+                    {chosenPlan.plan_name} includes {includedSeats} seat{includedSeats === 1 ? '' : 's'} ({chosenPlan.admin_seats} admin + {chosenPlan.team_seats} team).
+                    {seatPrice > 0 && ` Extra seats are ${formatAudCents(seatPrice)} each${periodLabel}.`}
+                  </p>
+                  <div className='input-group' style={{ maxWidth: 220 }}>
+                    <button type='button' className='btn btn-outline-secondary' onClick={() => setExtraSeats((seats) => Math.max(seats - 1, 0))} disabled={extraSeats === 0} aria-label='Remove a seat'>−</button>
+                    <input
+                      type='number'
+                      className='form-control text-center'
+                      min={0}
+                      max={MAX_EXTRA_SEATS}
+                      value={extraSeats}
+                      onChange={handleExtraSeatsChange}
+                      aria-label='Number of extra seats'
+                    />
+                    <button type='button' className='btn btn-outline-secondary' onClick={() => setExtraSeats((seats) => Math.min(seats + 1, MAX_EXTRA_SEATS))} disabled={extraSeats >= MAX_EXTRA_SEATS} aria-label='Add a seat'>+</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {chosenPlan && (
-              <div className='alert alert-light border mb-4 d-flex justify-content-between align-items-center'>
-                <span><strong>{chosenPlan.plan_name}</strong> · {billingInterval === 'year' ? 'Annual billing' : 'Monthly billing'}</span>
-                <strong>{formatAud(chosenPrice)}{billingInterval === 'year' ? '/year' : '/mo'}</strong>
+              <div className='card mb-4 border'>
+                <div className='card-body'>
+                  <div className='d-flex justify-content-between mb-1'>
+                    <span>{chosenPlan.plan_name} · {billingInterval === 'year' ? 'Annual billing' : 'Monthly billing'}</span>
+                    <span>{formatAudCents(chosenPrice)}</span>
+                  </div>
+                  {extraSeats > 0 && (
+                    <div className='d-flex justify-content-between mb-1'>
+                      <span>{extraSeats} extra seat{extraSeats === 1 ? '' : 's'} × {formatAudCents(seatPrice)}</span>
+                      <span>{formatAudCents(seatsTotal)}</span>
+                    </div>
+                  )}
+                  <div className='d-flex justify-content-between border-top pt-2 mt-2'>
+                    <strong>{isStripe ? 'Subtotal (excl. GST)' : 'Total'}</strong>
+                    <strong>{formatAudCents(subtotal)}{periodLabel}</strong>
+                  </div>
+                  {isStripe && (
+                    <>
+                      <div className='d-flex justify-content-between text-muted small mt-1'>
+                        <span>+ GST 10% (Australian billing addresses)</span>
+                        <span>{formatAudCents(estimatedGst)}</span>
+                      </div>
+                      <div className='d-flex justify-content-between mt-1'>
+                        <span>Total for Australian organisations</span>
+                        <strong>{formatAudCents(subtotal + estimatedGst)}{periodLabel}</strong>
+                      </div>
+                      <p className='small text-muted mb-0 mt-2'>
+                        All prices are in AUD and exclude GST. 10% GST is added at checkout when your billing address is in Australia; organisations outside Australia are not charged GST. Any promo code discount is applied before GST.
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
             )}
 
@@ -313,7 +401,7 @@ export default function PaymentCheckoutPage() {
                 <div className='card-body text-center py-4'>
                   <i className='fa fa-lock text-primary me-2' />
                   <strong>Stripe Hosted Checkout</strong>
-                  <p className='text-muted small mb-0 mt-2'>Continue to Stripe to complete payment securely. Your selected billing frequency and any valid GrantMaestro promo code will be applied there.</p>
+                  <p className='text-muted small mb-0 mt-2'>Continue to Stripe to complete payment securely. Your plan, extra seats, billing frequency and any valid GrantMaestro promo code will be applied there. Enter your organisation's billing address (and ABN, if you would like it on your tax invoice); GST is calculated from that address.</p>
                 </div>
               </div>
             )}

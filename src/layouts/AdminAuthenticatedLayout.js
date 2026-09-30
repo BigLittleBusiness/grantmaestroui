@@ -1,39 +1,32 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState } from 'react'
 import Header from '../components/Header'
 import SideBar from 'components/SideBar'
 import 'assets/css/authenticate.css'
 import 'assets/css/feather/feather.css'
 import 'layouts/AuthenticatedLayout.css'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import LoaderComponent from 'components/LoaderComponent'
+import useCurrentUser from 'hooks/useCurrentUser'
+import { canAccessPage, homePathFor } from 'utils/roleAccess'
 
+/**
+ * Layout for role-restricted pages: platform admin pages (/admin/*) and
+ * organisation admin pages. Waits for the user's role before rendering, so a
+ * page refresh never shows another role's screens.
+ */
 const AdminAuthenticatedLayout = ({ children }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
-  const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
-  const loggedInUser = useSelector((state) => state.auth?.user)
-  const isAdmin = useMemo(
-    () => loggedInUser?.user_role_id === 2,
-    [loggedInUser]
-  )
-  useEffect(() => {
-    if (loggedInUser !== undefined) {
-      setLoading(false)
-    }
-  }, [loggedInUser])
-
-  useEffect(() => {
-    if (loggedInUser && !isAdmin) {
-      navigate('/dashboard')
-    }
-  }, [loggedInUser, isAdmin, navigate])
+  const { pathname } = useLocation()
+  const { user, loading } = useCurrentUser()
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible)
   }
-  if (loading && !loggedInUser) {
+  if (loading) {
     return <LoaderComponent />
+  }
+  if (user && !canAccessPage(user, pathname)) {
+    return <Navigate to={homePathFor(user)} replace />
   }
   return (
     <div className='main-wrapper'>
