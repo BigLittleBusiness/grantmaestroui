@@ -1,6 +1,5 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import TaskListPage from 'pages/Tasks/TaskListPage'
 import TaskAddPage from 'pages/Tasks/TaskAddPage'
 import TaskEditPage from 'pages/Tasks/TaskEditPage'
@@ -20,7 +19,6 @@ import GrantDetailPage from 'pages/Grant/GrantDetailPage'
 import AcquittalCentrePage from 'pages/Grant/AcquittalCentrePage'
 import ReportPage from 'pages/ReportPage'
 import SettingsPage from 'pages/Settings/SettingsPage'
-import ManagePaymentPage from 'pages/Settings/ManagePaymentPage'
 import PinPaymentsSettingsPage from 'pages/Settings/PinPaymentsSettingsPage'
 import SubscriptionPlansPage from 'pages/Settings/SubscriptionPlansPage'
 import PromoCodesPage from 'pages/Settings/PromoCodesPage'
@@ -181,14 +179,8 @@ const ProtectedRoutes = () => {
           </AdminAuthenticatedLayout>
         }
       />
-      <Route
-        path='/manage-payment'
-        element={
-          <AdminAuthenticatedLayout>
-            <ManagePaymentPage />
-          </AdminAuthenticatedLayout>
-        }
-      />
+      {/* Old payment page URL: subscriptions are paid through Stripe checkout. */}
+      <Route path='/manage-payment' element={<Navigate to='/payment/checkout' replace />} />
       <Route
         path='/admin/pin-settings'
         element={

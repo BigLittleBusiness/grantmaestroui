@@ -165,7 +165,7 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
                 </Link>
               </li>
               <li>
-                <Link to='/manage-payment' className={`${activeTab === '/manage-payment' ? 'active' : ''}`}>
+                <Link to='/payment/checkout' className={`${activeTab.startsWith('/payment') ? 'active' : ''}`}>
                   <i className='fe fe-dollar-sign'></i> <span>Payment</span>
                   <span className='menu-arrow'></span>
                 </Link>

@@ -9,37 +9,50 @@ The frontend React application for Grant Maestro.
 
 ## Local Development Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/BigLittleBusiness/grantmaestroui.git
-   cd grantmaestroui
-   ```
-
-2. **Install dependencies**
+1. **Install dependencies**
    ```bash
    yarn install
+   # or, without Yarn:
+   npm install --legacy-peer-deps
    ```
 
-3. **Environment Configuration**
-   Copy the example environment file:
+2. **Configure the API URL**
    ```bash
    cp .env.example .env
    ```
-   *Note: Ensure `REACT_APP_API_URL` points to your running local API instance.*
+   `REACT_APP_API_URL` must point at the running backend, e.g. `http://localhost:3001/v1/` (the backend runs on 3001 locally). Set up the backend first; see its README.
 
-4. **Start the development server**
+3. **Start the development server**
    ```bash
-   yarn start
+   yarn start   # or: npm start
    ```
-   The application will be available at `http://localhost:3000`.
+   The app is served at `http://localhost:3000`.
+
+## Scripts
+
+| Script | Purpose |
+| --- | --- |
+| `start` | Development server with hot reload |
+| `build` | Production build in `build/` |
+| `test` | Jest tests (`react-scripts test`) |
+| `test:pricing-display` | Smoke test: pricing never renders an incomplete live price as $0 |
+| `test:readiness-interpretation` | Smoke test for the portfolio readiness display |
 
 ## Tech Stack
 
-- **Framework:** React 19
+- **Framework:** React 19 (Create React App)
 - **State Management:** Redux Toolkit
-- **Routing:** React Router DOM v6
+- **Routing:** React Router 7
 - **Styling:** Bootstrap 5 + custom CSS
-- **HTTP Client:** Axios
+- **HTTP Client:** Axios (cookies are sent with every request)
+
+## Notes
+
+- **Sessions:** the logged-in user is not persisted in the browser. After a refresh, the layouts reload it from `GET /v1/auth/profile-view` and show a loader until the role is known.
+- **Page access:** role access for pages is defined in `src/utils/roleAccess.js` and mirrors the backend's `routeAccessHelper.js`. Platform Admin pages live under `/admin/*`.
+- **Payments:** subscriptions are paid through Stripe hosted Checkout:
+  - `/payment/checkout` shows the plan, extra seats, and the GST estimate for Australian addresses;
+  - Stripe returns customers to `/payment/success` or `/payment/cancel`.
 
 ## AWS Deployment
 

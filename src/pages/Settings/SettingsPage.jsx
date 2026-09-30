@@ -8,13 +8,6 @@ export default function SettingsPage() {
     gdprCompliance: false,
     emailAddresses: ['', '', ''],
     dataRetention: '1 Month',
-    localisation: {
-      country: 'United States',
-      language: 'English',
-      currency: 'USD',
-      timeZone: 'UTC-5:00: New York',
-      dateFormat: 'DD/MM/YYYY',
-    },
   })
 
   const handleCheckboxChange = (e) => {
@@ -36,24 +29,10 @@ export default function SettingsPage() {
 
   const handleSelectChange = (e) => {
     const { id, value } = e.target
-    if (id in settings.localisation) {
-      setSettings((prev) => ({
-        ...prev,
-        localisation: {
-          ...prev.localisation,
-          [id]: value,
-        },
-      }))
-    } else {
-      setSettings((prev) => ({
-        ...prev,
-        [id]: value,
-      }))
-    }
-  }
-
-  const handleSaveChanges = () => {
-    alert('Settings saved successfully!')
+    setSettings((prev) => ({
+      ...prev,
+      [id]: value,
+    }))
   }
 
   return (
@@ -135,8 +114,8 @@ export default function SettingsPage() {
           </div>
           <div className='card-body'>
             <div className='mb-4'>
-              <a href='/manage-payment' className='btn btn-primary'>
-                Manage Payment Methods
+              <a href='/payment/checkout' className='btn btn-primary'>
+                Subscription &amp; Payment
               </a>
               <a href='/seat-usage' className='btn btn-secondary ms-2'>
                 View Current Uses
@@ -194,81 +173,11 @@ export default function SettingsPage() {
           </div>
           <div className='card-body'>
             <div className='mb-4'>
-              <button className='btn btn-success me-2'><Link to="/submit-ticket">Submit a Ticket</Link></button>
+              <Link to='/submit-ticket' className='btn btn-success me-2'>Submit a Ticket</Link>
               <button className='btn btn-success'>View FAQs</button>
             </div>
           </div>
         </div>
-
-        {/* Localisation */}
-        {/* <div className='card shadow-sm'>
-          <div className='card-header'>
-            <h5>Localisation</h5>
-          </div>
-          <div className='card-body'>
-            <div className='mb-4'>
-              <label>Select Country</label>
-              <select
-                className='form-select'
-                id='country'
-                value={settings.localisation.country}
-                onChange={handleSelectChange}
-              >
-                <option>United States</option>
-                <option>United Kingdom</option>
-                <option>India</option>
-              </select>
-              <label className='mt-2'>Language</label>
-              <select
-                className='form-select'
-                id='language'
-                value={settings.localisation.language}
-                onChange={handleSelectChange}
-              >
-                <option>English</option>
-                <option>Spanish</option>
-              </select>
-              <label className='mt-2'>Currency</label>
-              <select
-                className='form-select'
-                id='currency'
-                value={settings.localisation.currency}
-                onChange={handleSelectChange}
-              >
-                <option>USD</option>
-                <option>EUR</option>
-              </select>
-              <label className='mt-2'>Time Zone</label>
-              <select
-                className='form-select'
-                id='timeZone'
-                value={settings.localisation.timeZone}
-                onChange={handleSelectChange}
-              >
-                <option>UTC-5:00: New York</option>
-                <option>UTC+1:00: Berlin</option>
-                <option>UTC+5:30: Mumbai</option>
-              </select>
-              <label className='mt-2'>Date Format</label>
-              <select
-                className='form-select'
-                id='dateFormat'
-                value={settings.localisation.dateFormat}
-                onChange={handleSelectChange}
-              >
-                <option>DD/MM/YYYY</option>
-                <option>MM/DD/YYYY</option>
-                <option>YYYY-MM-DD</option>
-              </select>
-            </div>
-            <button
-              className='btn btn-primary w-100'
-              onClick={handleSaveChanges}
-            >
-              Save Changes
-            </button>
-          </div>
-        </div> */}
       </div>
     </div>
   )
