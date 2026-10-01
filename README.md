@@ -50,6 +50,10 @@ The frontend React application for Grant Maestro.
 
 - **Sessions:** the logged-in user is not persisted in the browser. After a refresh, the layouts reload it from `GET /v1/auth/profile-view` and show a loader until the role is known.
 - **Page access:** role access for pages is defined in `src/utils/roleAccess.js` and mirrors the backend's `routeAccessHelper.js`. Platform Admin pages live under `/admin/*`.
+- **Layouts:** `AuthenticatedLayout` wraps every signed-in page; `AdminAuthenticatedLayout` is the same layout with per-page role checks.
+- **Trial:** during the free trial, a banner shows the days left. Organisation Admins also get a "Subscribe now" link.
+- **Expired subscriptions:** an Organisation Admin can only reach the `/payment/*` pages. Any other page, or API call answered `402 SUBSCRIPTION_EXPIRED`, redirects to checkout (`src/api/index.js`, `subscriptionRedirectFor` in `src/utils/roleAccess.js`). Other users are signed out.
+- **Subscription page:** `/subscription` (sidebar → Subscription) shows Organisation Admins their plan, status, seats, next payment, card and invoices. They can change plan, billing interval and extra seats (with a price preview), and open Stripe's portal via "Manage billing". Checkout redirects existing subscribers there.
 - **Payments:** subscriptions are paid through Stripe hosted Checkout:
   - `/payment/checkout` shows the plan, extra seats, and the GST estimate for Australian addresses;
   - Stripe returns customers to `/payment/success` or `/payment/cancel`.

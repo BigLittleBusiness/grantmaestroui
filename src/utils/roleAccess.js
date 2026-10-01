@@ -30,3 +30,15 @@ export const canAccessPage = (user, pathname) => {
 
 /** Where a user lands when they open a page their role cannot use. */
 export const homePathFor = (user) => (isSuperAdmin(user) ? '/admin/dashboard' : '/dashboard')
+
+// Pages an Organisation Admin can still open once the subscription has ended.
+const PAGES_WHILE_EXPIRED = ['/payment/', '/subscription', '/change-password', '/force-password-reset']
+
+/**
+ * The page to send a user to when their organisation's subscription has
+ * ended (the API only allows billing calls), or null when no redirect is needed.
+ */
+export const subscriptionRedirectFor = (user, pathname) => {
+  if (!user?.subscription_expired || isSuperAdmin(user)) return null
+  return PAGES_WHILE_EXPIRED.some((prefix) => pathname.startsWith(prefix)) ? null : '/payment/checkout'
+}

@@ -7,7 +7,6 @@ import {
   filterTeamMembers,
   deleteTeamMember
 } from './teamMemberSlice'
-import { createPinCharge } from '../settings/settingsSlice'
 import { useNavigate } from 'react-router-dom'
 import ErrorBoundary from '../../components/ErrorBoundary'
 import './teamMember.css'
@@ -59,14 +58,6 @@ const TeamMemberList = () => {
         accessor: 'actions',
         Cell: ({ row }) => (
           <div>
-            {row.original.subscription_status === false && (
-              <button
-                onClick={() => makePayment(row.original.user_id, row.original.preferred_subscription_plan_id)}
-                className='btn btn-sm btn-success me-2'
-              >
-                <i className='fa fa-check'></i>
-              </button>
-            )}
             <button
               onClick={() =>
                 navigate(`/edit-team-member/${row.original.user_id}`)
@@ -128,10 +119,6 @@ const TeamMemberList = () => {
   const handleDelete = (teamMemberId) => {
     dispatch(deleteTeamMember(teamMemberId))
     // Handle delete action
-  }
-
-  const makePayment = (teamMemberId, preferredPlanId) => {
-    dispatch(createPinCharge({ preferred_plan_id: preferredPlanId, payment_made_for: teamMemberId }))
   }
 
   const getPageRange = (current, total) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { createPinCharge } from '../../features/settings/settingsSlice'
 import api from '../../api'
 import './settings.css'
@@ -34,6 +35,7 @@ const validPrice = (value) => {
  */
 export default function PaymentCheckoutPage() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { loading } = useSelector((state) => state.settings)
   const loggedInUser = useSelector((state) => state.auth?.user)
 
@@ -56,12 +58,19 @@ export default function PaymentCheckoutPage() {
     let active = true
 
     Promise.all([
-      api.get('subscription/payment-provider').catch(() => ({ data: { data: { provider: 'pin' } } })),
+      api.get('subscription/payment-provider').catch(() => ({ data: { data: { provider: 'none' } } })),
       api.get('subscription/fetch-subscription-plans'),
+      api.get('subscription/subscription-details').catch(() => null),
     ])
-      .then(([providerResponse, plansResponse]) => {
+      .then(([providerResponse, plansResponse, detailsResponse]) => {
         if (!active) return
-        setPaymentProvider(providerResponse.data?.data?.provider || 'pin')
+        // An organisation that already subscribes changes its plan on the Subscription page.
+        const liveStatus = detailsResponse?.data?.data?.stripe?.status
+        if (['active', 'trialing', 'past_due'].includes(liveStatus)) {
+          navigate('/subscription', { replace: true })
+          return
+        }
+        setPaymentProvider(providerResponse.data?.data?.provider || 'none')
         const availablePlans = plansResponse.data?.data?.plans || []
         setPlans(availablePlans)
         const preferredPlanId = loggedInUser?.preferred_subscription_plan_id
@@ -86,6 +95,7 @@ export default function PaymentCheckoutPage() {
   }, [
     loggedInUser?.preferred_subscription_plan_id,
     loggedInUser?.preferred_subscription_billing_interval,
+    navigate,
   ])
 
   const chosenPlan = useMemo(
@@ -212,12 +222,25 @@ export default function PaymentCheckoutPage() {
 
       <div className='row justify-content-center'>
         <div className='col-lg-7 col-md-10'>
-          <div className='alert alert-info mb-4'>
-            <i className='fa fa-shield me-2' />
-            <strong>Secure Payment</strong> – {paymentProvider === 'stripe'
-              ? 'You will be redirected to Stripe’s secure hosted checkout. GrantMaestro never receives or stores your card details.'
-              : 'Card details must be tokenised by Pin Payments and are never stored on GrantMaestro servers.'}
-          </div>
+          {loggedInUser?.subscription_expired && (
+            <div className='alert alert-danger mb-4'>
+              <i className='fa fa-exclamation-circle me-2' />
+              <strong>Your {loggedInUser.subscription_is_in_trial ? 'free trial' : 'subscription'} has ended.</strong> Subscribe below to restore access for you and your team. Your data is kept.
+            </div>
+          )}
+          {paymentProvider === 'none' ? (
+            <div className='alert alert-warning mb-4'>
+              <i className='fa fa-info-circle me-2' />
+              Online payment is not available yet. Please <a href='/contact?topic=support'>contact support</a> to subscribe.
+            </div>
+          ) : (
+            <div className='alert alert-info mb-4'>
+              <i className='fa fa-shield me-2' />
+              <strong>Secure Payment</strong> – {isStripe
+                ? 'You will be redirected to Stripe’s secure hosted checkout. GrantMaestro never receives or stores your card details.'
+                : 'Card details must be tokenised by Pin Payments and are never stored on GrantMaestro servers.'}
+            </div>
+          )}
           {checkoutError && <div className='alert alert-danger mb-4'>{checkoutError}</div>}
 
           <form onSubmit={handleSubmit}>
@@ -409,9 +432,9 @@ export default function PaymentCheckoutPage() {
             <button
               type='submit'
               className='btn btn-primary btn-lg w-100'
-              disabled={loading || plansLoading || paymentProvider === 'loading' || !selectedPlan || (paymentProvider === 'pin' && !cardToken)}
+              disabled={loading || plansLoading || ['loading', 'none'].includes(paymentProvider) || !selectedPlan || (paymentProvider === 'pin' && !cardToken)}
             >
-              {loading ? <><span className='spinner-border spinner-border-sm me-2' />Processing Payment...</> : <><i className='fa fa-lock me-2' />{paymentProvider === 'stripe' ? 'Continue to Secure Stripe Checkout' : 'Pay Securely with Pin Payments'}</>}
+              {loading ? <><span className='spinner-border spinner-border-sm me-2' />Processing Payment...</> : <><i className='fa fa-lock me-2' />{isStripe ? 'Continue to Secure Stripe Checkout' : paymentProvider === 'pin' ? 'Pay Securely with Pin Payments' : 'Online Payment Unavailable'}</>}
             </button>
           </form>
         </div>

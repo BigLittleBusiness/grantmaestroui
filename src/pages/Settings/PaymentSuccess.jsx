@@ -110,6 +110,7 @@ const PaymentSuccess = () => {
 
                 <div className='d-flex flex-wrap gap-2 justify-content-center mt-2'>
                   <a href='/dashboard' className='btn btn-primary px-4'>Go to Dashboard</a>
+                  <a href='/subscription' className='btn btn-outline-primary px-4'>View Subscription</a>
                   {data.invoice_url && (
                     <a href={data.invoice_url} target='_blank' rel='noreferrer' className='btn btn-outline-secondary px-4'>
                       <i className='fa fa-file-text-o me-2' />View Tax Invoice

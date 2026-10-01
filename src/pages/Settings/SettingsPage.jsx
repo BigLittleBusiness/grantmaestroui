@@ -114,9 +114,9 @@ export default function SettingsPage() {
           </div>
           <div className='card-body'>
             <div className='mb-4'>
-              <a href='/payment/checkout' className='btn btn-primary'>
-                Subscription &amp; Payment
-              </a>
+              <Link to='/subscription' className='btn btn-primary'>
+                Subscription &amp; Billing
+              </Link>
               <a href='/seat-usage' className='btn btn-secondary ms-2'>
                 View Current Uses
               </a>

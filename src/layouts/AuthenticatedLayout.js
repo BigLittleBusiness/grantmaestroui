@@ -1,17 +1,26 @@
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
+import { Navigate, useLocation } from 'react-router-dom'
 import Header from '../components/Header'
 import SideBar from 'components/SideBar'
+import TrialBanner from 'components/TrialBanner'
+import LoaderComponent from 'components/LoaderComponent'
+import useCurrentUser from 'hooks/useCurrentUser'
+import { canAccessPage, homePathFor, subscriptionRedirectFor } from 'utils/roleAccess'
 import 'assets/css/authenticate.css'
 import 'assets/css/feather/feather.css'
 import 'layouts/AuthenticatedLayout.css'
-import LoaderComponent from 'components/LoaderComponent'
-import useCurrentUser from 'hooks/useCurrentUser'
 
-const AuthenticatedLayout = ({ children }) => {
+/**
+ * Layout for signed-in pages. Waits for the user's role after a page refresh
+ * so another role's screens are never shown, sends an Organisation Admin whose
+ * subscription has ended to checkout, and, when `restricted`, applies the
+ * per-page role rules in utils/roleAccess.js.
+ */
+const AuthenticatedLayout = ({ children, restricted = false }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
-  // Wait for the user's role after a page refresh so the correct menu renders.
-  const { loading } = useCurrentUser()
+  const { pathname } = useLocation()
+  const { user, loading } = useCurrentUser()
 
   const toggleSidebar = () => {
     setSidebarVisible(!isSidebarVisible)
@@ -19,6 +28,14 @@ const AuthenticatedLayout = ({ children }) => {
 
   if (loading) {
     return <LoaderComponent />
+  }
+
+  const subscriptionRedirect = subscriptionRedirectFor(user, pathname)
+  if (subscriptionRedirect) {
+    return <Navigate to={subscriptionRedirect} replace />
+  }
+  if (restricted && user && !canAccessPage(user, pathname)) {
+    return <Navigate to={homePathFor(user)} replace />
   }
 
   return (
@@ -35,6 +52,7 @@ const AuthenticatedLayout = ({ children }) => {
             isSidebarVisible ? '' : 'main-content-expand'
           }`}
         >
+          <TrialBanner user={user} />
           {children}
         </div>
       </main>

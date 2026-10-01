@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { loginUser } from './authSlice'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { validateAuthToken } from '../../utils/auth'
 import logo from 'assets/brand/grantmaestro-logo-full-colour-transparent.png'
 
@@ -19,6 +19,8 @@ const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { loading, error, isLoggedIn, user } = useSelector((state) => state.auth)
+  const [searchParams] = useSearchParams()
+  const subscriptionEnded = searchParams.get('reason') === 'subscription-ended'
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -140,6 +142,9 @@ const Login = () => {
           </div>
         </form>
         {loading && <p>Loading...</p>}
+        {subscriptionEnded && !error && (
+          <p className='text-danger'>Your organisation's subscription has ended. Please contact your administrator to renew.</p>
+        )}
         {error && <p className='text-danger'>{error.message}</p>}
       </div>
     </div>

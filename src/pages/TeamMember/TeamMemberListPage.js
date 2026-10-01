@@ -1,7 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import TeamMemberList from 'features/teamMember/TeamMemberList'
-import SideBar from 'components/SideBar'
 
 const TeamMemberListPage = () => {
   const navigate = useNavigate()

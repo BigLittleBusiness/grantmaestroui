@@ -31,6 +31,7 @@ import SeatUsagePage from 'pages/Settings/SeatUsagePage'
 import PaymentSuccess from 'pages/Settings/PaymentSuccess'
 import PaymentCancel from 'pages/Settings/PaymentCancel'
 import PaymentCheckoutPage from 'pages/Settings/PaymentCheckoutPage'
+import SubscriptionPage from 'pages/Settings/SubscriptionPage'
 import ChangePassword from 'features/auth/ChangePassword'
 import ForcePasswordReset from 'pages/Auth/ForcePasswordReset'
 import SysAdminDashboard from 'pages/SysAdminDashboard'
@@ -180,7 +181,7 @@ const ProtectedRoutes = () => {
         }
       />
       {/* Old payment page URL: subscriptions are paid through Stripe checkout. */}
-      <Route path='/manage-payment' element={<Navigate to='/payment/checkout' replace />} />
+      <Route path='/manage-payment' element={<Navigate to='/subscription' replace />} />
       <Route
         path='/admin/pin-settings'
         element={
@@ -242,6 +243,14 @@ const ProtectedRoutes = () => {
         element={
           <AdminAuthenticatedLayout>
             <PrivacySettingPage />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/subscription'
+        element={
+          <AdminAuthenticatedLayout>
+            <SubscriptionPage />
           </AdminAuthenticatedLayout>
         }
       />
