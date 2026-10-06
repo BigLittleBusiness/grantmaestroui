@@ -49,7 +49,7 @@
 
 ## Production prerequisites before public deployment
 
-1. Configure Cloudflare Turnstile for the exact production hostnames and set `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `TURNSTILE_EXPECTED_HOSTNAMES` and the encoded contact recipient in the protected API environment. See the API repository’s `docs/contact-form-configuration.md`.
+1. Cloudflare Turnstile is confirmed as configured on BinaryLane. Verify the live production hostname, protected `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `TURNSTILE_EXPECTED_HOSTNAMES` and encoded contact recipient with one successful and one deliberately rejected form submission. See the API repository’s `docs/contact-form-configuration.md`.
 2. Apply and verify the committed Nginx configuration in `docs/deployment/nginx-static-performance.conf`; do not disturb HTTPS or the existing API proxy.
 3. Have qualified legal/privacy and commercial leadership review and approve the revised public policies before relying on them as final legal terms.
 4. Leave PIN disabled unless a real, provider-approved hosted/tokenised payment integration has been implemented and tested. Do not reintroduce a card number, CVC or manual payment-token field.
