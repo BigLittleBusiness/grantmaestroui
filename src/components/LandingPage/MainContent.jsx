@@ -30,7 +30,7 @@ export default function MainContent({ landingPage = 'homepage' }) {
         <a className='gm-readiness-promo__button' href='/grant-portfolio-readiness'>Take the Grant Portfolio Risk &amp; Readiness Snapshot</a>
       </div>
       <aside aria-label='Snapshot outcomes'>
-        <img className='gm-readiness-promo__visual' src={readinessPulseVisual} alt='Abstract portfolio readiness visual representing deadlines, evidence and accountable ownership.' />
+        <img className='gm-readiness-promo__visual' src={readinessPulseVisual} alt='Abstract portfolio readiness visual representing deadlines, evidence and accountable ownership.' loading='lazy' decoding='async' />
         <div className='gm-readiness-promo__outcomes'>
           <p>What you will leave with</p>
           <ul><li><span>01</span> A clearer view of deadline and reporting visibility</li><li><span>02</span> A practical prompt for acquittal and evidence readiness</li><li><span>03</span> One useful next step for shared ownership and continuity</li></ul>
@@ -41,7 +41,7 @@ export default function MainContent({ landingPage = 'homepage' }) {
 
     <section className='flat-section gm-council-proof' aria-labelledby='council-workflow-title'><div className='section-content'><div className='container'>
       <div className='gm-council-proof__grid'>
-        <figure className='gm-council-proof__image'><img src={portfolioReviewVisual} alt='A cross-functional grants team reviewing portfolio materials together.' /></figure>
+        <figure className='gm-council-proof__image'><img src={portfolioReviewVisual} alt='A cross-functional grants team reviewing portfolio materials together.' loading='lazy' decoding='async' /></figure>
         <div className='gm-council-proof__copy'>
           <p className='section-subtitle'>Designed for practical grant operations</p>
           <h2 id='council-workflow-title'>A shared workspace for the work around every grant</h2>
@@ -59,7 +59,7 @@ export default function MainContent({ landingPage = 'homepage' }) {
         <p>Bring the decisions, tasks, evidence and reporting work around each grant into one connected, accountable workflow.</p>
         <ol><li><span>01</span> Opportunity and eligibility</li><li><span>02</span> Application and shared actions</li><li><span>03</span> Delivery, reporting and acquittal</li></ol>
       </div>
-      <figure className='gm-lifecycle-visual__image'><img src={workflowVisual} alt='A visual representation of a connected grant workflow from opportunity through reporting.' /></figure>
+      <figure className='gm-lifecycle-visual__image'><img src={workflowVisual} alt='A visual representation of a connected grant workflow from opportunity through reporting.' loading='lazy' decoding='async' /></figure>
     </div></div></section>
 
     <FeatureSection landingPage={landingPage} />

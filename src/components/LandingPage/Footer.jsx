@@ -2,6 +2,13 @@ import React from 'react'
 import 'components/LandingPage/Footer.css'
 import BrandLogoWhite from 'assets/brand/grantmaestro-logo-white-transparent.png'
 
+const LinkGroup = ({ title, children }) => (
+  <nav className='footer-link-group' aria-label={title}>
+    <p className='footer-heading'>{title}</p>
+    <ul className='footer-links'>{children}</ul>
+  </nav>
+)
+
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
@@ -10,94 +17,56 @@ export default function Footer() {
       <div className='footer-top'>
         <div className='container'>
           <div className='row'>
-            {/* Brand column */}
             <div className='col-lg-4 col-md-6 mb-4'>
               <div className='footer-brand'>
                 <img src={BrandLogoWhite} alt='GrantMaestro' className='footer-logo' />
-                <p className='footer-tagline'>
-                  The practical grant management workspace for councils and Australian and New Zealand organisations managing inward funding.
-                </p>
-                <div className='footer-security-badges'>
-                  <span className='footer-badge'>
-                    <i className='fa fa-lock'></i> Secure &amp; Encrypted
-                  </span>
-                  <span className='footer-badge'>
-                    <i className='fa fa-map-marker'></i> Australian Hosted
-                  </span>
-                  <span className='footer-badge'>
-                    <i className='fa fa-shield'></i> Privacy-first platform
-                  </span>
-                </div>
+                <p className='footer-tagline'>The practical grant-management workspace for Australian and New Zealand councils and organisations managing inward funding.</p>
+                <p className='footer-support-note'>Learn how GrantMaestro handles personal information, service providers and support requests in the published policies below.</p>
               </div>
             </div>
-
-            {/* Product links */}
             <div className='col-lg-2 col-md-6 mb-4'>
-              <h6 className='footer-heading'>Product</h6>
-              <ul className='footer-links'>
+              <LinkGroup title='Product'>
                 <li><a href='/#service-features'>Features</a></li>
                 <li><a href='/#pricing_section'>Pricing</a></li>
-                <li><a href='/councils'>For Councils</a></li>
+                <li><a href='/councils'>For councils</a></li>
                 <li><a href='/grant-portfolio-readiness'>Readiness Snapshot</a></li>
                 <li><a href='/register'>Start Free Trial</a></li>
                 <li><a href='/login'>Login</a></li>
-              </ul>
+              </LinkGroup>
             </div>
-
-            {/* Company links */}
             <div className='col-lg-2 col-md-6 mb-4'>
-              <h6 className='footer-heading'>Company</h6>
-              <ul className='footer-links'>
+              <LinkGroup title='Resources'>
                 <li><a href='/councils'>Why GrantMaestro for councils</a></li>
                 <li><a href='/grant-portfolio-readiness'>Grant portfolio diagnostic</a></li>
                 <li><a href='/support'>Support centre</a></li>
-                <li><a href='/contact'>Contact us</a></li>
-              </ul>
+                <li><a href='/contact'>Contact form</a></li>
+              </LinkGroup>
             </div>
-
-            {/* Legal links */}
             <div className='col-lg-2 col-md-6 mb-4'>
-              <h6 className='footer-heading'>Legal</h6>
-              <ul className='footer-links'>
+              <LinkGroup title='Legal'>
                 <li><a href='/privacy-policy'>Privacy Policy</a></li>
                 <li><a href='/terms-of-service'>Terms of Service</a></li>
-              </ul>
+                <li><a href='/terms-of-service#billing'>Billing, trial and cancellation</a></li>
+              </LinkGroup>
             </div>
-
-            {/* Support */}
             <div className='col-lg-2 col-md-6 mb-4'>
-              <h6 className='footer-heading'>Support</h6>
-              <ul className='footer-links'>
-                <li>
-                  <a href='/support'>
-                    <i className='fa fa-life-ring'></i> Support centre
-                  </a>
-                </li>
-                <li className='footer-support-note'>
-                  Find onboarding guidance, account help and contact options in one place.
-                </li>
-              </ul>
+              <LinkGroup title='Support'>
+                <li><a href='/support'><i className='fa fa-life-ring' aria-hidden='true'></i> Support centre</a></li>
+                <li><a href='/contact?topic=support'>Submit a support enquiry</a></li>
+                <li className='footer-support-note'>For help with access, billing, grants workspace or technical issues, use the secure form.</li>
+              </LinkGroup>
             </div>
           </div>
         </div>
       </div>
-
       <div className='footer-bottom'>
         <div className='container'>
           <div className='row align-items-center'>
             <div className='col-md-8'>
-              <p className='footer-copyright'>
-                {currentYear} &copy; <strong>GrantMaestro</strong>. All rights reserved.
-                &nbsp;|&nbsp;
-                <a href='/privacy-policy'>Privacy Policy</a>
-                &nbsp;|&nbsp;
-                <a href='/terms-of-service'>Terms of Service</a>
-              </p>
+              <p className='footer-copyright'>{currentYear} &copy; <strong>GrantMaestro</strong>. All rights reserved. &nbsp;|&nbsp; <a href='/privacy-policy'>Privacy Policy</a> &nbsp;|&nbsp; <a href='/terms-of-service'>Terms of Service</a></p>
             </div>
             <div className='col-md-4 text-md-end'>
-              <p className='footer-privacy-note'>
-                <i className='fa fa-lock'></i> Privacy and handling details are available in our Privacy Policy.
-              </p>
+              <p className='footer-privacy-note'><i className='fa fa-lock' aria-hidden='true'></i> Privacy and data-handling details are available in our Privacy Policy.</p>
             </div>
           </div>
         </div>

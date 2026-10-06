@@ -35,7 +35,7 @@ const plans = [
       'Task assignment and tracking',
       'Grant progress dashboard',
       'Finance notification on successful applications',
-      'Email support — 48-hour response',
+      'Support through the secure enquiry form',
     ],
     noFeatures: ['Phone support'],
     highlight: false,
@@ -43,8 +43,8 @@ const plans = [
   {
     id: 'pro',
     name: 'Pro',
-    headerClass: 'bg-success',
-    btnClass: 'btn-success',
+    headerClass: 'gm-plan-pro-header',
+    btnClass: 'btn-primary',
     monthlyPrice: 275,
     annualPrice: 2750,
     seats: '2 Admins + 10 Team Members',
@@ -62,7 +62,7 @@ const plans = [
       'Each client sees only their own grants and tasks',
       'Scalable — add extra seats as your team grows',
       'Onboarding and training session included',
-      'Email support — 24-hour response',
+      'Support through the secure enquiry form',
     ],
     noFeatures: ['Phone support'],
     highlight: true,
@@ -89,8 +89,7 @@ const plans = [
       'Finance automatically notified on successful applications',
       'Full audit trail for public sector transparency requirements',
       'Onboarding and training session included',
-      'Priority email support — 24-hour response',
-      'Phone support',
+      'Priority support arrangements where included in your agreement',
     ],
     noFeatures: [],
     highlight: false,
@@ -100,6 +99,7 @@ const plans = [
 const MembershipPricing = () => {
   const [isAnnually, setIsAnnually] = useState(true)
   const [livePlanPrices, setLivePlanPrices] = useState({})
+  const [pricingStatus, setPricingStatus] = useState('Loading current plan details…')
 
   useEffect(() => {
     let active = true
@@ -120,32 +120,33 @@ const MembershipPricing = () => {
           return result
         }, {})
         setLivePlanPrices(prices)
+        setPricingStatus(Object.keys(prices).length ? 'Current plan details are available.' : 'Pricing is shown from the verified plan baseline. Confirm plan details during registration.')
       })
       // The current verified plan values remain visible if the public plan API
       // is unavailable, rather than making the pricing section unusable.
-      .catch(() => {})
+      .catch(() => setPricingStatus('Pricing is shown from the verified plan baseline. Confirm plan details during registration.'))
     return () => { active = false }
   }, [])
 
   return (
-    <div className='container my-5' id='pricing_section'>
-      <h2 className='text-center mb-2'>Simple, Transparent Pricing</h2>
+    <section className='container my-5' id='pricing_section' aria-labelledby='pricing-title'>
+      <h2 id='pricing-title' className='text-center mb-2'>Simple, transparent pricing</h2>
       <p className='text-center text-muted mb-4'>
         All plans include a <strong>14-day free trial</strong>. No credit card required.
       </p>
       <p className='text-center text-muted small mb-4'>
         Prices are in AUD and exclude GST. 10% GST is added for Australian organisations.
       </p>
-      <div className='text-center mb-4'>
+      <div className='text-center mb-4' role='group' aria-label='Billing frequency'>
         <button
-          className={`btn ${isAnnually ? 'btn-primary' : 'btn-outline-primary'} mx-2`}
+          className={`btn ${isAnnually ? 'btn-primary' : 'btn-outline-primary'} mx-2 gm-pricing-toggle`}
           onClick={() => setIsAnnually(true)}
           aria-pressed={isAnnually}
         >
           Annual — 2 months free
         </button>
         <button
-          className={`btn ${!isAnnually ? 'btn-primary' : 'btn-outline-primary'} mx-2`}
+          className={`btn ${!isAnnually ? 'btn-primary' : 'btn-outline-primary'} mx-2 gm-pricing-toggle`}
           onClick={() => setIsAnnually(false)}
           aria-pressed={!isAnnually}
         >
@@ -155,6 +156,7 @@ const MembershipPricing = () => {
       <p className='text-center text-success small fw-semibold mb-4'>
         Annual plans are billed once per year: pay for 10 months and receive 12 months of access.
       </p>
+      <p className='text-center text-muted small mb-4' role='status' aria-live='polite'>{pricingStatus}</p>
       <div className='row'>
         {plans.map((plan) => {
           const livePrices = livePlanPrices[plan.id]
@@ -168,12 +170,12 @@ const MembershipPricing = () => {
           <div className='col-md-4 mb-4' key={plan.id}>
             <div
               className='card text-center h-100 plan-card'
-              style={plan.highlight ? { border: '2px solid #28a745', boxShadow: '0 4px 20px rgba(40,167,69,0.2)' } : {}}
+              style={plan.highlight ? { border: '2px solid #001A8B', boxShadow: '0 4px 20px rgba(0,26,139,0.18)' } : {}}
             >
               {plan.highlight && (
                 <div
                   style={{
-                    background: '#28a745',
+                    background: '#001A8B',
                     color: '#fff',
                     fontSize: '0.75rem',
                     fontWeight: 700,
@@ -244,7 +246,7 @@ const MembershipPricing = () => {
           )
         })}
       </div>
-    </div>
+    </section>
   )
 }
 

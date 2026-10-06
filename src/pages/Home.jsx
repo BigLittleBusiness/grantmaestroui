@@ -20,9 +20,11 @@ export default function Home() {
         <meta property="og:url" content="https://www.grantmaestro.com/" />
       </Helmet>
       <Header />
-      <BannerSection />
-      <MainContent />
-      <TrustingDivComponent />
+      <main id='main-content' tabIndex='-1'>
+        <BannerSection />
+        <MainContent />
+        <TrustingDivComponent />
+      </main>
       <Footer />
     </div>
   )

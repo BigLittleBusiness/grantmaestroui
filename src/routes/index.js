@@ -1,74 +1,44 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import ProtectedRoutes from './ProtectedRoutes'
-import NonProfitHomePage from 'pages/NonProfitHomePage'
-import CouncilsPage from 'pages/CouncilsPage'
-import { useSelector } from 'react-redux'
-import Home from 'pages/Home'
-import LoginPage from 'pages/Auth/LoginPage'
-import RegisterPage from 'pages/Auth/RegisterPage'
-import UnauthenticatedLayout from 'layouts/UnauthenticatedLayout'
-import UniversitiesPage from 'pages/UniversitiesPage'
-import ReligiousOrganisationsPage from 'pages/ReligiousOrganisationsPage'
-import ForgotPasswordPage from 'pages/Auth/ForgotPasswordPage'
-import ResetPasswordPage from 'pages/Auth/ResetPasswordPage'
-import { PrivacyPolicyPage, SupportPage, TermsOfServicePage } from 'pages/LegalPages'
-import ContactPage from 'pages/ContactPage'
-import PortfolioReadinessPage from 'pages/PortfolioReadinessPage'
 
-const AppRoutes = () => {
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
+const ProtectedRoutes = lazy(() => import('./ProtectedRoutes'))
+const Home = lazy(() => import('pages/Home'))
+const NonProfitHomePage = lazy(() => import('pages/NonProfitHomePage'))
+const CouncilsPage = lazy(() => import('pages/CouncilsPage'))
+const UniversitiesPage = lazy(() => import('pages/UniversitiesPage'))
+const ReligiousOrganisationsPage = lazy(() => import('pages/ReligiousOrganisationsPage'))
+const LoginPage = lazy(() => import('pages/Auth/LoginPage'))
+const RegisterPage = lazy(() => import('pages/Auth/RegisterPage'))
+const ForgotPasswordPage = lazy(() => import('pages/Auth/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('pages/Auth/ResetPasswordPage'))
+const UnauthenticatedLayout = lazy(() => import('layouts/UnauthenticatedLayout'))
+const PrivacyPolicyPage = lazy(() => import('pages/LegalPages').then((module) => ({ default: module.PrivacyPolicyPage })))
+const TermsOfServicePage = lazy(() => import('pages/LegalPages').then((module) => ({ default: module.TermsOfServicePage })))
+const SupportPage = lazy(() => import('pages/LegalPages').then((module) => ({ default: module.SupportPage })))
+const ContactPage = lazy(() => import('pages/ContactPage'))
+const PortfolioReadinessPage = lazy(() => import('pages/PortfolioReadinessPage'))
 
-  return (
-    <Routes>
-      <Route path='/' element={<Home />} />
-      <Route path='/nonprofits' element={<NonProfitHomePage />} />
-      <Route path='/universities' element={<UniversitiesPage />} />
-      <Route path='/councils' element={<CouncilsPage />} />
-      <Route path='/privacy-policy' element={<PrivacyPolicyPage />} />
-      <Route path='/terms-of-service' element={<TermsOfServicePage />} />
-      <Route path='/support' element={<SupportPage />} />
-      <Route path='/contact' element={<ContactPage />} />
-      <Route path='/grant-portfolio-readiness' element={<PortfolioReadinessPage />} />
-      <Route
-        path='/religious-organisations'
-        element={<ReligiousOrganisationsPage />}
-      />
-      <Route
-        path='/login'
-        element={
-          <UnauthenticatedLayout>
-            <LoginPage />
-          </UnauthenticatedLayout>
-        }
-      />
-      <Route
-        path='/register'
-        element={
-          <UnauthenticatedLayout>
-            <RegisterPage />
-          </UnauthenticatedLayout>
-        }
-      />
-      <Route
-        path='/forgot-password'
-        element={
-          <UnauthenticatedLayout>
-            <ForgotPasswordPage />
-          </UnauthenticatedLayout>
-        }
-      />
-      <Route
-        path='/reset-password'
-        element={
-          <UnauthenticatedLayout>
-            <ResetPasswordPage />
-          </UnauthenticatedLayout>
-        }
-      />
-      <Route path='/*' element={<ProtectedRoutes />} />
-    </Routes>
-  )
-}
+const LoadingPage = () => <main id='main-content' tabIndex='-1' className='gm-route-loading' aria-live='polite'>Loading GrantMaestro…</main>
+const publicPage = (element) => <Suspense fallback={<LoadingPage />}>{element}</Suspense>
+const authPage = (element) => publicPage(<UnauthenticatedLayout>{element}</UnauthenticatedLayout>)
 
+const AppRoutes = () => (
+  <Routes>
+    <Route path='/' element={publicPage(<Home />)} />
+    <Route path='/nonprofits' element={publicPage(<NonProfitHomePage />)} />
+    <Route path='/universities' element={publicPage(<UniversitiesPage />)} />
+    <Route path='/councils' element={publicPage(<CouncilsPage />)} />
+    <Route path='/privacy-policy' element={publicPage(<PrivacyPolicyPage />)} />
+    <Route path='/terms-of-service' element={publicPage(<TermsOfServicePage />)} />
+    <Route path='/support' element={publicPage(<SupportPage />)} />
+    <Route path='/contact' element={publicPage(<ContactPage />)} />
+    <Route path='/grant-portfolio-readiness' element={publicPage(<PortfolioReadinessPage />)} />
+    <Route path='/religious-organisations' element={publicPage(<ReligiousOrganisationsPage />)} />
+    <Route path='/login' element={authPage(<LoginPage />)} />
+    <Route path='/register' element={authPage(<RegisterPage />)} />
+    <Route path='/forgot-password' element={authPage(<ForgotPasswordPage />)} />
+    <Route path='/reset-password' element={authPage(<ResetPasswordPage />)} />
+    <Route path='/*' element={publicPage(<ProtectedRoutes />)} />
+  </Routes>
+)
 export default AppRoutes

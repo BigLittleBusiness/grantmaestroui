@@ -24,12 +24,14 @@ export default function UniversitiesPage() {
         <meta property="og:url" content="https://www.grantmaestro.com/universities" />
       </Helmet>
       <Header />
-      <BannerSection
-        bannerH1Text={UniverSitiesBannerH1Text}
-        bannerPText={UniverSitiesBannerPText}
-      />
-      <MainContent landingPage='universites' />
-      <TrustingDivComponent />
+      <main id='main-content' tabIndex='-1'>
+        <BannerSection
+          bannerH1Text={UniverSitiesBannerH1Text}
+          bannerPText={UniverSitiesBannerPText}
+        />
+        <MainContent landingPage='universites' />
+        <TrustingDivComponent />
+      </main>
       <Footer />
     </div>
   )

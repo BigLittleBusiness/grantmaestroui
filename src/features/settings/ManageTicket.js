@@ -146,8 +146,8 @@ const ManageTicket = () => {
                       {captchaError && <div className='text-danger mt-2' role='alert'>{captchaError}</div>}
                     </div>
                     <div className='text-end'>
-                        <button type='submit' className='btn btn-primary'>
-                            Submit
+                        <button type='submit' className='btn btn-primary' disabled={!captchaSiteKey}>
+                            {captchaSiteKey ? 'Submit' : 'Security check unavailable'}
                         </button>
                         <button
                             type='button'

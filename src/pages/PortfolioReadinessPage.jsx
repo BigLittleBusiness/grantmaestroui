@@ -325,8 +325,12 @@ export default function PortfolioReadinessPage() {
             const nextStatus = analysisResponse.data?.analysisStatus
             if (!mounted) return
 
-            if (nextData?.headline && Array.isArray(nextData?.paragraphs)) setInsight({ data: nextData, loading: nextStatus === 'pending' })
-            if (nextStatus === 'pending' && attempt < 9) pollTimer = window.setTimeout(() => pollForManusAnalysis(attempt + 1), 2000)
+            if (nextData?.headline && Array.isArray(nextData?.paragraphs)) setInsight({ data: nextData, loading: nextStatus === 'pending' && attempt < 9 })
+            if (nextStatus === 'pending' && attempt < 9) {
+              pollTimer = window.setTimeout(() => pollForManusAnalysis(attempt + 1), 2000)
+            } else if (nextStatus === 'pending') {
+              setInsight((current) => current ? { ...current, loading: false } : current)
+            }
           } catch {
             if (mounted) setInsight((current) => current ? { ...current, loading: false } : current)
           }
@@ -351,6 +355,7 @@ export default function PortfolioReadinessPage() {
   const moveForward = () => {
     if (!answers[step]) {
       setSelectionError('Select the option that best reflects your current operating reality.')
+      window.setTimeout(() => document.getElementById('readiness-question-legend')?.focus(), 0)
       return
     }
 
@@ -385,6 +390,8 @@ export default function PortfolioReadinessPage() {
   const handleLeadSubmit = async (event) => {
     event.preventDefault()
     setFormError('')
+
+    if (!event.currentTarget.reportValidity()) return
 
     if (!form.consent) {
       setFormError('Please confirm consent before requesting your action plan.')
@@ -421,6 +428,29 @@ export default function PortfolioReadinessPage() {
     }
   }
 
+  const downloadActionPlan = () => {
+    if (!result) return
+    const lines = [
+      'GrantMaestro Grant Portfolio Risk & Readiness Snapshot',
+      '',
+      `Overall result: ${result.label} (${result.score}/100)`,
+      result.note,
+      '',
+      'Three practical priorities:',
+      ...result.categories.map((category, index) => `${index + 1}. ${category.action.title}: ${category.action.detail}`),
+      '',
+      'This is a practical reflection based on self-reported answers. It is not an audit, compliance assessment or certification.',
+    ]
+    const url = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'grantmaestro-portfolio-readiness-priorities.txt'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className='full-container portfolio-readiness-page'>
       <Helmet>
@@ -433,7 +463,7 @@ export default function PortfolioReadinessPage() {
         <meta property='og:url' content='https://www.grantmaestro.com/grant-portfolio-readiness' />
       </Helmet>
       <Header />
-      <main>
+      <main id='main-content' tabIndex='-1'>
         <section className='readiness-hero' aria-labelledby='readiness-heading'>
           <div className='readiness-shell readiness-hero__grid'>
             <div className='readiness-hero__copy'>
@@ -447,7 +477,7 @@ export default function PortfolioReadinessPage() {
               </div>
             </div>
             <aside className='readiness-hero__panel' aria-label='Assessment focus areas'>
-              <img className='readiness-hero__visual' src={readinessPulseVisual} alt='' aria-hidden='true' />
+              <img className='readiness-hero__visual' src={readinessPulseVisual} alt='' aria-hidden='true' loading='lazy' decoding='async' />
               <p>You will assess</p>
               <ol>
                 <li><span>01</span> Deadline and opportunity visibility</li>
@@ -466,8 +496,8 @@ export default function PortfolioReadinessPage() {
               <h2 id='assessment-title'>A clearer view of grant operations starts here.</h2>
               <div className='readiness-progress' aria-hidden='true'><span style={{ width: `${progress}%` }} /></div>
               <form className='readiness-question-card' onSubmit={(event) => { event.preventDefault(); moveForward() }}>
-                <fieldset>
-                  <legend>{currentQuestion.question}</legend>
+                <fieldset aria-invalid={Boolean(selectionError)} aria-describedby={selectionError ? 'readiness-selection-error' : undefined}>
+                  <legend id='readiness-question-legend' tabIndex='-1'>{currentQuestion.question}</legend>
                   <p className='readiness-question-help'>{currentQuestion.helper}</p>
                   <div className='readiness-options'>
                     {currentQuestion.options.map((option) => (
@@ -483,7 +513,7 @@ export default function PortfolioReadinessPage() {
                     ))}
                   </div>
                 </fieldset>
-                {selectionError && <p className='readiness-error' role='alert'>{selectionError}</p>}
+                {selectionError && <p id='readiness-selection-error' className='readiness-error' role='alert'>{selectionError}</p>}
                 <div className='readiness-question-actions'>
                   <button type='button' className='readiness-back' onClick={() => setStep((current) => Math.max(current - 1, 0))} disabled={step === 0}>Back</button>
                   <button type='submit' className='readiness-primary'>{step === questions.length - 1 ? 'See my snapshot' : 'Continue'}</button>
@@ -539,7 +569,7 @@ export default function PortfolioReadinessPage() {
                       <p className='readiness-eyebrow readiness-eyebrow--ink'>Answer-specific reflection</p>
                       <h3 id='interpretation-title'>{insight.data.headline}</h3>
                     </div>
-                    {insight.loading && <span className='readiness-interpretation__loading'>Preparing your deeper reflection…</span>}
+                    {insight.loading && <span className='readiness-interpretation__loading'>Initial reflection shown; tailored detail may follow shortly.</span>}
                   </div>
                   <div className='readiness-interpretation__body'>
                     {insight.data.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
@@ -558,6 +588,10 @@ export default function PortfolioReadinessPage() {
                     <span aria-hidden='true'>✓</span>
                     <div><h3 id='email-plan-title'>Your action plan is on its way.</h3><p>Check the inbox you provided. Use the priorities above as a practical prompt for your next internal discussion.</p></div>
                   </div>
+                ) : formConfig.loading ? (
+                  <div className='readiness-confirmation' role='status'><div><h3 id='email-plan-title'>Checking secure delivery availability</h3><p>Loading the security check. Your on-screen priorities remain available.</p></div></div>
+                ) : !formConfig.siteKey ? (
+                  <div className='readiness-confirmation' role='status'><div><h3 id='email-plan-title'>Keep your on-screen priorities</h3><p>{formConfig.message || 'Action-plan email delivery is temporarily unavailable. No contact information is requested.'}</p><button type='button' className='readiness-primary' onClick={downloadActionPlan}>Download my priorities</button></div></div>
                 ) : (
                   <>
                     <div className='readiness-email-card__heading'>
@@ -565,7 +599,7 @@ export default function PortfolioReadinessPage() {
                       <h3 id='email-plan-title'>Email my action plan</h3>
                       <p>Receive a copy of these priorities to use in your next grants, finance or leadership discussion.</p>
                     </div>
-                    <form onSubmit={handleLeadSubmit} noValidate>
+                    <form onSubmit={handleLeadSubmit}>
                       <div className='readiness-email-grid'>
                         <label>First name <span aria-hidden='true'>*</span><input name='firstName' value={form.firstName} onChange={updateForm} autoComplete='given-name' maxLength='120' required /></label>
                         <label>Work email <span aria-hidden='true'>*</span><input name='email' type='email' value={form.email} onChange={updateForm} autoComplete='email' maxLength='254' required /></label>
@@ -575,13 +609,11 @@ export default function PortfolioReadinessPage() {
                       <div className='readiness-honeypot' aria-hidden='true'><label>Website<input name='website' value={form.website} onChange={updateForm} tabIndex='-1' autoComplete='off' /></label></div>
                       <label className='readiness-consent'><input type='checkbox' name='consent' checked={form.consent} onChange={updateForm} required /><span>I consent to GrantMaestro using my information to send this action plan and occasional relevant follow-up. I can unsubscribe at any time.</span></label>
                       <div className='readiness-verification'>
-                        {formConfig.loading && <p>Loading security check…</p>}
-                        {formConfig.message && <p className='readiness-form-note'>{formConfig.message}</p>}
                         {formConfig.siteKey && <TurnstileWidget siteKey={formConfig.siteKey} onVerify={(token) => { setCaptchaToken(token); setCaptchaError('') }} onExpire={() => { setCaptchaToken(''); setCaptchaError('The security check expired. Please complete it again.') }} onError={() => { setCaptchaToken(''); setCaptchaError('The security check could not be completed. Please refresh and try again.') }} />}
                         {captchaError && <p className='readiness-error' role='alert'>{captchaError}</p>}
                       </div>
                       {formError && <p className='readiness-error' role='alert'>{formError}</p>}
-                      <button type='submit' className='readiness-primary' disabled={submitting || formConfig.loading || !formConfig.siteKey}>{submitting ? 'Emailing your action plan…' : 'Email my action plan'}</button>
+                      <button type='submit' className='readiness-primary' disabled={submitting}>{submitting ? 'Emailing your action plan…' : 'Email my action plan'}</button>
                     </form>
                   </>
                 )}

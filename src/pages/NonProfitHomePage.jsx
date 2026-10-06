@@ -21,12 +21,14 @@ export default function NonProfitHomePage() {
         <meta property="og:url" content="https://www.grantmaestro.com/nonprofits" />
       </Helmet>
       <Header />
-      <BannerSection
-        bannerH1Text={nonprofitH1Text}
-        bannerPText={nonprofitPText}
-      />
-      <MainContent landingPage='nonProfit' />
-      <TrustingDivComponent />
+      <main id='main-content' tabIndex='-1'>
+        <BannerSection
+          bannerH1Text={nonprofitH1Text}
+          bannerPText={nonprofitPText}
+        />
+        <MainContent landingPage='nonProfit' />
+        <TrustingDivComponent />
+      </main>
       <Footer />
     </div>
   )

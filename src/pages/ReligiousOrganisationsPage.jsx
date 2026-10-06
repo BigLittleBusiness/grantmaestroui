@@ -21,12 +21,14 @@ export default function ReligiousOrganisationsPage() {
         <meta property="og:url" content="https://www.grantmaestro.com/religious-organisations" />
       </Helmet>
       <Header />
-      <BannerSection
-        bannerH1Text={religiousH1Text}
-        bannerPText={religiousPText}
-      />
-      <MainContent landingPage='religiousPage' />
-      <TrustingDivComponent />
+      <main id='main-content' tabIndex='-1'>
+        <BannerSection
+          bannerH1Text={religiousH1Text}
+          bannerPText={religiousPText}
+        />
+        <MainContent landingPage='religiousPage' />
+        <TrustingDivComponent />
+      </main>
       <Footer />
     </div>
   )

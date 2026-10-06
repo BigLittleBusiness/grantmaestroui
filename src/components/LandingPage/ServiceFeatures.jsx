@@ -17,12 +17,13 @@ export default function ServiceFeatures() {
   }, [])
 
   return (
-    <div
+    <section
       id='service-features'
       className='parallax-section'
       data-scroll-index='1'
       data-parallax-bg-img='img-37.jpg'
       data-stellar-background-ratio='0.2'
+      aria-labelledby='service-features-title'
     >
       <div
         className='overlay-colored'
@@ -31,6 +32,7 @@ export default function ServiceFeatures() {
       ></div>
       <div className='section-content'>
         <div className='container'>
+          <h2 id='service-features-title' className='visually-hidden'>How GrantMaestro supports grant operations</h2>
           <div className='row'>
             <div className='col-md-4'>
               <div className='box-info box-info-1 text-white mb-50 anim-scaledown-seq'>
@@ -38,7 +40,7 @@ export default function ServiceFeatures() {
                   <i className='fa fa-clipboard' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>One Platform for Every Grant</h4>
+                  <h3 className='capitalized'>One Platform for Every Grant</h3>
                   <p>
                     Consolidate every application, deadline, and document into a
                     single workspace — so your team stops juggling spreadsheets
@@ -53,7 +55,7 @@ export default function ServiceFeatures() {
                   <i className='fa fa-calendar-check-o' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Never Miss a Critical Deadline</h4>
+                  <h3 className='capitalized'>Never Miss a Critical Deadline</h3>
                   <p>
                     Automated reminders for closing dates, milestone reports, and
                     acquittals keep your team ahead of schedule — protecting every
@@ -68,7 +70,7 @@ export default function ServiceFeatures() {
                   <i className='fa fa-users' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Keep Your Whole Team in Sync</h4>
+                  <h3 className='capitalized'>Keep Your Whole Team in Sync</h3>
                   <p>
                     Assign tasks, track progress, and collaborate across
                     departments in real time — so everyone knows exactly what
@@ -83,7 +85,7 @@ export default function ServiceFeatures() {
                   <i className='fa fa-bar-chart' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Focus Effort Where It Matters Most</h4>
+                  <h3 className='capitalized'>Focus Effort Where It Matters Most</h3>
                   <p>
                     Clear dashboards and reporting give you an instant view of
                     grant health, team workload, and upcoming priorities — so
@@ -98,7 +100,7 @@ export default function ServiceFeatures() {
                   <i className='fa fa-bell' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Automated Reminders, Zero Surprises</h4>
+                  <h3 className='capitalized'>Automated Reminders, Zero Surprises</h3>
                   <p>
                     Set it once and let Grant Maestro handle the follow-up.
                     Deadline alerts, reporting reminders, and renewal notifications
@@ -113,7 +115,7 @@ export default function ServiceFeatures() {
                   <i className='fa fa-folder-open' style={{ color: 'white' }}></i>
                 </div>
                 <div className='box-content'>
-                  <h4 className='capitalized'>Every File, Instantly Accessible</h4>
+                  <h3 className='capitalized'>Every File, Instantly Accessible</h3>
                   <p>
                     Securely store all grant documents, correspondence, and
                     evidence in one central location — searchable, organised, and
@@ -125,6 +127,6 @@ export default function ServiceFeatures() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

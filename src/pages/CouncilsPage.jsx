@@ -21,13 +21,15 @@ export default function CouncilsPage() {
         <meta property="og:url" content="https://www.grantmaestro.com/councils" />
       </Helmet>
       <Header />
-      <BannerSection
-        bannerH1Text={councilH1Text}
-        bannerPText={councilPText}
-        membershipPreference='starter'
-      />
-      <MainContent landingPage='councils' />
-      <TrustingDivComponent />
+      <main id='main-content' tabIndex='-1'>
+        <BannerSection
+          bannerH1Text={councilH1Text}
+          bannerPText={councilPText}
+          membershipPreference='starter'
+        />
+        <MainContent landingPage='councils' />
+        <TrustingDivComponent />
+      </main>
       <Footer />
     </div>
   )
