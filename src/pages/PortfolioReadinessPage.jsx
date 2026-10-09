@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Helmet } from 'react-helmet-async'
 import Header from 'components/LandingPage/Header'
 import Footer from 'components/LandingPage/Footer'
 import TurnstileWidget from 'components/contact/TurnstileWidget'
+import MarketingSeo from 'components/seo/MarketingSeo'
 import api from 'api'
 import readinessPulseVisual from 'assets/marketing/grantmaestro-readiness-pulse.jpg'
 import './PortfolioReadinessPage.css'
@@ -453,15 +453,7 @@ export default function PortfolioReadinessPage() {
 
   return (
     <div className='full-container portfolio-readiness-page'>
-      <Helmet>
-        <title>Grant Portfolio Risk & Readiness Snapshot | GrantMaestro</title>
-        <meta name='description' content='Take GrantMaestro’s free three-minute Grant Portfolio Risk & Readiness Snapshot for a practical view of deadline visibility, acquittal readiness and shared grant ownership.' />
-        <meta name='keywords' content='council grant portfolio readiness, grant acquittal checklist, grant management diagnostic, local government grant management' />
-        <link rel='canonical' href='https://www.grantmaestro.com/grant-portfolio-readiness' />
-        <meta property='og:title' content='Grant Portfolio Risk & Readiness Snapshot | GrantMaestro' />
-        <meta property='og:description' content='A practical three-minute diagnostic for council and public-purpose grant teams.' />
-        <meta property='og:url' content='https://www.grantmaestro.com/grant-portfolio-readiness' />
-      </Helmet>
+      <MarketingSeo pageKey='readiness' />
       <Header />
       <main id='main-content' tabIndex='-1'>
         <section className='readiness-hero' aria-labelledby='readiness-heading'>

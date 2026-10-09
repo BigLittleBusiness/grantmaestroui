@@ -102,7 +102,7 @@ export default function ServiceFeatures() {
                 <div className='box-content'>
                   <h3 className='capitalized'>Automated Reminders, Zero Surprises</h3>
                   <p>
-                    Set it once and let Grant Maestro handle the follow-up.
+                    Set it once and let GrantMaestro handle the follow-up.
                     Deadline alerts, reporting reminders, and renewal notifications
                     are sent automatically — to the right people, at the right time.
                   </p>

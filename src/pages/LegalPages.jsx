@@ -1,11 +1,11 @@
 import React from 'react'
-import { Helmet } from 'react-helmet-async'
 import Header from 'components/LandingPage/Header'
 import Footer from 'components/LandingPage/Footer'
+import MarketingSeo from 'components/seo/MarketingSeo'
 
-const PageFrame = ({ title, description, children }) => (
+const PageFrame = ({ pageKey, children }) => (
   <div className='full-container'>
-    <Helmet><title>{title} | GrantMaestro</title><meta name='description' content={description} /><meta name='robots' content='noindex,follow' /></Helmet>
+    <MarketingSeo pageKey={pageKey} />
     <Header />
     <main id='main-content' tabIndex='-1' style={{ background: '#f7fafc', padding: '104px 20px 72px' }}>
       <article style={{ maxWidth: 920, margin: '0 auto', background: '#fff', borderRadius: 12, padding: '48px', boxShadow: '0 2px 16px rgba(15, 23, 42, 0.08)', color: '#243447', lineHeight: 1.7 }}>{children}</article>
@@ -17,7 +17,7 @@ const Heading = ({ id, children }) => <h2 id={id} style={{ color: '#001A8B', fon
 const Notice = ({ children }) => <p style={{ padding: '14px 16px', borderLeft: '4px solid #1267D8', background: '#EAF4FF', color: '#173A60' }}>{children}</p>
 
 export const PrivacyPolicyPage = () => (
-  <PageFrame title='Privacy Policy' description='GrantMaestro privacy policy, data-handling and service-provider summary.'>
+  <PageFrame pageKey='privacy'>
     <p style={{ color: '#64748b', marginBottom: 8 }}>Last updated: 6 October 2026</p><h1 style={{ color: '#001A8B', fontSize: 36, marginTop: 0 }}>Privacy Policy</h1>
     <Notice>GrantMaestro is a grant-management platform. This policy explains how personal information is handled on the website and within an organisation’s workspace. It is not a claim that every service provider processes data only in Australia.</Notice>
     <Heading>Information we collect</Heading><p>We collect account and organisation information provided during registration and use, including contact details, role details, subscription information and workspace content such as grant records, notes, tasks, uploaded documents and support requests. We also collect limited technical and security information, including browser, device, IP address and log information.</p>
@@ -31,7 +31,7 @@ export const PrivacyPolicyPage = () => (
 )
 
 export const SupportPage = () => (
-  <PageFrame title='Support' description='GrantMaestro support, escalation and account assistance.'>
+  <PageFrame pageKey='support'>
     <p style={{ color: '#64748b', marginBottom: 8 }}>GrantMaestro Support</p><h1 style={{ color: '#001A8B', fontSize: 36, marginTop: 0 }}>How can we help?</h1>
     <p>For account access, billing, subscription, grants workspace or technical support, use the secure <a href='/contact?topic=support'>support enquiry form</a>. Include your organisation name, the email associated with the account, the page or action involved, displayed error text and the approximate time of the issue.</p>
     <Heading>Support target and escalation</Heading><p>Support requests are reviewed during Australian Eastern Time business hours on business days. Response targets are not contractual service-level agreements and do not replace any separate Enterprise arrangement in an executed agreement.</p><table style={{ width: '100%', borderCollapse: 'collapse', margin: '16px 0' }}><thead><tr><th scope='col' style={{ textAlign: 'left', borderBottom: '2px solid #B9D1E9', padding: '8px' }}>Plan</th><th scope='col' style={{ textAlign: 'left', borderBottom: '2px solid #B9D1E9', padding: '8px' }}>Initial response target</th></tr></thead><tbody><tr><th scope='row' style={{ textAlign: 'left', borderBottom: '1px solid #D9E4F0', padding: '8px' }}>Starter</th><td style={{ borderBottom: '1px solid #D9E4F0', padding: '8px' }}>Within 2 business days</td></tr><tr><th scope='row' style={{ textAlign: 'left', borderBottom: '1px solid #D9E4F0', padding: '8px' }}>Pro</th><td style={{ borderBottom: '1px solid #D9E4F0', padding: '8px' }}>Within 1 business day</td></tr><tr><th scope='row' style={{ textAlign: 'left', padding: '8px' }}>Enterprise</th><td style={{ padding: '8px' }}>Priority review, target within 1 business day</td></tr></tbody></table><ul><li><strong>Urgent service interruption:</strong> state “Urgent service interruption” in the form subject and describe the organisation-wide impact.</li><li><strong>Material impairment:</strong> describe the blocked workflow, affected grant records and any workaround.</li><li><strong>Standard request:</strong> include the grant name, page, action and expected outcome.</li></ul>
@@ -41,7 +41,7 @@ export const SupportPage = () => (
 )
 
 export const TermsOfServicePage = () => (
-  <PageFrame title='Terms of Service' description='GrantMaestro platform terms, billing, trial, renewal and cancellation information.'>
+  <PageFrame pageKey='terms'>
     <p style={{ color: '#64748b', marginBottom: 8 }}>Last updated: 6 October 2026</p><h1 style={{ color: '#001A8B', fontSize: 36, marginTop: 0 }}>Terms of Service</h1>
     <p>These terms govern use of the GrantMaestro website and grant-management platform. By creating an account or using the service, you agree to these terms on behalf of yourself and, where applicable, the organisation you represent.</p>
     <Heading>Service</Heading><p>GrantMaestro provides tools to help organisations organise grant opportunities, tasks, records, documents, reporting and collaboration. The service supports administrative work; it does not provide legal, financial, tax, funding or professional advice, and it does not guarantee grant eligibility, funding outcomes or compliance results.</p>

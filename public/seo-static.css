@@ -1,0 +1,8 @@
+html { background: #f4f8fd; }
+.gm-static-page { box-sizing: border-box; max-width: 960px; margin: 0 auto; padding: 96px 24px; color: #173A60; font-family: Arial, Helvetica, sans-serif; line-height: 1.6; }
+.gm-static-page__eyebrow { color: #1267D8; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.gm-static-page h1 { max-width: 820px; margin: 0 0 20px; color: #001A8B; font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1.12; }
+.gm-static-page > p { max-width: 760px; font-size: 1.1rem; }
+.gm-static-page ul { display: flex; flex-wrap: wrap; gap: 12px; padding: 20px 0 0; list-style: none; }
+.gm-static-page a { display: inline-block; padding: 11px 16px; border-radius: 6px; background: #2488FF; color: #fff; font-weight: 700; text-decoration: none; }
+.gm-static-page a:focus, .gm-static-page a:hover { background: #1267D8; outline: 3px solid #8BD7F6; outline-offset: 3px; }

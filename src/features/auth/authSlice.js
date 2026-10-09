@@ -172,7 +172,7 @@ export const verifyOtp = createAsyncThunk(
       if (response?.data?.status === false) {
         return rejectWithValue(response.data)
       }
-      toast.success('Account verified! Welcome to Grant Maestro.', { duration: 3000 })
+      toast.success('Account verified! Welcome to GrantMaestro.', { duration: 3000 })
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data)

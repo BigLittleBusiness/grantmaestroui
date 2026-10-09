@@ -7,6 +7,7 @@ const primaryLinks = [
   { href: '/#service-features', label: 'How it works' },
   { href: '/councils', label: 'For councils' },
   { href: '/grant-portfolio-readiness', label: 'Readiness snapshot' },
+  { href: '/resources', label: 'Resources' },
   { href: '/#pricing_section', label: 'Pricing' },
   { href: '/contact', label: 'Contact' },
 ]

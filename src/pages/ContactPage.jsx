@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Helmet } from 'react-helmet-async'
 import api from 'api'
 import Header from 'components/LandingPage/Header'
 import Footer from 'components/LandingPage/Footer'
 import TurnstileWidget from 'components/contact/TurnstileWidget'
+import MarketingSeo from 'components/seo/MarketingSeo'
 import './ContactPage.css'
 
 const enquiryTypes = [
@@ -72,7 +72,7 @@ export default function ContactPage() {
   const unavailable = !configLoading && Boolean(configError)
   return (
     <div className='full-container'>
-      <Helmet><title>Contact GrantMaestro</title><meta name='description' content='Contact GrantMaestro through our secure enquiry form.' /><meta name='robots' content='noindex,follow' /></Helmet>
+      <MarketingSeo pageKey='contact' />
       <Header />
       <main id='main-content' tabIndex='-1' className='contact-page'>
         <section className='contact-hero'><div className='contact-shell'><p className='contact-eyebrow'>GrantMaestro enquiries</p><h1>How can we help?</h1><p>Use this secure form for sales, demonstrations, support, partnership or privacy enquiries. We do not publish contact email addresses on this site.</p></div></section>

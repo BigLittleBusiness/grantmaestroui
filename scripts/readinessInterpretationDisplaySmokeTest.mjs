@@ -7,7 +7,7 @@ const styles = await readFile(new URL('../src/pages/PortfolioReadinessPage.css',
 assert.match(page, /public\/portfolio-readiness\/interpretation/)
 assert.match(page, /pollForManusAnalysis/)
 assert.match(page, /analysisStatus/)
-assert.match(page, /Preparing your deeper reflection/)
+assert.match(page, /Initial reflection shown; tailored detail may follow shortly/)
 assert.match(page, /buildImmediateInsight/)
 assert.match(page, /answerPattern/)
 assert.match(page, /What your answers suggest/)

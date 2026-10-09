@@ -17,6 +17,8 @@ const TermsOfServicePage = lazy(() => import('pages/LegalPages').then((module) =
 const SupportPage = lazy(() => import('pages/LegalPages').then((module) => ({ default: module.SupportPage })))
 const ContactPage = lazy(() => import('pages/ContactPage'))
 const PortfolioReadinessPage = lazy(() => import('pages/PortfolioReadinessPage'))
+const ResourcesPage = lazy(() => import('pages/ResourcesPage'))
+const CouncilGrantPortfolioReadinessGuide = lazy(() => import('pages/CouncilGrantPortfolioReadinessGuide'))
 
 const LoadingPage = () => <main id='main-content' tabIndex='-1' className='gm-route-loading' aria-live='polite'>Loading GrantMaestro…</main>
 const publicPage = (element) => <Suspense fallback={<LoadingPage />}>{element}</Suspense>
@@ -33,6 +35,8 @@ const AppRoutes = () => (
     <Route path='/support' element={publicPage(<SupportPage />)} />
     <Route path='/contact' element={publicPage(<ContactPage />)} />
     <Route path='/grant-portfolio-readiness' element={publicPage(<PortfolioReadinessPage />)} />
+    <Route path='/resources' element={publicPage(<ResourcesPage />)} />
+    <Route path='/resources/council-grant-portfolio-readiness-guide' element={publicPage(<CouncilGrantPortfolioReadinessGuide />)} />
     <Route path='/religious-organisations' element={publicPage(<ReligiousOrganisationsPage />)} />
     <Route path='/login' element={authPage(<LoginPage />)} />
     <Route path='/register' element={authPage(<RegisterPage />)} />

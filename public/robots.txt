@@ -1,4 +1,4 @@
-# Grant Maestro — robots.txt
+# GrantMaestro crawler policy
 User-agent: *
 Disallow: /dashboard
 Disallow: /profile
@@ -9,7 +9,8 @@ Disallow: /view-task/
 Disallow: /team-members
 Disallow: /add-team-member
 Disallow: /edit-team-member/
-Disallow: /grant/
+Disallow: /grant
+Disallow: /acquittals
 Disallow: /reports
 Disallow: /settings
 Disallow: /manage-payment
@@ -19,11 +20,13 @@ Disallow: /tickets
 Disallow: /submit-ticket
 Disallow: /update-ticket/
 Disallow: /privacy-setting
+Disallow: /subscription
 Disallow: /seat-usage
 Disallow: /change-password
-Disallow: /success
-Disallow: /cancel
+Disallow: /force-password-reset
 Disallow: /reset-password
 Disallow: /forgot-password
+Disallow: /login
+Disallow: /register
 
 Sitemap: https://www.grantmaestro.com/sitemap.xml

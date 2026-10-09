@@ -38,6 +38,8 @@ export default function Footer() {
               <LinkGroup title='Resources'>
                 <li><a href='/councils'>Why GrantMaestro for councils</a></li>
                 <li><a href='/grant-portfolio-readiness'>Grant portfolio diagnostic</a></li>
+                <li><a href='/resources'>Council grant-operation resources</a></li>
+                <li><a href='/resources/council-grant-portfolio-readiness-guide'>Portfolio readiness guide</a></li>
                 <li><a href='/support'>Support centre</a></li>
                 <li><a href='/contact'>Contact form</a></li>
               </LinkGroup>

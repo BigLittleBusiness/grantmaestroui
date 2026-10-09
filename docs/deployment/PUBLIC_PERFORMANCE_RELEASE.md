@@ -9,9 +9,10 @@ cd /path/to/grantmaestroui
 npm ci
 CI=true npm test -- --watchAll=false
 npm run build
+npm run test:public-seo
 ```
 
-The routes are lazy-loaded so a first visit does not download all authenticated and marketing page modules. Below-fold marketing images use native lazy loading.
+The routes are lazy-loaded so a first visit does not download all authenticated and marketing page modules. Below-fold marketing images use native lazy loading. The build also creates route-specific static public documents; use `docs/deployment/nginx-public-seo-routes.conf` alongside this document when applying the BinaryLane Nginx release.
 
 ## 2. Configure Nginx
 
