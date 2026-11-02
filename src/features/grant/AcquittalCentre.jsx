@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import api from 'api'
+import ContextualHelpLink from 'components/help/ContextualHelpLink'
 import './acquittal-centre.css'
 
 const STATUSES = [
@@ -82,7 +83,7 @@ export default function AcquittalCentre() {
 
   return (
     <main className='gm-acquittal-centre content container-fluid'>
-      <header className='gm-acquittal-centre__header'><div><p>Compliance workspace</p><h1>Acquittal centre</h1><span>Prepare evidence, approvals and financial reconciliation before the funding body deadline.</span></div><Link className='btn btn-outline-primary' to='/grant'>View grant portfolio</Link></header>
+      <header className='gm-acquittal-centre__header'><div><p>Compliance workspace</p><h1>Acquittal centre</h1><span>Prepare evidence, approvals and financial reconciliation before the funding body deadline.</span><ContextualHelpLink topicId='acquittal-checklists' source='acquittal-centre'>Need help with acquittal checklists?</ContextualHelpLink></div><Link className='btn btn-outline-primary' to='/grant'>View grant portfolio</Link></header>
       <section className='gm-acquittal-summary' aria-label='Acquittal summary'><div><span>Acquittals in view</span><strong>{summary.grants}</strong></div><div><span>Required items complete</span><strong>{summary.complete} <small>of {summary.required}</small></strong></div><div><span>Overdue acquittals</span><strong className={summary.overdue ? 'is-risk' : ''}>{summary.overdue}</strong></div></section>
       {grants.length ? <section className='gm-acquittal-list'>{grants.map((grant) => {
         const items = grant.acquittal_items || []

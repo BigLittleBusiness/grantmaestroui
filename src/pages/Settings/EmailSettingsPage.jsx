@@ -12,6 +12,7 @@ import {
   saveEmailSettings,
   testEmailSettings,
 } from 'features/settings/settingsSlice'
+import ContextualHelpLink from 'components/help/ContextualHelpLink'
 
 export default function EmailSettingsPage() {
   const dispatch = useDispatch()
@@ -86,6 +87,7 @@ export default function EmailSettingsPage() {
           <p className="text-muted mb-0" style={{ fontSize: '14px' }}>
             Configure AWS SES credentials for transactional email delivery.
           </p>
+          <ContextualHelpLink topicId='email-configuration' source='email-settings'>Need help configuring transactional email?</ContextualHelpLink>
         </div>
       </div>
 

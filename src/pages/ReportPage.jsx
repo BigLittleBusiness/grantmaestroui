@@ -2,6 +2,7 @@ import React, { useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { fetchGrants } from 'features/grant/grantSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import ContextualHelpLink from 'components/help/ContextualHelpLink'
 import './reporting-overview.css'
 
 const EMPTY_GRANTS = []
@@ -34,7 +35,7 @@ export default function ReportPage() {
   }
 
   return <main className='gm-reporting content container-fluid'>
-    <header className='gm-reporting__header'><div><p>Leadership view</p><h1>Grant portfolio performance</h1><span>Use clear pipeline, outcome and compliance measures to guide inward-grants investment.</span></div><div className='gm-reporting__actions'><button className='btn btn-outline-primary' onClick={downloadCsv} disabled={!grants.length}>Export portfolio CSV</button><Link className='btn btn-primary' to='/grant'>Open grant portfolio</Link></div></header>
+    <header className='gm-reporting__header'><div><p>Leadership view</p><h1>Grant portfolio performance</h1><span>Use clear pipeline, outcome and compliance measures to guide inward-grants investment.</span><ContextualHelpLink topicId='quarterly-report-inclusion' source='leadership-reporting'>Need help preparing a leadership report?</ContextualHelpLink></div><div className='gm-reporting__actions'><button className='btn btn-outline-primary' onClick={downloadCsv} disabled={!grants.length}>Export portfolio CSV</button><Link className='btn btn-primary' to='/grant'>Open grant portfolio</Link></div></header>
     <section className='gm-reporting__context'><div><strong>Portfolio view</strong><span>All active grant records available to your organisation.</span></div><Link to='/acquittals'>Open acquittal centre</Link></section>
     <section className='gm-reporting__metrics' aria-label='Portfolio performance metrics'><article><span>Applications submitted</span><strong>{metrics.submitted}</strong><small>{money(metrics.appliedValue)} funding sought</small></article><article><span>Funding secured</span><strong>{money(metrics.securedValue)}</strong><small>{metrics.won} grants awarded</small></article><article><span>Decision win rate</span><strong>{metrics.winRate === null ? '—' : `${metrics.winRate}%`}</strong><small>{metrics.decided ? `${metrics.decided} decided applications` : 'No decisions recorded yet'}</small></article><article className={metrics.acquittalAtRisk ? 'is-risk' : ''}><span>Acquittals due within 30 days</span><strong>{metrics.acquittalAtRisk}</strong><small>{metrics.acquittalAtRisk ? 'Review compliance requirements now' : 'No near-term exposure identified'}</small></article></section>
     <section className='gm-reporting__panels'>

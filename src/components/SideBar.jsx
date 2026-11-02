@@ -52,6 +52,18 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
                   <span className='menu-arrow'></span>
                 </Link>
               </li>
+              <li>
+                <Link to='/help-guidance' className={`${activeTab === '/help-guidance' ? 'active' : ''}`}>
+                  <i className='fe fe-help-circle'></i> <span>Help &amp; Guidance</span>
+                  <span className='menu-arrow'></span>
+                </Link>
+              </li>
+              <li>
+                <Link to='/admin/help-guidance-insights' className={`${activeTab === '/admin/help-guidance-insights' ? 'active' : ''}`}>
+                  <i className='fe fe-activity'></i> <span>Guidance insights</span>
+                  <span className='menu-arrow'></span>
+                </Link>
+              </li>
 
               <li className='menu-title'><span>SUBSCRIPTIONS</span></li>
 
@@ -113,6 +125,12 @@ const SideBar = ({ isSidebarVisible, setSidebarVisible }) => {
             <li>
               <Link to='/dashboard' className={`${activeTab === '/dashboard' ? 'active' : ''}`}>
                 <i className='fe fe-home'></i> <span>Dashboard</span>
+                <span className='menu-arrow'></span>
+              </Link>
+            </li>
+            <li>
+              <Link to='/help-guidance' className={`${activeTab === '/help-guidance' ? 'active' : ''}`}>
+                <i className='fe fe-help-circle'></i> <span>Help &amp; Guidance</span>
                 <span className='menu-arrow'></span>
               </Link>
             </li>

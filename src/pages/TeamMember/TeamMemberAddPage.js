@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import TeamMemberAdd from '../../features/teamMember/TeamMemberAdd'
+import ContextualHelpLink from '../../components/help/ContextualHelpLink'
 
 const TeamMemberAddPage = () => {
   const navigate = useNavigate()
@@ -10,6 +11,7 @@ const TeamMemberAddPage = () => {
       <div className='page-header'>
         <div className='content-page-header'>
           <h5>Add Team Member</h5>
+          <ContextualHelpLink topicId='team-invitations' source='team-invitation-page'>Need help inviting a colleague?</ContextualHelpLink>
           <div className='list-btn'>
             <ul className='filter-list'>
               <li>

@@ -32,7 +32,7 @@ export const canAccessPage = (user, pathname) => {
 export const homePathFor = (user) => (isSuperAdmin(user) ? '/admin/dashboard' : '/dashboard')
 
 // Pages an Organisation Admin can still open once the subscription has ended.
-const PAGES_WHILE_EXPIRED = ['/payment/', '/subscription', '/change-password', '/force-password-reset']
+const PAGES_WHILE_EXPIRED = ['/payment/', '/subscription', '/help-guidance', '/change-password', '/force-password-reset']
 
 /**
  * The page to send a user to when their organisation's subscription has

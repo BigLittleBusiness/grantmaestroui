@@ -37,6 +37,8 @@ import ForcePasswordReset from 'pages/Auth/ForcePasswordReset'
 import SysAdminDashboard from 'pages/SysAdminDashboard'
 import EmailSettingsPage from 'pages/Settings/EmailSettingsPage'
 import PaymentSettingsPage from 'pages/Settings/PaymentSettingsPage'
+import HelpGuidancePage from 'pages/HelpGuidancePage'
+import HelpGuidanceAnalyticsPage from 'pages/HelpGuidanceAnalyticsPage'
 
 const ProtectedRoutes = () => {
   const { authenticated, loading } = useAuth()
@@ -58,6 +60,14 @@ const ProtectedRoutes = () => {
               <Dashboard />
             </AuthenticatedLayout>
           </PrivateRoute>
+        }
+      />
+      <Route
+        path='/help-guidance'
+        element={
+          <AuthenticatedLayout>
+            <HelpGuidancePage />
+          </AuthenticatedLayout>
         }
       />
       <Route
@@ -311,6 +321,14 @@ const ProtectedRoutes = () => {
         element={
           <AdminAuthenticatedLayout>
             <PaymentSettingsPage />
+          </AdminAuthenticatedLayout>
+        }
+      />
+      <Route
+        path='/admin/help-guidance-insights'
+        element={
+          <AdminAuthenticatedLayout>
+            <HelpGuidanceAnalyticsPage />
           </AdminAuthenticatedLayout>
         }
       />

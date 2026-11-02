@@ -9,6 +9,7 @@ import { fetchTeamMembers } from '../teamMember/teamMemberSlice'
 import { fetchGrants } from '../grant/grantSlice'
 import './task-work-form.css'
 import AIDraftPanel from 'components/AIDraftPanel'
+import ContextualHelpLink from 'components/help/ContextualHelpLink'
 
 const TASK_TYPES = ['research', 'application', 'evidence', 'finance', 'review', 'approval', 'communication', 'other']
 const STAGES = ['opportunity', 'suitability', 'submitted', 'outcome', 'acquittal']
@@ -29,6 +30,7 @@ const FieldError = ({ id, error }) => error ? <div id={id} className='invalid-fe
 export default function TaskAdd() {
   const teamMembers = useSelector((state) => state.teamMember.teamMembers || [])
   const grants = useSelector((state) => state.grant.grants || [])
+  const isOrganisationAdmin = Number(useSelector((state) => state.auth?.user?.user_role_id)) === 1
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -69,7 +71,7 @@ export default function TaskAdd() {
       </header>
       <form onSubmit={formik.handleSubmit} noValidate>
         <section className='gm-task-work-form__card'>
-          <div className='gm-task-work-form__section'><h2>Context and ownership</h2><p>Connect this work to the grant and the person responsible for completing it.</p></div>
+        <div className='gm-task-work-form__section'><h2>Context and ownership</h2><p>Connect this work to the grant and the person responsible for completing it.</p>{isOrganisationAdmin && <ContextualHelpLink topicId='collaboration-controls' source='task-assignment'>Need help assigning a clear task?</ContextualHelpLink>}</div>
           <div className='gm-task-work-form__grid'>
             <label className='gm-task-field gm-task-field--wide' htmlFor='task-grant'><span>Related grant <b aria-hidden='true'>*</b></span><select id='task-grant' name='grant_id' value={formik.values.grant_id} onChange={formik.handleChange} onBlur={formik.handleBlur} aria-describedby='task-grant-error'><option value=''>Select a grant</option>{grants.map((grant) => <option value={grant.organization_grant_id || grant.id} key={grant.organization_grant_id || grant.id}>{grant.grant_title}</option>)}</select><FieldError id='task-grant-error' error={formik.touched.grant_id && formik.errors.grant_id} /></label>
             <label className='gm-task-field' htmlFor='task-assignee'><span>Accountable person <b aria-hidden='true'>*</b></span><select id='task-assignee' name='task_assigned_to' value={formik.values.task_assigned_to} onChange={formik.handleChange} onBlur={formik.handleBlur} aria-describedby='task-assignee-error'><option value=''>Select a team member</option>{teamMembers.map((member) => <option value={member.user_id} key={member.user_id}>{member.full_name || `${member.first_name || ''} ${member.last_name || ''}`.trim() || member.email}</option>)}</select><FieldError id='task-assignee-error' error={formik.touched.task_assigned_to && formik.errors.task_assigned_to} /></label>

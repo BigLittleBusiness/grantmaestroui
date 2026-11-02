@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../api'
+import ContextualHelpLink from 'components/help/ContextualHelpLink'
 import './settings.css'
 
 const MAX_EXTRA_SEATS = 200
@@ -133,6 +134,7 @@ export default function SubscriptionPage() {
       <div className='page-header'>
         <div className='content-page-header'>
           <h5><i className='fa fa-credit-card me-2 text-primary' />Subscription</h5>
+          <ContextualHelpLink topicId='subscription-changes' source='subscription-page'>Need help changing your plan or seats?</ContextualHelpLink>
         </div>
       </div>
 

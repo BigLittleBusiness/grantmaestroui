@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { addTeamMember } from './teamMemberSlice'
+import ContextualHelpLink from 'components/help/ContextualHelpLink'
 
 const TeamMemberAdd = () => {
   const [formData, setFormData] = useState({
@@ -44,6 +45,10 @@ const TeamMemberAdd = () => {
       <form onSubmit={handleSubmit}>
         <div className='card'>
           <div className='card-body'>
+            <div className='d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3'>
+              <p className='text-muted mb-0'>Invite only people who need access, and select the least-privileged role that supports their work.</p>
+              <ContextualHelpLink topicId='team-invitations' source='team-invitation-form'>Need help choosing a role?</ContextualHelpLink>
+            </div>
             <div className='mb-3'>
               <label className='form-label'>First name</label>
               <input name='first_name' type='text' className='form-control' placeholder='Enter first name' value={formData.first_name} onChange={handleChange} required />

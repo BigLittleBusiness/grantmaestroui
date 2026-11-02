@@ -17,6 +17,7 @@ import {
   testStripeConnection,
 } from '../../features/settings/settingsSlice'
 import baseServerUrl from '../../config/apiConfig'
+import ContextualHelpLink from 'components/help/ContextualHelpLink'
 import './settings.css'
 
 const WEBHOOK_URL_PIN    = `${baseServerUrl.replace(/\/v1\/$/, '')}/v1/subscription/pin-webhook`
@@ -442,6 +443,7 @@ export default function PaymentSettingsPage() {
             <i className="fe fe-credit-card me-2 text-primary" />
             Payment Settings
           </h5>
+          <ContextualHelpLink topicId='payment-provider-configuration' source='payment-settings'>Need help setting up payments?</ContextualHelpLink>
           <span className="badge bg-warning text-dark">Super Admin Only</span>
         </div>
       </div>
